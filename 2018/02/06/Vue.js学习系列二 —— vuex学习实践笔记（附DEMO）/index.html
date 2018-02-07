@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Vue.js学习系列二 —— vuex学习实践笔记（附DEMO） | Vue试验场</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="上次学习了vue-router的使用，让我能够在各个页面间切换，将页面搭建了起来。这次则要学习vue的状态管理模式——vuex。  注：本文只是个人对vuex学习的一些理解，要深刻掌握还需要认真查阅官方文档。 一、基本介绍Vuex 是一个专为 Vue.js 的SPA单页组件化应用程序开发的状态管理模式插件。由于Vue SPA应用的模块化，每个组件都有它各自的数据(state)、界面(view)、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）">
+<meta property="og:url" content="https://violetjack.github.io/2018/02/06/Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）/index.html">
+<meta property="og:site_name" content="Vue试验场">
+<meta property="og:description" content="上次学习了vue-router的使用，让我能够在各个页面间切换，将页面搭建了起来。这次则要学习vue的状态管理模式——vuex。  注：本文只是个人对vuex学习的一些理解，要深刻掌握还需要认真查阅官方文档。 一、基本介绍Vuex 是一个专为 Vue.js 的SPA单页组件化应用程序开发的状态管理模式插件。由于Vue SPA应用的模块化，每个组件都有它各自的数据(state)、界面(view)、">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-29836e1cb7325526.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-5971ec429e2ac23b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-22872b0aa75b7f42.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-9867083201b0c86e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-02-07T02:05:12.874Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）">
+<meta name="twitter:description" content="上次学习了vue-router的使用，让我能够在各个页面间切换，将页面搭建了起来。这次则要学习vue的状态管理模式——vuex。  注：本文只是个人对vuex学习的一些理解，要深刻掌握还需要认真查阅官方文档。 一、基本介绍Vuex 是一个专为 Vue.js 的SPA单页组件化应用程序开发的状态管理模式插件。由于Vue SPA应用的模块化，每个组件都有它各自的数据(state)、界面(view)、">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1987062-29836e1cb7325526.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="Vue试验场" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Vue试验场</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">专注于Vue相关知识的捣鼓</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="violetjack.github.io">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/02/06/Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）/" class="article-date">
+  <time datetime="2018-02-06T08:20:52.000Z" itemprop="datePublished">2018-02-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>上次学习了vue-router的使用，让我能够在各个页面间切换，将页面搭建了起来。这次则要学习vue的状态管理模式——vuex。</p>
+</blockquote>
+<p><strong>注</strong>：本文只是个人对vuex学习的一些理解，要深刻掌握还需要认真查阅<a href="http://vuex.vuejs.org/zh-cn/" target="_blank" rel="noopener">官方文档</a>。</p>
+<h1 id="一、基本介绍"><a href="#一、基本介绍" class="headerlink" title="一、基本介绍"></a>一、基本介绍</h1><p>Vuex 是一个专为 Vue.js 的SPA单页组件化应用程序开发的<strong>状态管理模式</strong>插件。<br>由于Vue SPA应用的模块化，每个组件都有它各自的数据(state)、界面(view)、和方法(actions)。这些数据、界面和方法分布在各个组件中，当项目内容变得越来越多时，每个组件中的状态会变得很难管理。这是vuex就派上用场啦~下面我们看一个简单的vuex例子。</p>
+<h2 id="1-单个组件中的状态"><a href="#1-单个组件中的状态" class="headerlink" title="1. 单个组件中的状态"></a>1. 单个组件中的状态</h2><p>假如只是在单个组件中要改变界面view很简单，只需要改变state数据源即可。如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      view: &#123;&#123; count &#125;&#125;</span><br><span class="line">      &lt;button @click=&quot;increment&quot;&gt;increment&lt;/button&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  // state</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      count: 0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  // actions</span><br><span class="line">  methods: &#123;</span><br><span class="line">    increment () &#123;</span><br><span class="line">      this.count++</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>所以，单个组件中的原理图是这样的：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1987062-29836e1cb7325526.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="单个组件中的原理图"></p>
+<h2 id="2-多个组件中的状态"><a href="#2-多个组件中的状态" class="headerlink" title="2. 多个组件中的状态"></a>2. 多个组件中的状态</h2><p>然而，我们作为组件化的SPA应用，必定会牵扯到多个组件间的通信。<br>比如有两个相同的组件A和B，它们共享一个数据count，并且都有一个方法可以操作这个count，我们使用vuex来写。<br><strong>A组件和B组件的代码（代码相同）</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &#123;&#123; $store.state.count &#125;&#125;</span><br><span class="line">    &lt;button @click=&quot;increment&quot;&gt;increment&lt;/button&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  export default &#123;</span><br><span class="line">    methods: &#123;</span><br><span class="line">      increment () &#123;</span><br><span class="line">        this.$store.commit(&apos;increment&apos;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1987062-5971ec429e2ac23b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="结果1"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1987062-22872b0aa75b7f42.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="结果2"></p>
+<p>可以看到，这里的两个increment按钮点击都会同时改变两个count的数据，<strong>因为数据源count和方法increment都是全局的。</strong><br>正如下面官方原理图所画的，我们把<strong>全局数据源state、改变数据源的方法mutations、异步操作方法actions</strong>都放提取出来放到store中，实现全局数据状态单独管理的功能。<br><img src="http://upload-images.jianshu.io/upload_images/1987062-9867083201b0c86e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="vuex官方原理图"></p>
+<h1 id="二、安装-amp-配置"><a href="#二、安装-amp-配置" class="headerlink" title="二、安装&amp;配置"></a>二、安装&amp;配置</h1><h2 id="1-安装vuex"><a href="#1-安装vuex" class="headerlink" title="1. 安装vuex"></a>1. 安装vuex</h2><p>使用npm安装并保存到package.json中：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install vuex --save</span><br></pre></td></tr></table></figure></p>
+<p><strong>package.json</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&quot;devDependencies&quot;: &#123;</span><br><span class="line">  ...</span><br><span class="line">  &quot;vuex&quot;: &quot;^2.1.1&quot;,</span><br><span class="line">  ...</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-配置"><a href="#2-配置" class="headerlink" title="2. 配置"></a>2. 配置</h2><p>配置方式和路由的配置方式差不多<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;</span><br><span class="line">import Vuex from &apos;vuex&apos;</span><br><span class="line"></span><br><span class="line">Vue.use(Vuex)</span><br><span class="line">//创建Store实例</span><br><span class="line">const store = new Vuex.Store(&#123;</span><br><span class="line">  // 存储状态值</span><br><span class="line">  state: &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;,</span><br><span class="line">  // 状态值的改变方法,操作状态值</span><br><span class="line">  // 提交mutations是更改Vuex状态的唯一方法</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;,</span><br><span class="line">  // 在store中定义getters（可以认为是store的计算属性）。Getters接收state作为其第一个函数</span><br><span class="line">  getters: &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;,</span><br><span class="line">  actions: &#123; </span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">// 要改变状态值只能通过提交mutations来完成</span><br><span class="line"></span><br><span class="line">/* eslint-disable no-new */</span><br><span class="line">new Vue(&#123;</span><br><span class="line">  el: &apos;#app&apos;,</span><br><span class="line">  template: &apos;&lt;App/&gt;&apos;,</span><br><span class="line">  components: &#123; App &#125;,</span><br><span class="line">  // 将store实例注入到根组件下的所有子组件中</span><br><span class="line">  store</span><br><span class="line">  // 子组件通过this.$store来方位store</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<h1 id="三、核心概念"><a href="#三、核心概念" class="headerlink" title="三、核心概念"></a>三、核心概念</h1><h2 id="1-state"><a href="#1-state" class="headerlink" title="1. state"></a>1. state</h2><p>state就是全局的状态（数据源），我们可以用以下方式在Vue 组件中获得Vuex的state状态<br><strong>template</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">  &#123;&#123; $store.state.count &#125;&#125;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p><strong>script</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(this.$store.state.count)</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-getters"><a href="#2-getters" class="headerlink" title="2. getters"></a>2. getters</h2><p>getters其实可以认为是 store 的计算属性，用法和计算属性差不多。<br>定义getter：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">getters: &#123;</span><br><span class="line">  done(state) &#123;</span><br><span class="line">    return state.count + 5;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用getter<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(this.$store.getters.done)</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-mutations"><a href="#3-mutations" class="headerlink" title="3. mutations"></a>3. mutations</h2><p>mutations是操作state的唯一方法，即只有mutations方法能够改变state状态值。</p>
+<h3 id="3-1-基本操作"><a href="#3-1-基本操作" class="headerlink" title="3.1 基本操作"></a>3.1 基本操作</h3><p><strong>mutations对state的操作</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const store = new Vuex.Store(&#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    count: 1</span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    increment (state) &#123;</span><br><span class="line">      // 变更状态</span><br><span class="line">      state.count++</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><strong>组件通过commit提交mutations的方式来请求改变state</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">this.$store.commit(&apos;increment&apos;)</span><br></pre></td></tr></table></figure></p>
+<p>这样的好处是我们可以跟踪到每一次state的变化，以便及时分析和解决问题。</p>
+<h3 id="3-2-提交载荷（Payload）"><a href="#3-2-提交载荷（Payload）" class="headerlink" title="3.2 提交载荷（Payload）"></a>3.2 提交载荷（Payload）</h3><p>mutations方法中是可以传参的，具体用法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mutations: &#123;</span><br><span class="line">  // 提交载荷 Payload</span><br><span class="line">  add(state, n) &#123;</span><br><span class="line">    state.count += n</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">this.$store.commit(&apos;add&apos;, 10)</span><br></pre></td></tr></table></figure>
+<p>这里只是传了一个数字，在大多数情况下，载荷应该是一个对象，这样可以包含多个字段并且记录的 mutation 会更易读。</p>
+<h3 id="3-3-注意"><a href="#3-3-注意" class="headerlink" title="3.3 注意"></a>3.3 注意</h3><p><strong>mutations方法必须是同步方法！</strong></p>
+<h2 id="4-actions"><a href="#4-actions" class="headerlink" title="4. actions"></a>4. actions</h2><h3 id="4-1-基本操作"><a href="#4-1-基本操作" class="headerlink" title="4.1 基本操作"></a>4.1 基本操作</h3><p>之前说mutations方法必须只能是同步方法，为了处理异步方法，actions出现了。关于action和mutations的区别有以下几点：</p>
+<ul>
+<li>Action 提交的是 mutation，而不是直接变更状态。</li>
+<li>Action 可以包含任意异步操作。</li>
+<li>Action 还是得通过 mutation 方法来修改state<br>同样是之前的increment方法,我们分别用同步和异步的action来验证上面所说的与mutations的不同之处：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">actions: &#123;</span><br><span class="line">  increment (context) &#123;</span><br><span class="line">    context.commit(&apos;increment&apos;)</span><br><span class="line">  &#125;,</span><br><span class="line">  incrementAsync (context) &#123;</span><br><span class="line">    // 延时1秒  </span><br><span class="line">    setTimeout(() =&gt; &#123;</span><br><span class="line">      context.commit(&apos;increment&apos;)</span><br><span class="line">    &#125;, 1000)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>不同于mutations使用commit方法，actions使用dispatch方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">this.$store.dispatch(&apos;incrementAsync&apos;)</span><br></pre></td></tr></table></figure></p>
+<h3 id="4-2-context"><a href="#4-2-context" class="headerlink" title="4.2 context"></a>4.2 context</h3><p><strong>context是与 store 实例具有相同方法和属性的对象。</strong>可以通过<code>context.state</code>和<code>context.getters</code>来获取 state 和 getters。</p>
+<h3 id="4-3-以载荷形式分发"><a href="#4-3-以载荷形式分发" class="headerlink" title="4.3 以载荷形式分发"></a>4.3 以载荷形式分发</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">incrementAsyncWithValue (context, value) &#123;</span><br><span class="line">  setTimeout(() =&gt; &#123;</span><br><span class="line">    context.commit(&apos;add&apos;, value)</span><br><span class="line">  &#125;, 1000)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">this.$store.dispatch(&apos;incrementAsyncWithValue&apos;, 5)</span><br></pre></td></tr></table></figure>
+<h2 id="5-module"><a href="#5-module" class="headerlink" title="5. module"></a>5. module</h2><p>使用单一状态树，导致应用的所有状态集中到一个很大的对象。但是，当应用变得很大时，store 对象会变得臃肿不堪。<br>为了解决以上问题，Vuex 允许我们将 store 分割到<strong>模块（module）</strong>。每个模块拥有自己的 state、mutation、action、getters、甚至是嵌套子模块——从上至下进行类似的分割：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">const moduleA = &#123;</span><br><span class="line">  state: &#123; ... &#125;,</span><br><span class="line">  mutations: &#123; ... &#125;,</span><br><span class="line">  actions: &#123; ... &#125;,</span><br><span class="line">  getters: &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const moduleB = &#123;</span><br><span class="line">  state: &#123; ... &#125;,</span><br><span class="line">  mutations: &#123; ... &#125;,</span><br><span class="line">  actions: &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const store = new Vuex.Store(&#123;</span><br><span class="line">  modules: &#123;</span><br><span class="line">    a: moduleA,</span><br><span class="line">    b: moduleB</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">store.state.a // -&gt; moduleA 的状态</span><br><span class="line">store.state.b // -&gt; moduleB 的状态</span><br></pre></td></tr></table></figure></p>
+<p>module其实还是对于大型的SPA应用来说的，暂时对module的应用和理解并没有太多，之后会补上这一块儿的内容。<br>想要了解更多module知识，请查阅<a href="http://vuex.vuejs.org/zh-cn/modules.html" target="_blank" rel="noopener">官方module文档</a></p>
+<h1 id="Vue-js学习系列"><a href="#Vue-js学习系列" class="headerlink" title="Vue.js学习系列"></a>Vue.js学习系列</h1><p>鉴于前端知识碎片化严重，我希望能够系统化的整理出一套关于Vue的学习系列博客。</p>
+<p><a href="http://www.jianshu.com/p/8013d8d37bd0" target="_blank" rel="noopener">Vue.js学习系列一 —— vue-router2学习实践笔记（附DEMO）</a><br><a href="http://www.jianshu.com/p/d6f7e11f18af" target="_blank" rel="noopener">Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）</a><br><a href="http://www.jianshu.com/p/8e5fb763c3d7" target="_blank" rel="noopener">Vue.js学习系列三 —— axios和网络传输相关知识的学习实践</a><br><a href="http://www.jianshu.com/p/aef34acd111f" target="_blank" rel="noopener">Vue.js学习系列四 —— Webpack打包工具的使用</a><br><a href="http://www.jianshu.com/p/efb6fbed6fac" target="_blank" rel="noopener">Vue.js学习系列五 —— 从VUE-CLI来聊聊ESLint</a><br><a href="http://www.jianshu.com/p/073d25a3bba0" target="_blank" rel="noopener">Vue.js学习系列六 —— Vue单元测试Karma+Mocha学习笔记</a><br><a href="https://www.jianshu.com/p/ba7466d7101a" target="_blank" rel="noopener">Vue.js学习系列七 —— Vue服务器渲染Nuxt学习</a><br><a href="https://www.jianshu.com/p/15028f91226e" target="_blank" rel="noopener">Vue.js学习系列八 —— Vue源码学习之State学习</a></p>
+<h1 id="Vue-js学习系列项目地址"><a href="#Vue-js学习系列项目地址" class="headerlink" title="Vue.js学习系列项目地址"></a>Vue.js学习系列项目地址</h1><p>本文源码已收入到GitHub中，以供参考，当然能留下一个star更好啦^-^。<br><a href="https://github.com/violetjack/VueStudyDemos" target="_blank" rel="noopener">https://github.com/violetjack/VueStudyDemos</a></p>
+<h1 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h1><p>VioletJack，高效学习前端工程师，喜欢研究提高效率的方法，也专注于Vue前端相关知识的学习、整理。<br>欢迎关注、点赞、评论留言~我将持续产出Vue相关优质内容。</p>
+<p>新浪微博： <a href="http://weibo.com/u/2640909603" target="_blank" rel="noopener">http://weibo.com/u/2640909603</a><br>掘金：<a href="https://gold.xitu.io/user/571d953d39b0570068145cd1" target="_blank" rel="noopener">https://gold.xitu.io/user/571d953d39b0570068145cd1</a><br>CSDN: <a href="http://blog.csdn.net/violetjack0808" target="_blank" rel="noopener">http://blog.csdn.net/violetjack0808</a><br>简书： <a href="http://www.jianshu.com/users/54ae4af3a98d/latest_articles" target="_blank" rel="noopener">http://www.jianshu.com/users/54ae4af3a98d/latest_articles</a><br>Github： <a href="https://github.com/violetjack" target="_blank" rel="noopener">https://github.com/violetjack</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://violetjack.github.io/2018/02/06/Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）/" data-id="cjdcg3r8j00051ebtka2ugq98" class="article-share-link" data-share="baidu" data-title="Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）">分享到</a>
+      
+
+      
+        <a href="https://violetjack.github.io/2018/02/06/Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/02/06/Vue.js学习系列八 —— Vue源码学习之State学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Vue.js学习系列八 —— Vue源码学习之State学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2018/02/06/Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）/" data-title="Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）" data-url="https://violetjack.github.io/2018/02/06/Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">18</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/02/06/Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）/">Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/Vue.js学习系列八 —— Vue源码学习之State学习/">Vue.js学习系列八 —— Vue源码学习之State学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/将表单从jQuery转Vue框架实践总结/">将表单从jQuery转Vue框架实践总结</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/巧用jQuery选择器写表单办法总结（提高效率）/">巧用jQuery选择器写表单办法总结（提高效率）</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/ES6 学习笔记（上）/">ES6 学习笔记（上）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">个人网站</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/violetjack" target="_blank">Github</a>
+          </li>
+        
+          <li>
+            <a href="https://segmentfault.com/u/violetjack" target="_blank">SegmentFault</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.csdn.net/violetjack0808" target="_blank">CSDN</a>
+          </li>
+        
+          <li>
+            <a href="https://www.jianshu.com/u/54ae4af3a98d" target="_blank">简书</a>
+          </li>
+        
+          <li>
+            <a href="https://juejin.im/user/571d953d39b0570068145cd1" target="_blank">掘金</a>
+          </li>
+        
+          <li>
+            <a href="https://www.zhihu.com/people/violetjack" target="_blank">知乎</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 VioletJack<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"reqianduan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

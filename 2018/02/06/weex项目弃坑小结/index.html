@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>weex项目弃坑小结 | Vue试验场</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="由于weex 的不稳定性，所以中途放弃了 weex 方案。转而使用 Android原生开发。今天项目第一阶段开发结束，来总结一下 weex 的一些东西。  weex 相比于原生开发的好处  界面搭建速度快，特别是重复性界面。 数据处理方便，尤其是json解析方面。  坏处么  用的人太少，所以网上资料也很少。 坑还是比较多的，要玩的溜要踩上不少坑。 还是需要一些原生开发的知识才能够玩的溜。  说">
+<meta property="og:type" content="article">
+<meta property="og:title" content="weex项目弃坑小结">
+<meta property="og:url" content="https://violetjack.github.io/2018/02/06/weex项目弃坑小结/index.html">
+<meta property="og:site_name" content="Vue试验场">
+<meta property="og:description" content="由于weex 的不稳定性，所以中途放弃了 weex 方案。转而使用 Android原生开发。今天项目第一阶段开发结束，来总结一下 weex 的一些东西。  weex 相比于原生开发的好处  界面搭建速度快，特别是重复性界面。 数据处理方便，尤其是json解析方面。  坏处么  用的人太少，所以网上资料也很少。 坑还是比较多的，要玩的溜要踩上不少坑。 还是需要一些原生开发的知识才能够玩的溜。  说">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-02-07T02:13:02.229Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="weex项目弃坑小结">
+<meta name="twitter:description" content="由于weex 的不稳定性，所以中途放弃了 weex 方案。转而使用 Android原生开发。今天项目第一阶段开发结束，来总结一下 weex 的一些东西。  weex 相比于原生开发的好处  界面搭建速度快，特别是重复性界面。 数据处理方便，尤其是json解析方面。  坏处么  用的人太少，所以网上资料也很少。 坑还是比较多的，要玩的溜要踩上不少坑。 还是需要一些原生开发的知识才能够玩的溜。  说">
+  
+    <link rel="alternative" href="/atom.xml" title="Vue试验场" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Vue试验场</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">专注于Vue相关知识的捣鼓</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="violetjack.github.io">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-weex项目弃坑小结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/02/06/weex项目弃坑小结/" class="article-date">
+  <time datetime="2018-02-06T08:20:52.000Z" itemprop="datePublished">2018-02-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      weex项目弃坑小结
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>由于<code>weex</code> 的不稳定性，所以中途放弃了 <code>weex</code> 方案。转而使用 Android原生开发。今天项目第一阶段开发结束，来总结一下 <code>weex</code> 的一些东西。</p>
+</blockquote>
+<p><code>weex</code> 相比于原生开发的好处</p>
+<ul>
+<li>界面搭建速度快，特别是重复性界面。</li>
+<li>数据处理方便，尤其是json解析方面。</li>
+</ul>
+<p>坏处么</p>
+<ul>
+<li>用的人太少，所以网上资料也很少。</li>
+<li>坑还是比较多的，要玩的溜要踩上不少坑。</li>
+<li>还是需要一些原生开发的知识才能够玩的溜。</li>
+</ul>
+<p>说说我这个项目的一些东西吧~</p>
+<h2 id="页面跳转"><a href="#页面跳转" class="headerlink" title="页面跳转"></a>页面跳转</h2><p>第一个困扰我的就是页面跳转，我去SF上提问了<a href="https://segmentfault.com/q/1010000009999942" target="_blank" rel="noopener">Weex的页面跳转方案的选择</a>这个问题。</p>
+<ul>
+<li><code>vue-router</code> 方案由于 <code>Vue</code>和 <code>weex</code> 的差异性，用法有所不同，好像需要使用注入 <code>minixs</code> 机制，挺麻烦的，所以放弃了……这个如果有需要我会再去研究一下的。</li>
+<li>第二种方案就是每个页面都是单独的 <code>Activity</code>，各自嵌入一个 <code>weex</code> 页面。但是有个问题：<code>weex</code> 如何与当前 <code>Activity</code> 交互，比如我要从页面A跳转到页面B，我需要 <code>weex</code> 调用 <code>Activity</code> 的 <code>startActivity</code> 方法，这个交互方式我没有找到。不然倒是可以随心所欲的在原生开发和weex之间来回交互。暂时来说我只知道<a href="http://blog.csdn.net/violetjack0808/article/details/74002599" target="_blank" rel="noopener">通过globalEvent和Module扩展来实现两者的交互</a></li>
+<li>最后，还是选择了官方推荐的 <code>Navigator</code> 来作为页面跳转的方式。这种方式能够很快速的实现页面跳转。不用瞎折腾~</li>
+</ul>
+<p>选定方案之后，就要解决几个问题了。多页面打包和跳转所需的 <code>Activity</code> 。</p>
+<h3 id="多页面打包"><a href="#多页面打包" class="headerlink" title="多页面打包"></a>多页面打包</h3><p><code>navigator</code> 的跳转方式，需要获取打包好的 <code>weex</code> 的文件路径来进行页面跳转和显示，所以我们就需要多页 <code>weex</code> 文件代表每一个页面。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">navigator.push(&#123;</span><br><span class="line">  url: &apos;http://dotwe.org/raw/dist/519962541fcf6acd911986357ad9c2ed.js&apos;,</span><br><span class="line">  animated: &quot;true&quot;</span><br><span class="line">&#125;, event =&gt; &#123;</span><br><span class="line">  modal.toast(&#123; message: &apos;callback: &apos; + event &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>需要配置 <code>Webpack</code> 来实现这一目的。我将每个页面的入口文件都放在 <code>./src/entrys</code>文件夹下，通过 <code>node</code> 的 <code>fs文件模块</code> 读取里面的入口文件，并将他们传给 <code>entry</code> 入口对象。最后将入口对象配置到 <code>webpack</code> 打包配置中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">var path = require(&apos;path&apos;)</span><br><span class="line">var webpack = require(&apos;webpack&apos;)</span><br><span class="line">var fs = require(&apos;fs&apos;)</span><br><span class="line"></span><br><span class="line">var files = fs.readdirSync(&apos;./src/entrys&apos;)</span><br><span class="line">var entry = &#123;&#125;</span><br><span class="line">files.forEach(function (file) &#123;</span><br><span class="line">  var item = file.replace(&apos;.js&apos;, &apos;&apos;)</span><br><span class="line">  entry[item] = path.resolve(&apos;./src/entrys/&apos; + file)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">var bannerPlugin = new webpack.BannerPlugin(</span><br><span class="line">  &apos;// &#123; &quot;framework&quot;: &quot;Vue&quot; &#125;\n&apos;, &#123; raw: true &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">function getBaseConfig() &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    entry: entry,</span><br><span class="line">    output: &#123;</span><br><span class="line">      path: &apos;dist&apos;</span><br><span class="line">    &#125;,</span><br><span class="line">    resolve: &#123;</span><br><span class="line">      alias: &#123;</span><br><span class="line">        &apos;@&apos;: path.resolve(&apos;./src&apos;),</span><br><span class="line">        &apos;views&apos;: path.resolve(&apos;./src/views&apos;),</span><br><span class="line">        &apos;utils&apos;: path.resolve(&apos;./src/utils&apos;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    module: &#123;</span><br><span class="line">      // ESLint配置</span><br><span class="line">      preLoaders: [&#123;</span><br><span class="line">        test: /\.vue$/,</span><br><span class="line">        loader: &apos;eslint&apos;,</span><br><span class="line">        exclude: /node_modules/</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.js$/,</span><br><span class="line">        loader: &apos;eslint&apos;,</span><br><span class="line">        exclude: /node_modules/</span><br><span class="line">      &#125;</span><br><span class="line">      ],</span><br><span class="line">      // 如果注释掉以上这段将不产生ESLint检查</span><br><span class="line">      loaders: [&#123;</span><br><span class="line">        test: /\.js$/,</span><br><span class="line">        loader: &apos;babel&apos;,</span><br><span class="line">        exclude: /node_modules/</span><br><span class="line">      &#125;, &#123;</span><br><span class="line">        test: /\.vue(\?[^?]+)?$/,</span><br><span class="line">        loaders: []</span><br><span class="line">      &#125;]</span><br><span class="line">    &#125;,</span><br><span class="line">    vue: &#123;</span><br><span class="line">    &#125;,</span><br><span class="line">    plugins: [bannerPlugin]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var webConfig = getBaseConfig()</span><br><span class="line">webConfig.output.filename = &apos;[name].web.js&apos;</span><br><span class="line">webConfig.module.loaders[1].loaders.push(&apos;vue&apos;)</span><br><span class="line"></span><br><span class="line">var weexConfig = getBaseConfig()</span><br><span class="line">weexConfig.output.filename = &apos;[name].weex.js&apos;</span><br><span class="line">weexConfig.module.loaders[1].loaders.push(&apos;weex&apos;)</span><br><span class="line"></span><br><span class="line">module.exports = [webConfig, weexConfig]</span><br></pre></td></tr></table></figure></p>
+<p>每一个入口文件都会产生两个相应名称的文件，如 <code>sign.js</code> 的入口文件就会生成 <code>sign.weex.js</code> 和 <code>sign.web.js</code> 文件，这里我们只关注 <code>weex</code> 后缀的文件，这就是我们跳转页面所需的文件。具体项目结构请看<a href="https://github.com/violetjack/MobileNurseWeex" target="_blank" rel="noopener">源代码</a><br>更多对于 <code>webpack</code> 的了解可以看<a href="http://blog.csdn.net/violetjack0808/article/details/54915825" target="_blank" rel="noopener">Vue.js学习系列四——Webpack学习实践</a></p>
+<h3 id="navigator跳转的Activity哪里来的？"><a href="#navigator跳转的Activity哪里来的？" class="headerlink" title="navigator跳转的Activity哪里来的？"></a>navigator跳转的Activity哪里来的？</h3><p>在使用了 <code>navigator</code> 后一开始发现并没有页面跳转效果，而是报 <code>ActivityNotFoundException</code> 的错误。后来装了 <code>weex</code> 的 playground 之后发现可以跳转了，但是跳转过去的 <code>Activity</code> 有个 ActionBar 和一个性能调试的悬浮窗，是 playground 里面扫二维码显示的结果的那个 <code>Activity</code>。几经查阅后发现原来跳转的 <code>Activity</code> 是一个有着特殊 <code>intent-filter</code> 的 <code>Activity</code> 。<br>关于这个问题我写过一篇文章：<a href="http://blog.csdn.net/violetjack0808/article/details/74390249" target="_blank" rel="noopener">WEEX 使用navigator跳转Android系统出现ActivityNotFoundException报错</a><br>解决方案是我把 Playground 里面的那个 <code>Activity</code> 移到了我的项目中来，并且去除了 <code>ActionBar</code> 和调试工具。然后卸载掉 <code>weex</code>  的 Playground，这样就能愉快的显示 <code>navigator</code> 跳转的 <code>Activity</code> 了。代码请看<a href="https://github.com/violetjack/MobileNurseWeex/blob/master/android/app/src/main/java/com/weex/sample/activity/WXPageActivity.java" target="_blank" rel="noopener">WXPageActivity</a>。</p>
+<h2 id="网络通信"><a href="#网络通信" class="headerlink" title="网络通信"></a>网络通信</h2><p>网络通信上我用的是stream，这个很简单。说下两点：<br>第一，stream所用的url需要是UTF-8格式的，如果URL中有中文需要转一下，URL可以参照utf8这个文件。<br>第二，提交数据的时候需要添加头文件。我的项目中是这样~<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">stream.fetch(&#123;</span><br><span class="line">  method: StreamType,</span><br><span class="line">  type: &apos;json&apos;,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    &apos;Content-Type&apos;: &apos;application/json&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  url: url,</span><br><span class="line">  body: JSON.stringify(this.DataObj)</span><br><span class="line">&#125;, res =&gt; &#123;</span><br><span class="line">  console.log(res)</span><br><span class="line">  let json = eval(&apos;(&apos; + res.data + &apos;)&apos;)</span><br><span class="line">  modal.alert(&#123;</span><br><span class="line">    message: json.Message</span><br><span class="line">  &#125;, event =&gt; &#123;</span><br><span class="line"></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<h2 id="图片加载"><a href="#图片加载" class="headerlink" title="图片加载"></a>图片加载</h2><p>图片加载需要在<a href="https://github.com/violetjack/MobileNurseWeex/blob/master/android/app/src/main/java/com/weex/sample/ImageAdapter.java" target="_blank" rel="noopener">ImageAdapter</a>中稍作处理，我这里用的是 <code>Picasso</code> 来显示图片的~<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class ImageAdapter implements IWXImgLoaderAdapter &#123;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void setImage(final String url, final ImageView view, WXImageQuality quality, WXImageStrategy strategy) &#123;</span><br><span class="line">        WXSDKManager.getInstance().postOnUiThread(new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                if (view == null || view.getLayoutParams() == null) &#123;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">                if (TextUtils.isEmpty(url)) &#123;</span><br><span class="line">                    view.setImageBitmap(null);</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">                String temp = url;</span><br><span class="line">                if (url.startsWith(&quot;//&quot;)) &#123;</span><br><span class="line">                    temp = &quot;http:&quot; + url;</span><br><span class="line">                &#125;</span><br><span class="line">                if (view.getLayoutParams().width &lt;= 0 || view.getLayoutParams().height &lt;= 0) &#123;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">                Picasso.with(WXEnvironment.getApplication())</span><br><span class="line">                        .load(temp)</span><br><span class="line">                        .into(view);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, 0);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="页面跳转的数据传输"><a href="#页面跳转的数据传输" class="headerlink" title="页面跳转的数据传输"></a>页面跳转的数据传输</h3><p>这一点上，我只想到了不太优雅的方式——使用 <code>storage</code> 来保存和读取。比如我需要将表单ID传递到下一个页面我是这么做的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">toDetail(AssessID) &#123;</span><br><span class="line">  storage.setItem(&apos;AssessID&apos;, AssessID)</span><br><span class="line">  navigator.push(&#123;</span><br><span class="line">    url: ViewServer + &apos;GAD.weex.js&apos;,</span><br><span class="line">    animated: &apos;true&apos;</span><br><span class="line">  &#125;, event =&gt; &#123;</span><br><span class="line">    console.log(&apos;successful entry&apos;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>到第二个页面去获取数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">getData() &#123;</span><br><span class="line">  let that = this</span><br><span class="line">  storage.getItem(&apos;AssessID&apos;, event =&gt; &#123;</span><br><span class="line">    let AssessID = event.data</span><br><span class="line">    console.log(&apos;AssessID = &apos; + AssessID)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>如果是比较多的数据，我会将数据以 <code>json</code> 字符串的形式保存，在需要的时候获取字符串并解析为 <code>json</code> 对象。</p>
+<h3 id="如何在返回上一页面时做一些操作？"><a href="#如何在返回上一页面时做一些操作？" class="headerlink" title="如何在返回上一页面时做一些操作？"></a>如何在返回上一页面时做一些操作？</h3><p>我的解决方法是在Activity的onResume方法中发送一个消息，然后在weex端添加监听事件。<br><strong>Android端</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">protected void onResume() &#123;</span><br><span class="line">    super.onResume();</span><br><span class="line">    if (mInstance != null) &#123;</span><br><span class="line">        mInstance.onActivityResume();</span><br><span class="line"></span><br><span class="line">        new Handler().postDelayed(new Runnable() &#123;</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();</span><br><span class="line">                mInstance.fireGlobalEventCallback(&quot;onResume&quot;, params);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, 500);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>weex端</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">addListener() &#123;</span><br><span class="line">     globalEvent.addEventListener(&apos;onResume&apos;, e =&gt; &#123;</span><br><span class="line">       storage.getItem(&apos;PopCallback&apos;, event =&gt; &#123;</span><br><span class="line">         if (event.data === &apos;update level list&apos;) &#123;</span><br><span class="line">           this.loadData()</span><br><span class="line">           storage.setItem(&apos;PopCallback&apos;, &apos;&apos;)</span><br><span class="line">         &#125;</span><br><span class="line">       &#125;)</span><br><span class="line">     &#125;)</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于加载 <code>weex</code> 有一些延时，<code>onResume</code> 往往会比 <code>weex</code> 加载快，所以我在 <code>onResume</code> 中添加了0.5秒延时。之后在 <code>weex</code> 中添加监听器监听 <code>onResume</code> 的生命周期，并监听返回的数据。</p>
+<h3 id="如何控制weex的Slider显示第几页"><a href="#如何控制weex的Slider显示第几页" class="headerlink" title="如何控制weex的Slider显示第几页"></a>如何控制weex的Slider显示第几页</h3><p>想实现Android的ViewPager效果，使用了weex提供的slider组件，具体坚决方案看<a href="https://segmentfault.com/q/1010000010728251" target="_blank" rel="noopener">如何控制weex的Slider显示第几页。</a></p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>图片的存放好像只能是网络图片的URL，所以我将所有图片都放到服务器上让weex去访问。</li>
+<li>CSS使用flex布局来做，官网上有例子。也可参照<a href="http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html" target="_blank" rel="noopener">Flex 布局教程：语法篇</a>。</li>
+</ul>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>啰嗦一大堆，希望某些东西能够对他人有所帮助吧~<br>项目地址<a href="https://github.com/violetjack/MobileNurseWeex" target="_blank" rel="noopener">在此</a>，由于是公司项目，所以把服务器地址去掉了，后端数据获取不了。不过代码都是在的，可以进行参考。希望能对大家有所帮助~<br>最终不用weex的原因么，因为这玩意看似简单，但是想实现点复杂的、和原生交互的功能都得折腾好一会儿。关键还是资料太少，不靠谱，万一哪个地方报个奇怪的错误找不出问题、查不到资料、看不懂源码，那不就挂了嘛~所以，爱折腾玩玩可以，放项目中还是有待考虑。毕竟还是要求稳~</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://violetjack.github.io/2018/02/06/weex项目弃坑小结/" data-id="cjdcg3r8r000d1ebtsfphlj64" class="article-share-link" data-share="baidu" data-title="weex项目弃坑小结">分享到</a>
+      
+
+      
+        <a href="https://violetjack.github.io/2018/02/06/weex项目弃坑小结/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/02/06/Weex控制Android返回键解决方案/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          Weex控制Android返回键解决方案
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/02/06/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2018/02/06/weex项目弃坑小结/" data-title="weex项目弃坑小结" data-url="https://violetjack.github.io/2018/02/06/weex项目弃坑小结/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">18</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/02/06/Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）/">Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/Vue.js学习系列八 —— Vue源码学习之State学习/">Vue.js学习系列八 —— Vue源码学习之State学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/将表单从jQuery转Vue框架实践总结/">将表单从jQuery转Vue框架实践总结</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/巧用jQuery选择器写表单办法总结（提高效率）/">巧用jQuery选择器写表单办法总结（提高效率）</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/ES6 学习笔记（上）/">ES6 学习笔记（上）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">个人网站</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/violetjack" target="_blank">Github</a>
+          </li>
+        
+          <li>
+            <a href="https://segmentfault.com/u/violetjack" target="_blank">SegmentFault</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.csdn.net/violetjack0808" target="_blank">CSDN</a>
+          </li>
+        
+          <li>
+            <a href="https://www.jianshu.com/u/54ae4af3a98d" target="_blank">简书</a>
+          </li>
+        
+          <li>
+            <a href="https://juejin.im/user/571d953d39b0570068145cd1" target="_blank">掘金</a>
+          </li>
+        
+          <li>
+            <a href="https://www.zhihu.com/people/violetjack" target="_blank">知乎</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 VioletJack<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"reqianduan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

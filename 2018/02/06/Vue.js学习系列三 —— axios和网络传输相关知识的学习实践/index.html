@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Vue.js学习系列三 —— axios和网络传输相关知识的学习实践 | Vue试验场</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在学习了之前的路由vue-router和状态管理vuex之后，就应该是网络交互了。就学习尤大推荐的axios了。刚好本人对网络请求这块除了会get、put、post和delete这四个方法之外知之甚少，刚好补全上。  注意：Vue官方推荐的网络通信库不再是vue-resource了，推荐使用axios。 axios安装npm:1$ npm install axios bower:1$ bower">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue.js学习系列三 —— axios和网络传输相关知识的学习实践">
+<meta property="og:url" content="https://violetjack.github.io/2018/02/06/Vue.js学习系列三 —— axios和网络传输相关知识的学习实践/index.html">
+<meta property="og:site_name" content="Vue试验场">
+<meta property="og:description" content="在学习了之前的路由vue-router和状态管理vuex之后，就应该是网络交互了。就学习尤大推荐的axios了。刚好本人对网络请求这块除了会get、put、post和delete这四个方法之外知之甚少，刚好补全上。  注意：Vue官方推荐的网络通信库不再是vue-resource了，推荐使用axios。 axios安装npm:1$ npm install axios bower:1$ bower">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-b3255d564903d3d7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-02-07T02:06:10.500Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue.js学习系列三 —— axios和网络传输相关知识的学习实践">
+<meta name="twitter:description" content="在学习了之前的路由vue-router和状态管理vuex之后，就应该是网络交互了。就学习尤大推荐的axios了。刚好本人对网络请求这块除了会get、put、post和delete这四个方法之外知之甚少，刚好补全上。  注意：Vue官方推荐的网络通信库不再是vue-resource了，推荐使用axios。 axios安装npm:1$ npm install axios bower:1$ bower">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1987062-b3255d564903d3d7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="Vue试验场" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Vue试验场</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">专注于Vue相关知识的捣鼓</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="violetjack.github.io">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-Vue.js学习系列三 —— axios和网络传输相关知识的学习实践" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/02/06/Vue.js学习系列三 —— axios和网络传输相关知识的学习实践/" class="article-date">
+  <time datetime="2018-02-06T08:20:52.000Z" itemprop="datePublished">2018-02-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vue.js学习系列三 —— axios和网络传输相关知识的学习实践
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>在学习了之前的路由vue-router和状态管理vuex之后，就应该是网络交互了。就学习尤大推荐的axios了。刚好本人对网络请求这块除了会get、put、post和delete这四个方法之外知之甚少，刚好补全上。</p>
+</blockquote>
+<p><strong>注意：</strong>Vue官方推荐的网络通信库不再是vue-resource了，推荐使用<a href="https://github.com/mzabriskie/axios" target="_blank" rel="noopener">axios</a>。<br><img src="http://upload-images.jianshu.io/upload_images/1987062-b3255d564903d3d7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="尤大的公告"></p>
+<h1 id="axios安装"><a href="#axios安装" class="headerlink" title="axios安装"></a>axios安装</h1><p>npm:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install axios</span><br></pre></td></tr></table></figure></p>
+<p>bower:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bower install axios</span><br></pre></td></tr></table></figure></p>
+<p>Using cdn:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;https://unpkg.com/axios/dist/axios.min.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="基本使用方法"><a href="#基本使用方法" class="headerlink" title="基本使用方法"></a>基本使用方法</h1><p><code>GET</code>请求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// Make a request for a user with a given ID</span><br><span class="line">axios.get(&apos;/user?ID=12345&apos;)</span><br><span class="line">  .then(function (response) &#123;</span><br><span class="line">    console.log(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(function (error) &#123;</span><br><span class="line">    console.log(error);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">// Optionally the request above could also be done as</span><br><span class="line">axios.get(&apos;/user&apos;, &#123;</span><br><span class="line">    params: &#123;</span><br><span class="line">      ID: 12345</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(function (response) &#123;</span><br><span class="line">    console.log(response);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(function (error) &#123;</span><br><span class="line">    console.log(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure></p>
+<p><code>POST</code>请求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">axios.post(&apos;/user&apos;, &#123;</span><br><span class="line">   firstName: &apos;Fred&apos;,</span><br><span class="line">   lastName: &apos;Flintstone&apos;</span><br><span class="line"> &#125;)</span><br><span class="line"> .then(function (response) &#123;</span><br><span class="line">   console.log(response);</span><br><span class="line"> &#125;)</span><br><span class="line"> .catch(function (error) &#123;</span><br><span class="line">   console.log(error);</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>同时执行多个请求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function getUserAccount() &#123;</span><br><span class="line">  return axios.get(&apos;/user/12345&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getUserPermissions() &#123;</span><br><span class="line">  return axios.get(&apos;/user/12345/permissions&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">axios.all([getUserAccount(), getUserPermissions()])</span><br><span class="line">  .then(axios.spread(function (acct, perms) &#123;</span><br><span class="line">    // Both requests are now complete</span><br><span class="line">  &#125;));</span><br></pre></td></tr></table></figure></p>
+<p>其实和其他的ajax库一样，基本用法都是差不多的。大家一看就知道怎么用。</p>
+<h1 id="axios-API"><a href="#axios-API" class="headerlink" title="axios API"></a>axios API</h1><p>可以直接通过<code>config</code>来完成请求<br>axios(config)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">  method: &apos;post&apos;,</span><br><span class="line">  url: &apos;/user/12345&apos;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    firstName: &apos;Fred&apos;,</span><br><span class="line">    lastName: &apos;Flintstone&apos;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>axios(url, [config])<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Send a GET request (default method)</span><br><span class="line">axios(&apos;/user/12345&apos;);</span><br></pre></td></tr></table></figure></p>
+<h2 id="请求方法别名"><a href="#请求方法别名" class="headerlink" title="请求方法别名"></a>请求方法别名</h2><p>下面是axios支持的所有请求方法别名，便于各种请求。<br>注：<code>[...]</code>中的数据表示可以为空。<code>url</code>是ajax请求地址；<code>data</code>是提交的数据对象；<code>config</code>是配置对象，所有ajax配置都可以在<code>config</code>中实现。</p>
+<ul>
+<li>axios.request(config)</li>
+<li>axios.get(url[, config])</li>
+<li>axios.delete(url[, config])</li>
+<li>axios.head(url[, config])</li>
+<li>axios.post(url[, data[, config]])</li>
+<li>axios.put(url[, data[, config]])</li>
+<li>axios.patch(url[, data[, config]])</li>
+</ul>
+<h2 id="并发性"><a href="#并发性" class="headerlink" title="并发性"></a>并发性</h2><p>下列接口用于处理并发请求(同时处理多个多个request)</p>
+<ul>
+<li>axios.all(iterable)</li>
+<li>axios.spread(callback)</li>
+</ul>
+<h2 id="axios实例"><a href="#axios实例" class="headerlink" title="axios实例"></a>axios实例</h2><p>可以用自定义的config创建一个axios实例<br>axios.create([config])<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var instance = axios.create(&#123;</span><br><span class="line">  baseURL: &apos;https://some-domain.com/api/&apos;,</span><br><span class="line">  timeout: 1000,</span><br><span class="line">  headers: &#123;&apos;X-Custom-Header&apos;: &apos;foobar&apos;&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h2 id="实例方法"><a href="#实例方法" class="headerlink" title="实例方法"></a>实例方法</h2><p>下面是实例的所有可用方法，方法中的<code>config</code>会与axios实例中的config合并。（实例可以将一些通用的config先配置好）</p>
+<ul>
+<li>axios#request(config)</li>
+<li>axios#get(url, [config])</li>
+<li>axios#delete(url, [config])</li>
+<li>axios#head(url, [config])</li>
+<li>axios#post(url[, data[, config]])</li>
+<li>axios#put(url[, data[, config]])</li>
+<li>axios#patch(url[, data[, config]])</li>
+</ul>
+<h2 id="Config"><a href="#Config" class="headerlink" title="Config"></a>Config</h2><p>重点来了，来看看Config。<br>下面列出了config的所有配置项，其中之后<code>url</code>是必填的。当<code>method</code>没有指定方法，默认为<code>GET</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  // `url` is the server URL that will be used for the request</span><br><span class="line">  // 用来向服务器发送请求的url</span><br><span class="line">  url: &apos;/user&apos;,</span><br><span class="line"></span><br><span class="line">  // `method` is the request method to be used when making the request</span><br><span class="line"> // 请求方法</span><br><span class="line">  method: &apos;get&apos;, // default</span><br><span class="line"></span><br><span class="line">  // `baseURL` will be prepended to `url` unless `url` is absolute.</span><br><span class="line">  // It can be convenient to set `baseURL` for an instance of axios to pass relative URLs</span><br><span class="line">  // to methods of that instance.</span><br><span class="line">  // 假如`url`不是绝对路径，那么向服务器发送请求的URL将是`baseURL + url`</span><br><span class="line">  baseURL: &apos;https://some-domain.com/api/&apos;,</span><br><span class="line"></span><br><span class="line">  // `transformRequest` allows changes to the request data before it is sent to the server</span><br><span class="line">  // This is only applicable for request methods &apos;PUT&apos;, &apos;POST&apos;, and &apos;PATCH&apos;</span><br><span class="line">  // The last function in the array must return a string, an ArrayBuffer, or a Stream</span><br><span class="line">  transformRequest: [function (data) &#123;</span><br><span class="line">    // Do whatever you want to transform the data</span><br><span class="line"></span><br><span class="line">    return data;</span><br><span class="line">  &#125;],</span><br><span class="line"></span><br><span class="line">  // `transformResponse` allows changes to the response data to be made before</span><br><span class="line">  // it is passed to then/catch</span><br><span class="line">  transformResponse: [function (data) &#123;</span><br><span class="line">    // Do whatever you want to transform the data</span><br><span class="line"></span><br><span class="line">    return data;</span><br><span class="line">  &#125;],</span><br><span class="line"></span><br><span class="line">  // `headers` are custom headers to be sent</span><br><span class="line">  headers: &#123;&apos;X-Requested-With&apos;: &apos;XMLHttpRequest&apos;&#125;,</span><br><span class="line"></span><br><span class="line">  // `params` are the URL parameters to be sent with the request</span><br><span class="line">  // Must be a plain object or a URLSearchParams object</span><br><span class="line">  params: &#123;</span><br><span class="line">    ID: 12345</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  // `paramsSerializer` is an optional function in charge of serializing `params`</span><br><span class="line">  // (e.g. https://www.npmjs.com/package/qs, http://api.jquery.com/jquery.param/)</span><br><span class="line">  paramsSerializer: function(params) &#123;</span><br><span class="line">    return Qs.stringify(params, &#123;arrayFormat: &apos;brackets&apos;&#125;)</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  // `data` is the data to be sent as the request body</span><br><span class="line">  // Only applicable for request methods &apos;PUT&apos;, &apos;POST&apos;, and &apos;PATCH&apos;</span><br><span class="line">  // When no `transformRequest` is set, must be of one of the following types:</span><br><span class="line">  // - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams</span><br><span class="line">  // - Browser only: FormData, File, Blob</span><br><span class="line">  // - Node only: Stream</span><br><span class="line">  data: &#123;</span><br><span class="line">    firstName: &apos;Fred&apos;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  // `timeout` specifies the number of milliseconds before the request times out.</span><br><span class="line">  // If the request takes longer than `timeout`, the request will be aborted.</span><br><span class="line">  timeout: 1000,</span><br><span class="line"></span><br><span class="line">  // `withCredentials` indicates whether or not cross-site Access-Control requests</span><br><span class="line">  // should be made using credentials</span><br><span class="line">  withCredentials: false, // default</span><br><span class="line"></span><br><span class="line">  // `adapter` allows custom handling of requests which makes testing easier.</span><br><span class="line">  // Return a promise and supply a valid response (see [response docs](#response-api)).</span><br><span class="line">  adapter: function (config) &#123;</span><br><span class="line">    /* ... */</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  // `auth` indicates that HTTP Basic auth should be used, and supplies credentials.</span><br><span class="line">  // This will set an `Authorization` header, overwriting any existing</span><br><span class="line">  // `Authorization` custom headers you have set using `headers`.</span><br><span class="line">  auth: &#123;</span><br><span class="line">    username: &apos;janedoe&apos;,</span><br><span class="line">    password: &apos;s00pers3cret&apos;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  // `responseType` indicates the type of data that the server will respond with</span><br><span class="line">  // options are &apos;arraybuffer&apos;, &apos;blob&apos;, &apos;document&apos;, &apos;json&apos;, &apos;text&apos;, &apos;stream&apos;</span><br><span class="line">  responseType: &apos;json&apos;, // default</span><br><span class="line"></span><br><span class="line">  // `xsrfCookieName` is the name of the cookie to use as a value for xsrf token</span><br><span class="line">  xsrfCookieName: &apos;XSRF-TOKEN&apos;, // default</span><br><span class="line"></span><br><span class="line">  // `xsrfHeaderName` is the name of the http header that carries the xsrf token value</span><br><span class="line">  xsrfHeaderName: &apos;X-XSRF-TOKEN&apos;, // default</span><br><span class="line"></span><br><span class="line">  // `onUploadProgress` allows handling of progress events for uploads</span><br><span class="line">  onUploadProgress: function (progressEvent) &#123;</span><br><span class="line">    // Do whatever you want with the native progress event</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  // `onDownloadProgress` allows handling of progress events for downloads</span><br><span class="line">  onDownloadProgress: function (progressEvent) &#123;</span><br><span class="line">    // Do whatever you want with the native progress event</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  // `maxContentLength` defines the max size of the http response content allowed</span><br><span class="line">  maxContentLength: 2000,</span><br><span class="line"></span><br><span class="line">  // `validateStatus` defines whether to resolve or reject the promise for a given</span><br><span class="line">  // HTTP response status code. If `validateStatus` returns `true` (or is set to `null`</span><br><span class="line">  // or `undefined`), the promise will be resolved; otherwise, the promise will be</span><br><span class="line">  // rejected.</span><br><span class="line">  validateStatus: function (status) &#123;</span><br><span class="line">    return status &gt;= 200 &amp;&amp; status &lt; 300; // default</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  // `maxRedirects` defines the maximum number of redirects to follow in node.js.</span><br><span class="line">  // If set to 0, no redirects will be followed.</span><br><span class="line">  maxRedirects: 5, // default</span><br><span class="line"></span><br><span class="line">  // `httpAgent` and `httpsAgent` define a custom agent to be used when performing http</span><br><span class="line">  // and https requests, respectively, in node.js. This allows to configure options like</span><br><span class="line">  // `keepAlive` that are not enabled by default.</span><br><span class="line">  httpAgent: new http.Agent(&#123; keepAlive: true &#125;),</span><br><span class="line">  httpsAgent: new https.Agent(&#123; keepAlive: true &#125;),</span><br><span class="line"></span><br><span class="line">  // &apos;proxy&apos; defines the hostname and port of the proxy server</span><br><span class="line">  // `auth` indicates that HTTP Basic auth should be used to connect to the proxy, and supplies credentials.</span><br><span class="line">  // This will set an `Proxy-Authorization` header, overwriting any existing `Proxy-Authorization` custom headers you have set using `headers`.</span><br><span class="line">  proxy: &#123;</span><br><span class="line">    host: &apos;127.0.0.1&apos;,</span><br><span class="line">    port: 9000,</span><br><span class="line">    auth: : &#123;</span><br><span class="line">      username: &apos;mikeymike&apos;,</span><br><span class="line">      password: &apos;rapunz3l&apos;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  // `cancelToken` specifies a cancel token that can be used to cancel the request</span><br><span class="line">  // (see Cancellation section below for details)</span><br><span class="line">  cancelToken: new CancelToken(function (cancel) &#123;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="分析Config"><a href="#分析Config" class="headerlink" title="分析Config"></a>分析Config</h2><p>配置参数很多，我们一个一个来了解它们</p>
+<ul>
+<li><strong>url</strong> —— 用来向服务器发送请求的url</li>
+<li><strong>method</strong> —— 请求方法，默认是<code>GET</code>方法</li>
+<li><strong>baseURL</strong> —— 基础URL路径，假如<code>url</code>不是绝对路径，如<code>https://some-domain.com/api/v1/login?name=jack</code>,那么向服务器发送请求的URL将会是<code>baseURL + url</code>。</li>
+<li><strong>transformRequest</strong> —— <code>transformRequest</code>方法允许在请求发送到服务器之前修改该请求，此方法只适用于<code>PUT</code>、<code>POST</code>和<code>PATCH</code>方法中。而且，此方法最后必须返回一个string、ArrayBuffer或者Stream。</li>
+<li><strong>transformResponse</strong> —— <code>transformResponse</code>方法允许在数据传递到then/catch之前修改<code>response</code>数据。此方法最后也要返回数据。</li>
+<li><strong>headers</strong> —— 发送自定义Headers头文件，头文件中包含了http请求的各种信息。</li>
+<li><strong>params</strong> —— <code>params</code>是发送请求的查询参数对象，对象中的数据会被拼接成<code>url?param1=value1&amp;param2=value2</code>。</li>
+<li><strong>paramsSerializer</strong> —— <code>params</code>参数序列化器。</li>
+<li><strong>data</strong> —— <code>data</code>是在发送<code>POST</code>、<code>PUT</code>或者<code>PATCH</code>请求的数据对象。</li>
+<li><strong>timeout</strong> —— 请求超时设置，单位为毫秒</li>
+<li><strong>withCredentials</strong> —— 表明是否有跨域请求需要用到证书</li>
+<li><strong>adapter</strong> —— <code>adapter</code>允许用户处理更易于测试的请求。返回一个Promise和一个有效的response</li>
+<li><strong>auth</strong> —— <code>auth</code>表明提供凭证用于完成http的身份验证。这将会在headers中设置一个<code>Authorization</code>授权信息。自定义<code>Authorization</code>授权要设置在<code>headers</code>中。</li>
+<li><strong>responseType</strong> —— 表示服务器将返回响应的数据类型，有<code>arraybuffer</code>、<code>blob</code>、<code>document</code>、<code>json</code>、<code>text</code>、<code>stream</code>这6个类型，默认是<code>json</code>类似数据。</li>
+<li><strong>xsrfCookieName</strong> —— 用作 xsrf token 值的 cookie 名称</li>
+<li><strong>xsrfHeaderName</strong> —— 带有 xsrf token 值 http head 名称</li>
+<li><strong>onUploadProgress</strong> ——  允许在上传过程中的做一些操作</li>
+<li><strong>onDownloadProgress</strong> —— 允许在下载过程中的做一些操作</li>
+<li><strong>maxContentLength</strong> —— 定义了接收到的response响应数据的最大长度。</li>
+<li><strong>validateStatus</strong> —— <code>validateStatus</code>定义了根据HTTP响应状态码决定是否接收或拒绝获取到的promise。如果 <code>validateStatus</code> 返回 <code>true</code> (或设置为 <code>null</code> 或 <code>undefined</code> ),promise将被接收;否则,promise将被拒绝。</li>
+<li><strong>maxRedirects</strong> —— <code>maxRedirects</code>定义了在node.js中redirect的最大值，如果设置为0，则没有redirect。</li>
+<li><strong>httpAgent</strong> —— 定义在使用http请求时的代理</li>
+<li><strong>httpsAgent</strong> —— 定义在使用https请求时的代理</li>
+<li><strong>proxy</strong> —— <code>proxy</code>定义代理服务器的主机名和端口，<code>auth</code></li>
+<li><strong>cancelToken</strong> —— <code>cancelToken</code>定义一个 <code>cancel token</code> 用于取消请求</li>
+</ul>
+<h2 id="Response"><a href="#Response" class="headerlink" title="Response"></a>Response</h2><p>当我们ajax获取数据成功后会返回一个response对象，它包含了以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  // `data` is the response that was provided by the server</span><br><span class="line">  data: &#123;&#125;,</span><br><span class="line"></span><br><span class="line">  // `status` is the HTTP status code from the server response</span><br><span class="line">  status: 200,</span><br><span class="line"></span><br><span class="line">  // `statusText` is the HTTP status message from the server response</span><br><span class="line">  statusText: &apos;OK&apos;,</span><br><span class="line"></span><br><span class="line">  // `headers` the headers that the server responded with</span><br><span class="line">  headers: &#123;&#125;,</span><br><span class="line"></span><br><span class="line">  // `config` is the config that was provided to `axios` for the request</span><br><span class="line">  config: &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>response是通过promise的<code>then</code>方法来获取,具体使用方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">axios.get(&apos;/user/12345&apos;)</span><br><span class="line">  .then(function(response) &#123;</span><br><span class="line">    console.log(response.data);</span><br><span class="line">    console.log(response.status);</span><br><span class="line">    console.log(response.statusText);</span><br><span class="line">    console.log(response.headers);</span><br><span class="line">    console.log(response.config);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>相对的，我们有时也会出现ajax报错，此时就会到我们的<code>catch</code>中去捕获异常<code>error</code>对象。</p>
+<h1 id="为何放弃vue-resource"><a href="#为何放弃vue-resource" class="headerlink" title="为何放弃vue-resource"></a>为何放弃vue-resource</h1><p>尤大的原话：</p>
+<blockquote>
+<p>最近团队讨论了一下，Ajax 本身跟 Vue 并没有什么需要特别整合的地方，使用 fetch polyfill 或是 axios、superagent 等等都可以起到同等的效果，vue-resource 提供的价值和其维护成本相比并不划算，所以决定在不久以后取消对 vue-resource 的官方推荐。已有的用户可以继续使用，但以后不再把 vue-resource 作为官方的 ajax 方案。<br>知乎链接：<a href="https://www.zhihu.com/question/52418455/answer/130535375" target="_blank" rel="noopener">https://www.zhihu.com/question/52418455/answer/130535375</a></p>
+</blockquote>
+<h1 id="Vue-js学习系列"><a href="#Vue-js学习系列" class="headerlink" title="Vue.js学习系列"></a>Vue.js学习系列</h1><p>鉴于前端知识碎片化严重，我希望能够系统化的整理出一套关于Vue的学习系列博客。</p>
+<p><a href="http://www.jianshu.com/p/8013d8d37bd0" target="_blank" rel="noopener">Vue.js学习系列一 —— vue-router2学习实践笔记（附DEMO）</a><br><a href="http://www.jianshu.com/p/d6f7e11f18af" target="_blank" rel="noopener">Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）</a><br><a href="http://www.jianshu.com/p/8e5fb763c3d7" target="_blank" rel="noopener">Vue.js学习系列三 —— axios和网络传输相关知识的学习实践</a><br><a href="http://www.jianshu.com/p/aef34acd111f" target="_blank" rel="noopener">Vue.js学习系列四 —— Webpack打包工具的使用</a><br><a href="http://www.jianshu.com/p/efb6fbed6fac" target="_blank" rel="noopener">Vue.js学习系列五 —— 从VUE-CLI来聊聊ESLint</a><br><a href="http://www.jianshu.com/p/073d25a3bba0" target="_blank" rel="noopener">Vue.js学习系列六 —— Vue单元测试Karma+Mocha学习笔记</a><br><a href="https://www.jianshu.com/p/ba7466d7101a" target="_blank" rel="noopener">Vue.js学习系列七 —— Vue服务器渲染Nuxt学习</a><br><a href="https://www.jianshu.com/p/15028f91226e" target="_blank" rel="noopener">Vue.js学习系列八 —— Vue源码学习之State学习</a></p>
+<h1 id="Vue-js学习系列项目地址"><a href="#Vue-js学习系列项目地址" class="headerlink" title="Vue.js学习系列项目地址"></a>Vue.js学习系列项目地址</h1><p>本文源码已收入到GitHub中，以供参考，当然能留下一个star更好啦^-^。<br><a href="https://github.com/violetjack/VueStudyDemos" target="_blank" rel="noopener">https://github.com/violetjack/VueStudyDemos</a></p>
+<h1 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h1><p>VioletJack，高效学习前端工程师，喜欢研究提高效率的方法，也专注于Vue前端相关知识的学习、整理。<br>欢迎关注、点赞、评论留言~我将持续产出Vue相关优质内容。</p>
+<p>新浪微博： <a href="http://weibo.com/u/2640909603" target="_blank" rel="noopener">http://weibo.com/u/2640909603</a><br>掘金：<a href="https://gold.xitu.io/user/571d953d39b0570068145cd1" target="_blank" rel="noopener">https://gold.xitu.io/user/571d953d39b0570068145cd1</a><br>CSDN: <a href="http://blog.csdn.net/violetjack0808" target="_blank" rel="noopener">http://blog.csdn.net/violetjack0808</a><br>简书： <a href="http://www.jianshu.com/users/54ae4af3a98d/latest_articles" target="_blank" rel="noopener">http://www.jianshu.com/users/54ae4af3a98d/latest_articles</a><br>Github： <a href="https://github.com/violetjack" target="_blank" rel="noopener">https://github.com/violetjack</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://violetjack.github.io/2018/02/06/Vue.js学习系列三 —— axios和网络传输相关知识的学习实践/" data-id="cjdcg3r8i00041ebtp6edhpqc" class="article-share-link" data-share="baidu" data-title="Vue.js学习系列三 —— axios和网络传输相关知识的学习实践">分享到</a>
+      
+
+      
+        <a href="https://violetjack.github.io/2018/02/06/Vue.js学习系列三 —— axios和网络传输相关知识的学习实践/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/02/06/Vue.js学习系列七 —— Vue服务器渲染Nuxt学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          Vue.js学习系列七 —— Vue服务器渲染Nuxt学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/02/06/weex 踩坑记（持续更新中……）/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">weex 踩坑记（持续更新中……）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2018/02/06/Vue.js学习系列三 —— axios和网络传输相关知识的学习实践/" data-title="Vue.js学习系列三 —— axios和网络传输相关知识的学习实践" data-url="https://violetjack.github.io/2018/02/06/Vue.js学习系列三 —— axios和网络传输相关知识的学习实践/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">18</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/02/06/Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）/">Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/Vue.js学习系列八 —— Vue源码学习之State学习/">Vue.js学习系列八 —— Vue源码学习之State学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/将表单从jQuery转Vue框架实践总结/">将表单从jQuery转Vue框架实践总结</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/巧用jQuery选择器写表单办法总结（提高效率）/">巧用jQuery选择器写表单办法总结（提高效率）</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/06/ES6 学习笔记（上）/">ES6 学习笔记（上）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">个人网站</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/violetjack" target="_blank">Github</a>
+          </li>
+        
+          <li>
+            <a href="https://segmentfault.com/u/violetjack" target="_blank">SegmentFault</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.csdn.net/violetjack0808" target="_blank">CSDN</a>
+          </li>
+        
+          <li>
+            <a href="https://www.jianshu.com/u/54ae4af3a98d" target="_blank">简书</a>
+          </li>
+        
+          <li>
+            <a href="https://juejin.im/user/571d953d39b0570068145cd1" target="_blank">掘金</a>
+          </li>
+        
+          <li>
+            <a href="https://www.zhihu.com/people/violetjack" target="_blank">知乎</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 VioletJack<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"reqianduan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>
