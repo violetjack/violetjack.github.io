@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ES6 学习笔记（上） | Vue试验场</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="认真学习了一遍ES6，发现很多很好用的功能。学习资料：《ECMAScript 6 入门》  之前写JS，虽然也遇到一些ES6语法，基本就是理解就行，没有深入学习过。这次认真看了一遍ES6，发现里面有许多实用的东西。下面是对本书学习的一些笔记 let 和 const 命令解决var变量提升、变量全局的问题。 let 和 const 都只作用域本块级作用域内。123456789let a = 123">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6 学习笔记（上）">
+<meta property="og:url" content="https://violetjack.github.io/2018/01/18/ES6 学习笔记（上）/index.html">
+<meta property="og:site_name" content="Vue试验场">
+<meta property="og:description" content="认真学习了一遍ES6，发现很多很好用的功能。学习资料：《ECMAScript 6 入门》  之前写JS，虽然也遇到一些ES6语法，基本就是理解就行，没有深入学习过。这次认真看了一遍ES6，发现里面有许多实用的东西。下面是对本书学习的一些笔记 let 和 const 命令解决var变量提升、变量全局的问题。 let 和 const 都只作用域本块级作用域内。123456789let a = 123">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-02-07T02:27:17.705Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6 学习笔记（上）">
+<meta name="twitter:description" content="认真学习了一遍ES6，发现很多很好用的功能。学习资料：《ECMAScript 6 入门》  之前写JS，虽然也遇到一些ES6语法，基本就是理解就行，没有深入学习过。这次认真看了一遍ES6，发现里面有许多实用的东西。下面是对本书学习的一些笔记 let 和 const 命令解决var变量提升、变量全局的问题。 let 和 const 都只作用域本块级作用域内。123456789let a = 123">
+  
+    <link rel="alternative" href="/atom.xml" title="Vue试验场" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Vue试验场</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">专注于Vue相关知识的捣鼓</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="violetjack.github.io">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-ES6 学习笔记（上）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/18/ES6 学习笔记（上）/" class="article-date">
+  <time datetime="2018-01-17T16:00:00.000Z" itemprop="datePublished">2018-01-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ES6 学习笔记（上）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>认真学习了一遍ES6，发现很多很好用的功能。<br>学习资料：<a href="http://es6.ruanyifeng.com/#README" target="_blank" rel="noopener">《ECMAScript 6 入门》</a></p>
+</blockquote>
+<p>之前写JS，虽然也遇到一些ES6语法，基本就是理解就行，没有深入学习过。这次认真看了一遍ES6，发现里面有许多实用的东西。下面是对本书学习的一些笔记</p>
+<h1 id="let-和-const-命令"><a href="#let-和-const-命令" class="headerlink" title="let 和 const 命令"></a>let 和 const 命令</h1><p>解决var变量提升、变量全局的问题。</p>
+<p><strong>let 和 const 都只作用域本块级作用域内。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">let a = 123</span><br><span class="line">&#123;</span><br><span class="line">    let a = 456</span><br><span class="line">    console.log(a)</span><br><span class="line">&#125;</span><br><span class="line">console.log(a)</span><br><span class="line"></span><br><span class="line">// 456</span><br><span class="line">// 123</span><br></pre></td></tr></table></figure></p>
+<p><strong>let 和 const 定义的变量不能同名。</strong><br><strong>let 和 const 定义的变量不可以变量提升。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = 5</span><br><span class="line">let a</span><br><span class="line"></span><br><span class="line">// Error: a is not defined</span><br></pre></td></tr></table></figure></p>
+<p><strong>const定义的量内存不可变</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const a = 6</span><br><span class="line">const obj = &#123;</span><br><span class="line">    name: &apos;violetjack&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 以下写法会报错，因为他们指向了另一个内存地址</span><br><span class="line">// a = 6</span><br><span class="line">// obj = &#123;&#125;</span><br><span class="line"></span><br><span class="line">obj.name = &apos;jerry&apos;</span><br><span class="line">obj.age = 56</span><br><span class="line">console.log(obj)</span><br><span class="line"></span><br><span class="line">// &#123; name: &apos;jerry&apos;, age: 56 &#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="变量的结构与赋值"><a href="#变量的结构与赋值" class="headerlink" title="变量的结构与赋值"></a>变量的结构与赋值</h1><p>快速赋值，优化代码可读性。</p>
+<p><strong>用法都差不多，一一对应即可</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let [a, b, c] = [1, 2, 3] // 数组结构</span><br><span class="line">let &#123; name:mName, age: mAge&#125; = &#123; name:&apos;violetjack&apos;, age: 28 &#125; // 对象结构</span><br><span class="line">let [e,f,g] = &apos;mmp&apos; // 字符串结构</span><br><span class="line">console.log(a)</span><br><span class="line">console.log(mName)</span><br><span class="line">console.log(e + f + g)</span><br><span class="line"></span><br><span class="line">// 1</span><br><span class="line">// violetjack</span><br><span class="line">// mmp</span><br></pre></td></tr></table></figure></p>
+<h1 id="字符串扩展"><a href="#字符串扩展" class="headerlink" title="字符串扩展"></a>字符串扩展</h1><p>提出了一些处理字符串的方式</p>
+<p><strong>提供了一些处理大于 <code>0xFFFF</code> 的字符串的方法</strong><br><strong>字符串检索</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">let s = &apos;Hello world!&apos;;</span><br><span class="line"></span><br><span class="line">s.startsWith(&apos;Hello&apos;) // true</span><br><span class="line">s.endsWith(&apos;!&apos;) // true</span><br><span class="line">s.includes(&apos;o&apos;) // true</span><br><span class="line"></span><br><span class="line">// includes()：返回布尔值，表示是否找到了参数字符串。</span><br><span class="line">// startsWith()：返回布尔值，表示参数字符串是否在原字符串的头部。</span><br><span class="line">// endsWith()：返回布尔值，表示参数字符串是否在原字符串的尾部。</span><br></pre></td></tr></table></figure></p>
+<p><strong>可以操作复制、填充字符串：<code>repeat</code>,<code>padStart</code>,<code>padEnd</code></strong><br><strong>模板字符串，解决字符串拼接问题。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const name = &apos;VioletJack&apos;</span><br><span class="line">const str = &apos;welcome to &apos; + name + &quot;&apos;s blog&quot;</span><br><span class="line">const str2 = `welcome to $&#123;name&#125;&apos;s blog`</span><br><span class="line">console.log(str)</span><br><span class="line">console.log(str2)</span><br><span class="line"></span><br><span class="line">// welcome to VioletJack&apos;s blog</span><br><span class="line">// welcome to VioletJack&apos;s blog</span><br></pre></td></tr></table></figure></p>
+<p>相比于第一种方式，第二种方式可读性好很多。也避免了在使用 <code>&#39;</code> <code>&quot;</code> 两个符号的时候需要转译的步骤。同时在引用数据上使用 <code>${value}</code> 的方式引用。非常方便！</p>
+<h1 id="正则的扩展"><a href="#正则的扩展" class="headerlink" title="正则的扩展"></a>正则的扩展</h1><p>对于正则我一向晕晕乎乎，没啥收获。关于正则我要另外写篇博客涨涨姿势。</p>
+<h1 id="数值的扩展"><a href="#数值的扩展" class="headerlink" title="数值的扩展"></a>数值的扩展</h1><p>主要提供了一些数字高级算法。<br><strong>parseInt和parseFloat都在Number中调用，减少js中的全局方法。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// ES5的写法</span><br><span class="line">parseInt(&apos;12.34&apos;) // 12</span><br><span class="line">parseFloat(&apos;123.45#&apos;) // 123.45</span><br><span class="line"></span><br><span class="line">// ES6的写法</span><br><span class="line">Number.parseInt(&apos;12.34&apos;) // 12</span><br><span class="line">Number.parseFloat(&apos;123.45#&apos;) // 123.45</span><br></pre></td></tr></table></figure></p>
+<p><strong>求指数，通过 `</strong>` 实现**<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2 ** 2 // 2*2 = 4</span><br><span class="line">2 ** 3 // 2*2*2 = 8</span><br></pre></td></tr></table></figure></p>
+<p>其他数学算法就不一一列举了，基本用不着，用到了百度即可。</p>
+<h1 id="函数的扩展"><a href="#函数的扩展" class="headerlink" title="函数的扩展"></a>函数的扩展</h1><p>在函数参数传递方面实现了更多传递方式，实现了箭头函数。总体上是让函数应用上ES6的结构、<code>rest</code> 参数。此外还有几个提案，可以去书上看看。</p>
+<p><strong>更多的参数传递方式</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// 函数参数默认值</span><br><span class="line">function func01(a, b = 11) &#123;</span><br><span class="line">    console.log(a + b)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func01(15)</span><br><span class="line">func01(10, undefined)</span><br><span class="line">func01(1, 1)</span><br><span class="line"></span><br><span class="line">// 参数解构</span><br><span class="line">function func02(&#123;a = 6, b&#125;) &#123;</span><br><span class="line">    console.log(a + b)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func02(&#123;a: 11, b: 12&#125;)</span><br><span class="line">func02(&#123;b: 6&#125;)</span><br><span class="line"></span><br><span class="line">// rest参数</span><br><span class="line">function func03(...vals) &#123;</span><br><span class="line">    let count = 0</span><br><span class="line">    for (let value of vals) &#123;</span><br><span class="line">        count += value</span><br><span class="line">    &#125;</span><br><span class="line">    console.log(count)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func03(1, 2, 3, 4, 5)</span><br><span class="line">func03(11, 22, 33, 44, 55)</span><br></pre></td></tr></table></figure></p>
+<p><strong>提出箭头函数，简化代码。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var f = v =&gt; v;</span><br><span class="line">// 等同于</span><br><span class="line">var f = function(v) &#123;</span><br><span class="line">  return v;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var f = () =&gt; 5;</span><br><span class="line">// 等同于</span><br><span class="line">var f = function () &#123; return 5 &#125;;</span><br><span class="line"></span><br><span class="line">var sum = (num1, num2) =&gt; num1 + num2;</span><br><span class="line">// 等同于</span><br><span class="line">var sum = function(num1, num2) &#123;</span><br><span class="line">  return num1 + num2;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>注意如果参数或者返回结果是对象，需要用<code>()</code>包裹。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var fun = (&#123; a, b &#125;) =&gt; a + b</span><br><span class="line">var fun02 = a =&gt; (&#123; value: a &#125;)</span><br></pre></td></tr></table></figure></p>
+<p>另外一个特别要注意的就是 <code>this</code>，我看到过好几篇博客来解释箭头函数的 <code>this</code> 的，可见这个 <code>this</code> 的特殊性。可以<a href="https://juejin.im/search?query=%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0" target="_blank" rel="noopener">在掘金搜索箭头函数</a>，里面全是解释（tu cao）箭头函数的~<br>下面搬运书上对箭头函数的注意点。</p>
+<blockquote>
+<p>箭头函数有几个使用注意点。<br>（1）函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象。<br>（2）不可以当作构造函数，也就是说，不可以使用new命令，否则会抛出一个错误。<br>（3）不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用 rest 参数代替。<br>（4）不可以使用yield命令，因此箭头函数不能用作 Generator 函数。<br>上面四点中，第一点尤其值得注意。this对象的指向是可变的，但是在箭头函数中，它是固定的。</p>
+</blockquote>
+<h1 id="数组的扩展"><a href="#数组的扩展" class="headerlink" title="数组的扩展"></a>数组的扩展</h1><p><strong>扩展运算符，和函数中的rest参数是一回事。我的理解就是把数组拆分成一个个值。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">let arr = [1, 2, 3, 4]</span><br><span class="line">console.log(...arr)</span><br><span class="line">console.log([0, 8, 6, ...arr, 10])</span><br><span class="line">let str = &apos;jack&apos;</span><br><span class="line">console.log(...str)</span><br><span class="line"></span><br><span class="line">// 1 2 3 4</span><br><span class="line">// [ 0, 8, 6, 1, 2, 3, 4, 10 ]</span><br><span class="line">// j a c k</span><br></pre></td></tr></table></figure></p>
+<p><strong>Array.from 将类数组对象转为真正的数组。</strong><br><strong>Array.of 将多个值转为数组</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Array.of(3, 11, 8) </span><br><span class="line">// [3,11,8]</span><br></pre></td></tr></table></figure></p>
+<p><strong>copyWithin 将数组中某些内容来替换指定内容</strong><br><strong>find 和 findIndex 用于找到数组中第一个符合条件的值和索引位置。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var a = [1, 4, -5, 10].find((n) =&gt; n &lt; 2)</span><br><span class="line">console.log(a)</span><br><span class="line">var b = [1, 5, 10, 15].findIndex(function (value, index, arr) &#123;</span><br><span class="line">    return value &gt; 11;</span><br><span class="line">&#125;) </span><br><span class="line">console.log(b)</span><br><span class="line"></span><br><span class="line">// 1</span><br><span class="line">// 3</span><br></pre></td></tr></table></figure></p>
+<p><strong>fill 用于填充数组</strong><br><strong>entries、keys和values用来遍历数组非常方便，通过不同方法返回所需数组内容。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">for (let index of [&apos;a&apos;, &apos;b&apos;].keys()) &#123;</span><br><span class="line">  console.log(index);</span><br><span class="line">&#125;</span><br><span class="line">// 0</span><br><span class="line">// 1</span><br><span class="line"></span><br><span class="line">for (let elem of [&apos;a&apos;, &apos;b&apos;].values()) &#123;</span><br><span class="line">  console.log(elem);</span><br><span class="line">&#125;</span><br><span class="line">// &apos;a&apos;</span><br><span class="line">// &apos;b&apos;</span><br><span class="line"></span><br><span class="line">for (let [index, elem] of [&apos;a&apos;, &apos;b&apos;].entries()) &#123;</span><br><span class="line">  console.log(index, elem);</span><br><span class="line">&#125;</span><br><span class="line">// 0 &quot;a&quot;</span><br><span class="line">// 1 &quot;b&quot;</span><br></pre></td></tr></table></figure></p>
+<p><strong>includes 方法与字符串的 includes 类似，用于查找数组中是否有某个值，返回布尔类型的值。</strong><br><strong>ES6中将数组空位转为undefined</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">console.log([...[&apos;a&apos;,,&apos;b&apos;]])</span><br><span class="line">// [ &quot;a&quot;, undefined, &quot;b&quot; ]</span><br></pre></td></tr></table></figure></p>
+<h1 id="对象的扩展"><a href="#对象的扩展" class="headerlink" title="对象的扩展"></a>对象的扩展</h1><p><strong>对象属性的简洁表示法，也就是我们常看到的ES6的写法。对象中不再必须要传递 <code>key-value</code> 的形式了。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">let a = 12</span><br><span class="line">let b = 22</span><br><span class="line">let obj = &#123; a, b &#125;</span><br><span class="line">console.log(obj)</span><br><span class="line"></span><br><span class="line">// &#123; a: 12. b: 22 &#125;</span><br><span class="line"></span><br><span class="line">let obj02 = &#123;</span><br><span class="line">    log() &#123;</span><br><span class="line">        console.log(&apos;Hello!&apos;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>对于对象属性名，支持使用 <code>[字符串]</code> 的形式来作为对象属性名。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let obj = &#123;</span><br><span class="line">    name: &apos;jack&apos;,</span><br><span class="line">    [&apos;age&apos;]: 28,</span><br><span class="line">    [&apos;se&apos; + &apos;x&apos;]: &apos;male&apos;</span><br><span class="line">&#125;</span><br><span class="line">console.log(obj)</span><br><span class="line"></span><br><span class="line">// &#123;name: &quot;jack&quot;, age: 28, sex: &quot;male&quot;&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>Object.is方法用于比较两个值是否严格相等。</strong><br><strong>Object.assign 用于对象的合并，如果有同名属性，后添加的覆盖之前的属性。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">let obj1 = &#123;</span><br><span class="line">    name: &apos;jack&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let obj2 = &#123;</span><br><span class="line">    [&apos;age&apos;]: 28,</span><br><span class="line">    [&apos;se&apos; + &apos;x&apos;]: &apos;male&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let obj3 = &#123;</span><br><span class="line">    job: &apos;js&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let obj4 = &#123;</span><br><span class="line">    name: &apos;rose&apos;,</span><br><span class="line">    hobby: &apos;game&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Object.assign(obj1, obj2, obj3, obj4)</span><br><span class="line">console.log(obj1)</span><br><span class="line"></span><br><span class="line">// &#123;name: &quot;rose&quot;, age: 28, sex: &quot;male&quot;, job: &quot;js&quot;, hobby: &quot;game&quot;&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>对象的<strong>proto</strong>属性是一个内部属性，所以前后有下划线。不建议修改该属性。</strong><br><strong>ES6的super关键字用于继承，可以理解为java的super关键字。</strong><br><strong>Object.keys()，Object.values()，Object.entries()和Array的类似，是对对象的一个遍历过程。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">let &#123;keys, values, entries&#125; = Object;</span><br><span class="line">let obj = &#123; a: 1, b: 2, c: 3 &#125;;</span><br><span class="line"></span><br><span class="line">for (let key of keys(obj)) &#123;</span><br><span class="line">  console.log(key); // &apos;a&apos;, &apos;b&apos;, &apos;c&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (let value of values(obj)) &#123;</span><br><span class="line">  console.log(value); // 1, 2, 3</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (let [key, value] of entries(obj)) &#123;</span><br><span class="line">  console.log([key, value]); // [&apos;a&apos;, 1], [&apos;b&apos;, 2], [&apos;c&apos;, 3]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>在对象中也可以使用扩展运算符 <code>...</code></strong></p>
+<h1 id="Symbol"><a href="#Symbol" class="headerlink" title="Symbol"></a>Symbol</h1><p>这玩意的用处我不太理解，就是为了表示一个唯一的值？<br><strong>ES6 的7中原始数据类型：<code>Symbol</code>、<code>undefined</code>、<code>null</code>、<code>Boolean</code>、<code>String</code>、<code>Number</code>、<code>Object</code></strong></p>
+<h1 id="Set-和-Map-数据结构"><a href="#Set-和-Map-数据结构" class="headerlink" title="Set 和 Map 数据结构"></a>Set 和 Map 数据结构</h1><p><strong>Set是一个构造函数，它的值都是唯一的。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const s = new Set();</span><br><span class="line"></span><br><span class="line">[2, 3, 5, 4, 5, 2, 2].forEach(x =&gt; s.add(x));</span><br><span class="line"></span><br><span class="line">for (let i of s) &#123;</span><br><span class="line">  console.log(i);</span><br><span class="line">&#125;</span><br><span class="line">// 2 3 5 4</span><br></pre></td></tr></table></figure></p>
+<p><strong>Set可用于去除数组中的重复项。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const set = new Set([1, 2, 3, 4, 4]);</span><br><span class="line">[...set]</span><br><span class="line">// [1, 2, 3, 4]</span><br></pre></td></tr></table></figure></p>
+<p><strong>操作Set的语法如下</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">add(value)：添加某个值，返回 Set 结构本身。</span><br><span class="line">delete(value)：删除某个值，返回一个布尔值，表示删除是否成功。</span><br><span class="line">has(value)：返回一个布尔值，表示该值是否为Set的成员。</span><br><span class="line">clear()：清除所有成员，没有返回值。</span><br></pre></td></tr></table></figure></p>
+<p><strong>WeakSet与Set的不同点</strong></p>
+<blockquote>
+<p>WeakSet 的成员只能是对象，而不能是其他类型的值。<br>WeakSet 中的对象都是弱引用，即垃圾回收机制不考虑 WeakSet 对该对象的引用，也就是说，如果其他对象都不再引用该对象，那么垃圾回收机制会自动回收该对象所占用的内存，不考虑该对象还存在于 WeakSet 之中。</p>
+</blockquote>
+<p><strong>Map不同于传统Object对象的地方在于，Object的属性名只能是String类型的。而Map可以有任意类型的属性名。</strong><br><strong>Map的key如果是一个对象，那么这个key应该指向同一个内存（可以用const定义之后再当做参数传入map作为属性名。）。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// error</span><br><span class="line">const map = new Map();</span><br><span class="line"></span><br><span class="line">map.set([&apos;a&apos;], 555);</span><br><span class="line">map.get([&apos;a&apos;]) // undefined</span><br><span class="line"></span><br><span class="line">// success</span><br><span class="line">const map = new Map();</span><br><span class="line"></span><br><span class="line">const k1 = [&apos;a&apos;];</span><br><span class="line">const k2 = [&apos;a&apos;];</span><br><span class="line"></span><br><span class="line">map</span><br><span class="line">.set(k1, 111)</span><br><span class="line">.set(k2, 222);</span><br><span class="line"></span><br><span class="line">map.get(k1) // 111</span><br><span class="line">map.get(k2) // 222</span><br></pre></td></tr></table></figure></p>
+<p><strong>WeakMap与Map的区别：</strong></p>
+<blockquote>
+<p>WeakMap只接受对象作为键名（null除外），不接受其他类型的值作为键名。<br>WeakMap的键名所指向的对象，不计入垃圾回收机制。</p>
+</blockquote>
+<p>好吧，暂时先到这儿。另外一部分后面继续整理吧~知识点还是蛮多的。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://violetjack.github.io/2018/01/18/ES6 学习笔记（上）/" data-id="cjdcgkhz70000ppbt4mw064a9" class="article-share-link" data-share="baidu" data-title="ES6 学习笔记（上）">分享到</a>
+      
+
+      
+        <a href="https://violetjack.github.io/2018/01/18/ES6 学习笔记（上）/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/01/21/ES6 学习笔记（下）/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          ES6 学习笔记（下）
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/12/01/weex项目弃坑小结/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">weex项目弃坑小结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2018/01/18/ES6 学习笔记（上）/" data-title="ES6 学习笔记（上）" data-url="https://violetjack.github.io/2018/01/18/ES6 学习笔记（上）/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/03/weex 踩坑记（持续更新中……）/">weex 踩坑记（持续更新中……）</a>
+          </li>
+        
+          <li>
+            <a href="/2018/06/30/Weex控制Android返回键解决方案/">Weex控制Android返回键解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/03/Vue.js学习系列八 —— Vue源码学习之State学习/">Vue.js学习系列八 —— Vue源码学习之State学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/29/Vue学习系列倡议书/">Vue学习系列倡议书</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/26/Vue.js学习系列七 —— Vue服务器渲染Nuxt学习/">Vue.js学习系列七 —— Vue服务器渲染Nuxt学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">个人网站</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/violetjack" target="_blank">Github</a>
+          </li>
+        
+          <li>
+            <a href="https://segmentfault.com/u/violetjack" target="_blank">SegmentFault</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.csdn.net/violetjack0808" target="_blank">CSDN</a>
+          </li>
+        
+          <li>
+            <a href="https://www.jianshu.com/u/54ae4af3a98d" target="_blank">简书</a>
+          </li>
+        
+          <li>
+            <a href="https://juejin.im/user/571d953d39b0570068145cd1" target="_blank">掘金</a>
+          </li>
+        
+          <li>
+            <a href="https://www.zhihu.com/people/violetjack" target="_blank">知乎</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 VioletJack<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"reqianduan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

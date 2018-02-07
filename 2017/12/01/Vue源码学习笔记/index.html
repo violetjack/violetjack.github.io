@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Vue源码学习笔记 | Vue试验场</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近偷懒好久没有写博客了，一直想继续Vue学习系列，想深入Vue源码来写。结果发现自己层次不够，对js的理解差好多。所以一直想写一直搁置着。最近重新振作决心看完Vue源码，并且以我们这类前端小白的角度来一步步弄懂Vue源码。  PS：以下文章为笔记类，记录了本人在看源码过程中的一些问题和感悟。 Vue源码的本质是什么Vue.js 本质上就是一个包含各种逻辑的一个function。而我们通常初始化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue源码学习笔记">
+<meta property="og:url" content="https://violetjack.github.io/2017/12/01/Vue源码学习笔记/index.html">
+<meta property="og:site_name" content="Vue试验场">
+<meta property="og:description" content="最近偷懒好久没有写博客了，一直想继续Vue学习系列，想深入Vue源码来写。结果发现自己层次不够，对js的理解差好多。所以一直想写一直搁置着。最近重新振作决心看完Vue源码，并且以我们这类前端小白的角度来一步步弄懂Vue源码。  PS：以下文章为笔记类，记录了本人在看源码过程中的一些问题和感悟。 Vue源码的本质是什么Vue.js 本质上就是一个包含各种逻辑的一个function。而我们通常初始化">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-51c2e9112e90eeef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-ff4ba64d71f9d5b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-c11e06d42cf94a2c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-02-07T02:28:06.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue源码学习笔记">
+<meta name="twitter:description" content="最近偷懒好久没有写博客了，一直想继续Vue学习系列，想深入Vue源码来写。结果发现自己层次不够，对js的理解差好多。所以一直想写一直搁置着。最近重新振作决心看完Vue源码，并且以我们这类前端小白的角度来一步步弄懂Vue源码。  PS：以下文章为笔记类，记录了本人在看源码过程中的一些问题和感悟。 Vue源码的本质是什么Vue.js 本质上就是一个包含各种逻辑的一个function。而我们通常初始化">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1987062-51c2e9112e90eeef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="Vue试验场" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Vue试验场</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">专注于Vue相关知识的捣鼓</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="violetjack.github.io">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-Vue源码学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/12/01/Vue源码学习笔记/" class="article-date">
+  <time datetime="2017-11-30T16:00:00.000Z" itemprop="datePublished">2017-12-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vue源码学习笔记
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>最近偷懒好久没有写博客了，一直想继续Vue学习系列，想深入Vue源码来写。结果发现自己层次不够，对js的理解差好多。所以一直想写一直搁置着。最近重新振作决心看完Vue源码，并且以我们这类前端小白的角度来一步步弄懂Vue源码。</p>
+</blockquote>
+<p><strong>PS：</strong>以下文章为笔记类，记录了本人在看源码过程中的一些问题和感悟。</p>
+<h1 id="Vue源码的本质是什么"><a href="#Vue源码的本质是什么" class="headerlink" title="Vue源码的本质是什么"></a>Vue源码的本质是什么</h1><p>Vue.js 本质上就是一个包含各种逻辑的一个function。而我们通常初始化Vue的过程就是实例化的过程。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var vm = new Vue(&#123;&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>话不多说，老规矩用代码说话！<br>让我们来对Vue进行打印：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var vm = new Vue(&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">console.log(Vue)</span><br><span class="line">console.log(vm)</span><br></pre></td></tr></table></figure></p>
+<p>打印结果如图：<br><img src="http://upload-images.jianshu.io/upload_images/1987062-51c2e9112e90eeef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="vue"></p>
+<p>这里可以看到Vue$3这个方法，就是这个方法对Vue对象的构造函数了。其实这很简单，我们自己都可以造出一个Vue$4<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function Vue$4(options) &#123;</span><br><span class="line">    this.options = options</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Vue$4.prototype.name = &quot;小东西&quot;</span><br><span class="line">Vue$4.prototype.age = 27</span><br><span class="line"></span><br><span class="line">console.log(new Vue$4(&quot;很好&quot;))</span><br></pre></td></tr></table></figure></p>
+<p>显示结果如图<br><img src="http://upload-images.jianshu.io/upload_images/1987062-ff4ba64d71f9d5b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="vue$4"></p>
+<p>综上所述，Vue对象的本质就是一个function，与我们的Vue$4的不同之处只在于逻辑的多与少。</p>
+<h1 id="必须理解Object对象"><a href="#必须理解Object对象" class="headerlink" title="必须理解Object对象"></a>必须理解Object对象</h1><p>在Vue的源码中，出场率最多的应该就数<code>Object</code>对象的使用上了。可以这么说，不懂Object都没法往下看代码。以下是源码中用到的比较多的。</p>
+<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener">Object.defineProperty</a> 直接在一个对象上定义一个新属性，或者修改一个对象的现有属性， 并返回这个对象。</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/create" target="_blank" rel="noopener">Object.create</a> 使用指定的原型对象及其属性去创建一个新的对象。</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/keys" target="_blank" rel="noopener">Object.keys</a> 返回一个由一个给定对象的自身可枚举属性组成的数组，数组中属性名的排列顺序和使用 for…in 循环遍历该对象时返回的顺序一致 （两者的主要区别是 一个 for-in 循环还会枚举其原型链上的属性）。</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/prototype" target="_blank" rel="noopener">Object.prototype</a> Object的原型对象。</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze" target="_blank" rel="noopener">Object.freeze</a> 冻结一个对象，冻结指的是不能向这个对象添加新的属性，不能修改其已有属性的值，不能删除已有属性，以及不能修改该对象已有属性的可枚举性、可配置性、可写性。也就是说，这个对象永远是不可变的。该方法返回被冻结的对象。</li>
+</ul>
+<p>那么，Vue中哪个是Object呢？我们继续试验：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">console.log(typeof Vue)</span><br><span class="line">console.log(typeof new Vue())</span><br></pre></td></tr></table></figure></p>
+<p>输出结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">function</span><br><span class="line">object</span><br></pre></td></tr></table></figure></p>
+<p>结果显示，使用new来创建的Vue实例就是个对象，所以一切对Object的操作行为都是针对Vue实例对象的。</p>
+<h1 id="理解setter和getter"><a href="#理解setter和getter" class="headerlink" title="理解setter和getter"></a>理解setter和getter</h1><p>在网上看Vue的评论是经常会听到说</p>
+<blockquote>
+<p>Vue无非就是setter和getter方法的运用而已</p>
+</blockquote>
+<p>这让我等新手一脸懵逼，这里我们就来认识认识setter和getter。<br>当我们在获取一个Vue实例data中的某个对象，如果你用console打印出来会发现，对象属性中除了常规的对象属性和<strong>proto</strong>对象之外还会多一个set和一个get方法，所谓的setter和getter就是它们。Vue给每一个对象属性都添加了Observer观察数据的获取和修改。好吧，贴代码一睹真容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">function defineReactive (</span><br><span class="line">  obj,</span><br><span class="line">  key,</span><br><span class="line">  val,</span><br><span class="line">  customSetter,</span><br><span class="line">  shallow</span><br><span class="line">) &#123;</span><br><span class="line">  var dep = new Dep();</span><br><span class="line"></span><br><span class="line">  // Object.getOwnPropertyDescriptor() 方法返回指定对象上一个自有属性对应的属性描述符。</span><br><span class="line">  //（自有属性指的是直接赋予该对象的属性，不需要从原型链上进行查找的属性）</span><br><span class="line">  // 对象、属性名称、描述~</span><br><span class="line">  var property = Object.getOwnPropertyDescriptor(obj, key);</span><br><span class="line">  // 当且仅当该属性的 configurable 为 true 时，该属性描述符才能够被改变，同时该属性也能从对应的对象上被删除。默认为 false。</span><br><span class="line">  if (property &amp;&amp; property.configurable === false) &#123;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // cater for pre-defined getter/setters</span><br><span class="line">  var getter = property &amp;&amp; property.get;</span><br><span class="line">  var setter = property &amp;&amp; property.set;</span><br><span class="line"></span><br><span class="line">  var childOb = !shallow &amp;&amp; observe(val);</span><br><span class="line">  Object.defineProperty(obj, key, &#123;</span><br><span class="line">    enumerable: true,</span><br><span class="line">    configurable: true,</span><br><span class="line">    get: function reactiveGetter () &#123;</span><br><span class="line">      var value = getter ? getter.call(obj) : val;</span><br><span class="line">      if (Dep.target) &#123; // Watcher</span><br><span class="line">        dep.depend();</span><br><span class="line">        if (childOb) &#123;</span><br><span class="line">          childOb.dep.depend();</span><br><span class="line">          if (Array.isArray(value)) &#123;</span><br><span class="line">            dependArray(value);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      return value</span><br><span class="line">    &#125;,</span><br><span class="line">    set: function reactiveSetter (newVal) &#123;</span><br><span class="line">      var value = getter ? getter.call(obj) : val;</span><br><span class="line">      /* eslint-disable no-self-compare */</span><br><span class="line">      if (newVal === value || (newVal !== newVal &amp;&amp; value !== value)) &#123;</span><br><span class="line">        return</span><br><span class="line">      &#125;</span><br><span class="line">      /* eslint-enable no-self-compare */</span><br><span class="line">      if (&quot;development&quot; !== &apos;production&apos; &amp;&amp; customSetter) &#123;</span><br><span class="line">        customSetter(); // 自定义setter</span><br><span class="line">      &#125;</span><br><span class="line">      if (setter) &#123;</span><br><span class="line">        setter.call(obj, newVal);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        val = newVal;</span><br><span class="line">      &#125;</span><br><span class="line">      childOb = !shallow &amp;&amp; observe(newVal);</span><br><span class="line">      dep.notify();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>代码太长？懵逼了？没关系，我们自己来造一个简单的setter和getter来了解一下。<br>其实用的就是Object.defineProperty方法中就有set和get。</p>
+<ul>
+<li>get 一个给属性提供 getter 的方法，如果没有 getter 则为 undefined。该方法返回值被用作属性值。默认为 undefined。</li>
+<li>set 一个给属性提供 setter 的方法，如果没有 setter 则为 undefined。该方法将接受唯一参数，并将该参数的新值分配给该属性。默认为 undefined。</li>
+</ul>
+<p>好了，写代码~<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">var obj = &#123;&#125;</span><br><span class="line">var mValue = &quot;abc&quot;</span><br><span class="line">Object.defineProperty(obj, &quot;_name&quot;, &#123;</span><br><span class="line">    configurable: false, </span><br><span class="line">    enumerable: false, </span><br><span class="line">    get: function reactiveGetter () &#123;</span><br><span class="line">        return mValue</span><br><span class="line">    &#125;,</span><br><span class="line">    set: function reactiveSetter (val) &#123;</span><br><span class="line">        mValue = val</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">obj._name = &quot;rose&quot;</span><br><span class="line"></span><br><span class="line">console.log(obj)</span><br></pre></td></tr></table></figure></p>
+<p>到这里我们打印log，对象属性的set和get方法就出现了。<br><img src="http://upload-images.jianshu.io/upload_images/1987062-c11e06d42cf94a2c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="打印结果"></p>
+<h1 id="逻辑运算符的使用"><a href="#逻辑运算符的使用" class="headerlink" title="逻辑运算符的使用"></a>逻辑运算符的使用</h1><p>在源码中有很多<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Logical_Operators" target="_blank" rel="noopener">逻辑运算符</a>的使用，有些运用的很巧妙。这里也科普下吧~</p>
+<p>首先知道下可以转换成false的值，如下：</p>
+<ul>
+<li>null</li>
+<li>NaN</li>
+<li>0</li>
+<li>空字符串（””）</li>
+<li>undefined</li>
+</ul>
+<h3 id="用法一：判断条件返回true或者false"><a href="#用法一：判断条件返回true或者false" class="headerlink" title="用法一：判断条件返回true或者false"></a>用法一：判断条件返回true或者false</h3><p>这是最基本的用法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if (a &amp; a.master &amp; a.master.name) &#123;&#125; // 如果这三个属性都为true值，执行if逻辑</span><br><span class="line">if (a || b) &#123;&#125; // 如果a或者b为true值，执行if逻辑。</span><br></pre></td></tr></table></figure></p>
+<h3 id="用法二：判断并返回条件对象"><a href="#用法二：判断并返回条件对象" class="headerlink" title="用法二：判断并返回条件对象"></a>用法二：判断并返回条件对象</h3><ul>
+<li><code>&amp;&amp;</code> 如果几个条件都为true，则返回最后一个条件。</li>
+<li><code>||</code> 几个条件从前往后逐一判断，如果那个条件为true，返回该条件，否则返回最后一个条件。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var getter = property &amp;&amp; property.get;  // 如果两个属性都存在，将property.get赋值给getter</span><br><span class="line">e &amp;&amp; e.__ob__ &amp;&amp; e.__ob__.dep.depend(); // 如果三个属性都存在，执行第三条语句的方法</span><br><span class="line">var res = assets[id] || assets[camelizedId] || assets[PascalCaseId]; </span><br><span class="line">// 给res赋值，如果assets[id]为true，则将其传res；</span><br><span class="line">// 如果assets[camelizedId]为true，将其传给res；</span><br><span class="line">// 如果前两者都为false，将assets[PascalCaseId]传给res。</span><br><span class="line">var strat = strats[key] || defaultStrat;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>然后，我对各种情况做了试验得出以下结论：</p>
+<ul>
+<li><code>&amp;&amp;</code> 判断中，判断值都为 <code>true</code>，返回最后一个判断值；判断值中有 <code>false</code><br>值，返回第一个 <code>false</code> 值。</li>
+<li><code>||</code> 判断中，判断值都为 <code>true</code>，返回第一个判断值；判断值中有 <code>true</code> 值也有 <code>false</code> 值，返回第一个为 <code>true</code> 的判断值；如果判断值都为 <code>false</code>，返回最后面的 <code>false</code> 值。</li>
+</ul>
+<p><strong>注意：</strong>这里所说的返回 <code>false</code> 值不一定是 Boolean 类型的 <code>false</code>，也可能是 <code>0、null</code> 等非值，详见上文。</p>
+<h3 id="用法三：使用两个非"><a href="#用法三：使用两个非" class="headerlink" title="用法三：使用两个非"></a>用法三：使用两个非</h3><p>两个感叹号会确保参数为非值时只能为false，不会是0、空字符串、undefined等非值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">if (options) &#123;</span><br><span class="line">    this.deep = !!options.deep;</span><br><span class="line">    this.user = !!options.user;</span><br><span class="line">    this.lazy = !!options.lazy;</span><br><span class="line">    this.sync = !!options.sync;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    this.deep = this.user = this.lazy = this.sync = false;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="数组操作"><a href="#数组操作" class="headerlink" title="数组操作"></a>数组操作</h1><h3 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h3><p>先看一段代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var a = [ &apos;jack&apos;, &apos;rose&apos;, &apos;wade&apos; ]</span><br><span class="line">var b = a</span><br><span class="line">b[1] = &apos;marry&apos;</span><br><span class="line">console.log(a)</span><br><span class="line">console.log(b)</span><br></pre></td></tr></table></figure></p>
+<p>最后的结果是a和b的数组第二个值都变成了marry，原因就是b并不是获得了数组内容，而只是指向了a，a和b其实是一回事。如果我们需要复制，可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var b = a.slice()</span><br></pre></td></tr></table></figure></p>
+<p>查阅<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/slice" target="_blank" rel="noopener">MDN</a>可知：</p>
+<blockquote>
+<p>slice() 方法返回一个从开始到结束（不包括结束）选择的数组的一部分浅拷贝到一个新数组对象，原始数组不会被修改。</p>
+<h3 id="清空"><a href="#清空" class="headerlink" title="清空"></a>清空</h3><p>想要将非空数组的内容清空，最快捷的方式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arr.length = 0</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h3 id="合并"><a href="#合并" class="headerlink" title="合并"></a>合并</h3><p>直接引用<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/concat" target="_blank" rel="noopener">MDN</a>的例子。</p>
+<blockquote>
+<p>concat() 方法用于合并两个或多个数组。此方法不会更改现有数组，而是返回一个新数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var arr1 = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;];</span><br><span class="line">var arr2 = [&apos;d&apos;, &apos;e&apos;, &apos;f&apos;];</span><br><span class="line"></span><br><span class="line">var arr3 = arr1.concat(arr2);</span><br><span class="line"></span><br><span class="line">// arr3 is a new array [ &quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;, &quot;f&quot; ]</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h3 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h3><p>呃，使用forEach方式来遍历数组是我刚知道的事 - -（之前都是用的for方法……），顺便记录下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">arr.forEach(function(obj)&#123;</span><br><span class="line">    // 数组循环</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<h1 id="几种特殊的写法"><a href="#几种特殊的写法" class="headerlink" title="几种特殊的写法"></a>几种特殊的写法</h1><p>在代码中有些代码片段有些看不懂，于是在SF上进行了提问：<a href="https://segmentfault.com/q/1010000012573448" target="_blank" rel="noopener">看Vue源码，有两段代码写法不知是何意思，求指教~</a>。感谢大家的帮助，这里总结下。<br>第一段是一段在{}里的代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    dataDef.set = function (newData) &#123;</span><br><span class="line">      warn(</span><br><span class="line">        &apos;Avoid replacing instance root $data. &apos; +</span><br><span class="line">        &apos;Use nested data properties instead.&apos;,</span><br><span class="line">        this</span><br><span class="line">      );</span><br><span class="line">    &#125;;</span><br><span class="line">    propsDef.set = function () &#123;</span><br><span class="line">      warn(&quot;$props is readonly.&quot;, this);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这段代码，有的朋友说是块级作用域、隔离作用域。不过另一种说法更可信。那就是我所看到的vue是编译完的的代码。源代码其实在大括号前是有条件的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if (process.env.NODE_ENV !== &apos;production&apos;) &#123;</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure></p>
+<p>再来看下面的代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(function (global, factory) &#123;</span><br><span class="line">    typeof exports === &apos;object&apos; &amp;&amp; typeof module !== &apos;undefined&apos; ? module.exports = factory() :</span><br><span class="line">    typeof define === &apos;function&apos; &amp;&amp; define.amd ? define(factory) :</span><br><span class="line">    (global.Vue = factory());</span><br><span class="line">&#125;(this, (function () &#123; &apos;use strict&apos;;</span><br><span class="line"></span><br><span class="line">&#125;)))</span><br></pre></td></tr></table></figure></p>
+<p>这段代码是Vue开头的一段代码，它有两个知识点。</p>
+<ul>
+<li>立即执行函数 —— 定义函数并立即执行，写法有 <code>(function(){})()</code> 或者 <code>(function(){}())</code> 的形式。</li>
+<li>由于过去前端没有模块系统，使用script标签引入的js脚本共享同一个作用域，如果不把代码包起来，很容易产生作用域污染、变量冲突的问题。</li>
+</ul>
+<p><strong>PS：</strong>这两个问题真是网友的结论，不一定完善。有空我会查资料证实~</p>
+<h1 id="其他知识点"><a href="#其他知识点" class="headerlink" title="其他知识点"></a>其他知识点</h1><ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/arguments" target="_blank" rel="noopener">Arguments</a> —— 传给函数的参数数组</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new" target="_blank" rel="noopener">new运算符</a> —— 通过构造函数创建对象</li>
+<li><code>&quot;development&quot; !== &#39;production’</code>的作用 —— webpack打包判断执行环境是不是生产环境，如果是生产环境会压缩并且没有提示警告之类的东西</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/instanceof" target="_blank" rel="noopener"> instanceof</a> —— 验证实例对象是否为该构造函数new出来的。</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/in" target="_blank" rel="noopener">in关键字</a> —— 判断某个值是否在数组或对象中。</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy" target="_blank" rel="noopener">Proxy对象</a> —— 创建某个对象，并定义一些行为给该对象。</li>
+<li>字符串的 <code>charAt</code> 是获取第几个字符，而 <code>slice</code> 方法是截取某段字符。</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/delete" target="_blank" rel="noopener">delete关键字</a> —— 用于删除对象中的某个关键字。</li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/call" target="_blank" rel="noopener">call()方法</a> —— 函数的调用，第一个参数为this，之后为函数定义参数。试验了下 <code>fun(a, b)</code> 和 <code>fun.call(this, a, b)</code> 两种写法效果一致。另外还可以看下 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/apply" target="_blank" rel="noopener">apply()方法</a></li>
+</ul>
+<p><strong>PS：</strong>都是从MDN中找到的资料，多查MDN让我受益良多。</p>
+<h1 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h1><p>还在学习Vue源码中……看了很多文章、也看了一遍源码。内容太多，千头万绪，容我理清之后，用自己的文字把Vue的源码学习记录分享出来。一些值得记录下来的知识点和心得会继续在本文中更新。<br>最后，想学习Vue源码的同学可以去买<a href="https://item.jd.com/12028224.html?dist=jd" target="_blank" rel="noopener">《Vue.js权威指南》</a>这本书，虽然许多章节内容和<a href="https://cn.vuejs.org/v2/guide/" target="_blank" rel="noopener">官网</a>是重复的，不过源码解析部分值得一看。我也正配合着这本书和源码在学习Vue。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://violetjack.github.io/2017/12/01/Vue源码学习笔记/" data-id="cjdcgkhzs000cppbt23nshz2r" class="article-share-link" data-share="baidu" data-title="Vue源码学习笔记">分享到</a>
+      
+
+      
+        <a href="https://violetjack.github.io/2017/12/01/Vue源码学习笔记/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/12/01/weex项目弃坑小结/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          weex项目弃坑小结
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/06/06/Vue.js学习系列六 —— Vue单元测试Karma+Mocha学习笔记/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Vue.js学习系列六——Vue单元测试Karma+Mocha学习笔记</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2017/12/01/Vue源码学习笔记/" data-title="Vue源码学习笔记" data-url="https://violetjack.github.io/2017/12/01/Vue源码学习笔记/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/03/weex 踩坑记（持续更新中……）/">weex 踩坑记（持续更新中……）</a>
+          </li>
+        
+          <li>
+            <a href="/2018/06/30/Weex控制Android返回键解决方案/">Weex控制Android返回键解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/03/Vue.js学习系列八 —— Vue源码学习之State学习/">Vue.js学习系列八 —— Vue源码学习之State学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/29/Vue学习系列倡议书/">Vue学习系列倡议书</a>
+          </li>
+        
+          <li>
+            <a href="/2018/01/26/Vue.js学习系列七 —— Vue服务器渲染Nuxt学习/">Vue.js学习系列七 —— Vue服务器渲染Nuxt学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">个人网站</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/violetjack" target="_blank">Github</a>
+          </li>
+        
+          <li>
+            <a href="https://segmentfault.com/u/violetjack" target="_blank">SegmentFault</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.csdn.net/violetjack0808" target="_blank">CSDN</a>
+          </li>
+        
+          <li>
+            <a href="https://www.jianshu.com/u/54ae4af3a98d" target="_blank">简书</a>
+          </li>
+        
+          <li>
+            <a href="https://juejin.im/user/571d953d39b0570068145cd1" target="_blank">掘金</a>
+          </li>
+        
+          <li>
+            <a href="https://www.zhihu.com/people/violetjack" target="_blank">知乎</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 VioletJack<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"reqianduan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>
