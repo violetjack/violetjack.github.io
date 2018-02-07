@@ -4,22 +4,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Vue.js学习系列八 —— Vue源码学习之State学习 | Vue试验场</title>
+  <title>Vue.js学习系列八 —— Vue源码学习之State学习 | Vue实验室</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="关于Vue源码学习的博客， HcySunYang的Vue2.1.7源码学习是我所见过讲的最清晰明了的博客了，非常适合想了解Vue源码的同学入手。本文是在看了这篇博客之后进一步的学习心得。注意：本文所用Vue版本为 2.5.13  关于源码学习关于学习源码，我有话要说~一开始我学习Vue的源码，是将 Vue.js 这个文件下载下来逐行去看……因为我听信了我同事说的“不过一万多行代码，实现也很简单，">
-<meta name="keywords" content="Vue.js学习系列，源码解析">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vue.js学习系列八 —— Vue源码学习之State学习">
 <meta property="og:url" content="https://violetjack.github.io/2018/02/03/Vue.js学习系列八 —— Vue源码学习之State学习/index.html">
-<meta property="og:site_name" content="Vue试验场">
+<meta property="og:site_name" content="Vue实验室">
 <meta property="og:description" content="关于Vue源码学习的博客， HcySunYang的Vue2.1.7源码学习是我所见过讲的最清晰明了的博客了，非常适合想了解Vue源码的同学入手。本文是在看了这篇博客之后进一步的学习心得。注意：本文所用Vue版本为 2.5.13  关于源码学习关于学习源码，我有话要说~一开始我学习Vue的源码，是将 Vue.js 这个文件下载下来逐行去看……因为我听信了我同事说的“不过一万多行代码，实现也很简单，">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-02-07T02:34:17.405Z">
+<meta property="og:updated_time" content="2018-02-07T02:55:17.244Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue.js学习系列八 —— Vue源码学习之State学习">
 <meta name="twitter:description" content="关于Vue源码学习的博客， HcySunYang的Vue2.1.7源码学习是我所见过讲的最清晰明了的博客了，非常适合想了解Vue源码的同学入手。本文是在看了这篇博客之后进一步的学习心得。注意：本文所用Vue版本为 2.5.13  关于源码学习关于学习源码，我有话要说~一开始我学习Vue的源码，是将 Vue.js 这个文件下载下来逐行去看……因为我听信了我同事说的“不过一万多行代码，实现也很简单，">
   
-    <link rel="alternative" href="/atom.xml" title="Vue试验场" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="Vue实验室" type="application/atom+xml">
   
   
     <link rel="icon" href="/img/favicon.png">
@@ -36,11 +35,11 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Vue试验场</a>
+        <a href="/" id="logo">Vue实验室</a>
       </h1>
       
         <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">专注于Vue相关知识的捣鼓</a>
+          <a href="/" id="subtitle">专注于Vue相关知识的学习和分享</a>
         </h2>
       
     </div>
@@ -178,7 +177,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://violetjack.github.io/2018/02/03/Vue.js学习系列八 —— Vue源码学习之State学习/" data-id="cjdcgnr2f0007smbtie237kcj" class="article-share-link" data-share="baidu" data-title="Vue.js学习系列八 —— Vue源码学习之State学习">分享到</a>
+        <a data-url="https://violetjack.github.io/2018/02/03/Vue.js学习系列八 —— Vue源码学习之State学习/" data-id="cjdchgbt20008eybtt7ev88lf" class="article-share-link" data-share="baidu" data-title="Vue.js学习系列八 —— Vue源码学习之State学习">分享到</a>
       
 
       
@@ -186,8 +185,6 @@
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue-js学习系列，源码解析/">Vue.js学习系列，源码解析</a></li></ul>
-
     </footer>
   </div>
   
@@ -216,22 +213,8 @@
     
   
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue-js学习系列，源码解析/">Vue.js学习系列，源码解析</a><span class="tag-list-count">1</span></li></ul>
-    </div>
-  </div>
-
   
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签云</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Vue-js学习系列，源码解析/" style="font-size: 10px;">Vue.js学习系列，源码解析</a>
-    </div>
-  </div>
-
   
     
   <div class="widget-wrap">
