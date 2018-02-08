@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://violetjack.github.io/"/>
-  <updated>2018-02-07T02:55:17.244Z</updated>
+  <updated>2018-02-08T01:41:58.146Z</updated>
   <id>https://violetjack.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>用hexo搭建博客笔记</title>
+    <link href="https://violetjack.github.io/2018/02/08/%E7%94%A8hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E7%AC%94%E8%AE%B0/"/>
+    <id>https://violetjack.github.io/2018/02/08/用hexo搭建博客笔记/</id>
+    <published>2018-02-08T01:41:25.543Z</published>
+    <updated>2018-02-08T01:41:58.146Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>一直想有个自己的 Github.io 博客，感觉逼格能够上升一大截。</p></blockquote><p>很久之前就看到网上各种博客搭建的文章，但是从内心中总感觉好像是个很麻烦的事情。所以，一直没有动手去做。</p><p>昨天，趁着年前工作不忙，搭建了个博客，这里记录下过程。<br>其实，搭建hexo博客是非常简单的事情。</p><h1 id="安装前提"><a href="#安装前提" class="headerlink" title="安装前提"></a>安装前提</h1><p>Mac安装前提</p><ul><li>Xcode</li><li>Node.js</li><li>Git</li></ul><p>这三个玩意儿对于我们开发者基本都是有的，没有装个就好。</p><h1 id="创建博客的过程"><a href="#创建博客的过程" class="headerlink" title="创建博客的过程"></a>创建博客的过程</h1><p>简单的几条 bash 命令就好。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br><span class="line">$ hexo init [文件夹名]</span><br><span class="line">$ cd [文件夹名]</span><br><span class="line">$ npm install</span><br></pre></td></tr></table></figure></p><p>以上步骤就已经安装完毕了。</p><h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 新建文章 layout为模板，title为文章名</span><br><span class="line">$ hexo new [layout] &lt;title&gt;</span><br><span class="line">// 启动本地服务器看hexo博客，地址为 `http://localhost:4000/`</span><br><span class="line">$ hexo server</span><br><span class="line">// 生成静态文件</span><br><span class="line">$ hexo generate</span><br><span class="line">$ hexo g</span><br><span class="line">// 部署建站</span><br><span class="line">$ hexo deploy</span><br><span class="line">$ hexo d</span><br><span class="line">// 去除缓存文件</span><br><span class="line">$ hexo clean</span><br></pre></td></tr></table></figure><p>这几个命令就能应付常用博客发布了。</p><h1 id="创建Github-io"><a href="#创建Github-io" class="headerlink" title="创建Github.io"></a>创建Github.io</h1><p>在我的Github中创建 [github名].github.io这个项目，比如像我的 <a href="https://github.com/violetjack/violetjack.github.io" target="_blank" rel="noopener">violetjack.github.io</a> 。</p><h1 id="上传博客配置"><a href="#上传博客配置" class="headerlink" title="上传博客配置"></a>上传博客配置</h1><p>如果是通过git开源发布的，那么只需要在hexo项目根目录的 <code>_config.yml</code> 文件中添加如下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: [github.io 仓库]</span><br><span class="line">  branch: [发布的分支]</span><br><span class="line">  message: [发布消息]</span><br></pre></td></tr></table></figure></p><h1 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h1><p>hexo搭建的博客有很多的主题样式，可以在 <a href="https://hexo.io/themes/" target="_blank" rel="noopener">这里</a> 查看选择。安装过程里面都会说。</p><p>比如我们安装 <code>Ada</code> 主题，首先用git克隆下仓库。这里，可以在hexo博客项目中去执行克隆行为，直接下载到hexo项目的themes目录下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/shuiRong/hexo-theme-Ada.git themes/Ada</span><br></pre></td></tr></table></figure></p><p>有些主题需要安装依赖库，在hexo项目根目录中安装：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-renderer-jade --save</span><br></pre></td></tr></table></figure></p><p>最后，修改hexo项目根目录下 <code>_config.yml</code> 中的 theme 选项<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: Ada</span><br></pre></td></tr></table></figure></p><p>这就完成了主题的修改。<br>主题的配置工作呢，在 <code>./themes/Ada/_config.yml</code> 中，具体修改看相应的 Github README。<br>其实如果有任何对主题不满意的地方可以直接去主题中修改，代码并不难，如果只是想改几个文本全局搜一下就能搜到了。</p><h1 id="添加关于页面"><a href="#添加关于页面" class="headerlink" title="添加关于页面"></a>添加关于页面</h1><p>样式中一般只有首页和文章两个标签可用，如果我们想添加其他标签，如 关于我，该怎么办呢？<br>创建 关于我 页面（添加 layout 选项，默认为post）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new page about</span><br></pre></td></tr></table></figure></p><p>这样，项目中就多了 about 这个文件夹，修改其中的 md 文件即可编辑关于我页面。<br>然后将主题的配置 <code>./themes/Ada/_config.yml</code> 中的页面链接指向 about 即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Header</span><br><span class="line">menu:</span><br><span class="line">  首页: /</span><br><span class="line">  文章: /archives</span><br><span class="line">  关于: /about</span><br></pre></td></tr></table></figure></p><p>好啦，这里就简单介绍下Hexo的用法~主要是记录下搭建的过程。整理下步骤：</p><ul><li>搭建环境</li><li>创建 Github.io，或者说GithubPage</li><li>使用hexo搭建博客</li><li>选择样式，添加页面、添加文章内容。</li><li>发布</li></ul><p>就这么多啦~快去选择一个喜欢的样式做一个自己的博客，提升逼格把~<br><strong>最后展示一下我的博客：</strong><a href="https://violetjack.github.io/">Vue实验室</a></p><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">hexo中文网</a><br><a href="https://pages.github.com/" target="_blank" rel="noopener">github page</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;一直想有个自己的 Github.io 博客，感觉逼格能够上升一大截。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;很久之前就看到网上各种博客搭建的文章，但是从内心中总感觉好像是个很麻烦的事情。所以，一直没有动手去做。&lt;/p&gt;
+&lt;p&gt;昨天，趁着年前工作
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Vue.js学习系列八 —— Vue源码学习之State学习</title>
