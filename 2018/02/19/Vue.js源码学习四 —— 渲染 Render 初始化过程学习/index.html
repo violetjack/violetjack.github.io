@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Vue.js源码学习四 —— 渲染 Render 初始化过程学习 | Vue实验室</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="今天我们来学习下Vue的渲染 Render 源码~  还是从初始化方法开始找代码，在 src/core/instance/index.js 中，先执行了 renderMixin 方法，然后在Vue实例化的时候执行了 vm._init 方法，在这个 vm._init 方法中执行了 initRender 方法。renderMixin 和 initRender 都在 src/core/instance">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue.js源码学习四 —— 渲染 Render 初始化过程学习">
+<meta property="og:url" content="https://violetjack.github.io/2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/index.html">
+<meta property="og:site_name" content="Vue实验室">
+<meta property="og:description" content="今天我们来学习下Vue的渲染 Render 源码~  还是从初始化方法开始找代码，在 src/core/instance/index.js 中，先执行了 renderMixin 方法，然后在Vue实例化的时候执行了 vm._init 方法，在这个 vm._init 方法中执行了 initRender 方法。renderMixin 和 initRender 都在 src/core/instance">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-02-19T04:28:16.680Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue.js源码学习四 —— 渲染 Render 初始化过程学习">
+<meta name="twitter:description" content="今天我们来学习下Vue的渲染 Render 源码~  还是从初始化方法开始找代码，在 src/core/instance/index.js 中，先执行了 renderMixin 方法，然后在Vue实例化的时候执行了 vm._init 方法，在这个 vm._init 方法中执行了 initRender 方法。renderMixin 和 initRender 都在 src/core/instance">
+  
+    <link rel="alternative" href="/atom.xml" title="Vue实验室" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Vue实验室</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">专注于Vue相关知识的学习和分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="violetjack.github.io">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-Vue.js源码学习四 —— 渲染 Render 初始化过程学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/" class="article-date">
+  <time datetime="2018-02-18T16:00:00.000Z" itemprop="datePublished">2018-02-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vue.js源码学习四 —— 渲染 Render 初始化过程学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>今天我们来学习下Vue的渲染 Render 源码~</p>
+</blockquote>
+<p>还是从初始化方法开始找代码，在 <code>src/core/instance/index.js</code> 中，先执行了 <code>renderMixin</code> 方法，然后在Vue实例化的时候执行了 <code>vm._init</code> 方法，在这个 <code>vm._init</code> 方法中执行了 <code>initRender</code> 方法。<code>renderMixin</code> 和 <code>initRender</code> 都在 <code>src/core/instance/render.js</code> 中，我们来看看代码：</p>
+<h1 id="renderMixin"><a href="#renderMixin" class="headerlink" title="renderMixin"></a>renderMixin</h1><p>首先来跟一下 <code>renderMixin</code> 的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">export function renderMixin (Vue: Class&lt;Component&gt;) &#123;</span><br><span class="line">  installRenderHelpers(Vue.prototype)</span><br><span class="line"></span><br><span class="line">  Vue.prototype.$nextTick = function (fn: Function) &#123;</span><br><span class="line">    return nextTick(fn, this)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Vue.prototype._render = function (): VNode &#123;</span><br><span class="line">    const vm: Component = this</span><br><span class="line">    // vm.$options.render &amp; vm.$options._parentVnode</span><br><span class="line">    const &#123; render, _parentVnode &#125; = vm.$options</span><br><span class="line"></span><br><span class="line">    if (_parentVnode) &#123;</span><br><span class="line">      vm.$scopedSlots = _parentVnode.data.scopedSlots || emptyObject</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    vm.$vnode = _parentVnode</span><br><span class="line">    let vnode</span><br><span class="line">    try &#123;</span><br><span class="line">      // 执行 vue 实例的 render 方法</span><br><span class="line">      vnode = render.call(vm._renderProxy, vm.$createElement)</span><br><span class="line">    &#125; catch (e) &#123;</span><br><span class="line">      handleError(e, vm, `render`)</span><br><span class="line">      if (process.env.NODE_ENV !== &apos;production&apos;) &#123;</span><br><span class="line">        if (vm.$options.renderError) &#123;</span><br><span class="line">          try &#123;</span><br><span class="line">            vnode = vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e)</span><br><span class="line">          &#125; catch (e) &#123;</span><br><span class="line">            handleError(e, vm, `renderError`)</span><br><span class="line">            vnode = vm._vnode</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          vnode = vm._vnode</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        vnode = vm._vnode</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    // 返回空vnode避免render方法报错退出</span><br><span class="line">    if (!(vnode instanceof VNode)) &#123;</span><br><span class="line">      vnode = createEmptyVNode()</span><br><span class="line">    &#125;</span><br><span class="line">    // 父级Vnode</span><br><span class="line">    vnode.parent = _parentVnode</span><br><span class="line">    return vnode</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>源码执行了 <code>installRenderHelpers</code> 方法，然后定义了 Vue 的 <code>$nextTick</code> 和 <code>_render</code> 方法。<br>先来看看 <code>installRenderHelpers</code> 方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">export function installRenderHelpers (target: any) &#123;</span><br><span class="line">  target._o = markOnce</span><br><span class="line">  target._n = toNumber // 数字</span><br><span class="line">  target._s = toString // 字符串</span><br><span class="line">  target._l = renderList // 列表</span><br><span class="line">  target._t = renderSlot</span><br><span class="line">  target._q = looseEqual</span><br><span class="line">  target._i = looseIndexOf</span><br><span class="line">  target._m = renderStatic</span><br><span class="line">  target._f = resolveFilter</span><br><span class="line">  target._k = checkKeyCodes</span><br><span class="line">  target._b = bindObjectProps</span><br><span class="line">  target._v = createTextVNode</span><br><span class="line">  target._e = createEmptyVNode</span><br><span class="line">  target._u = resolveScopedSlots</span><br><span class="line">  target._g = bindObjectListeners</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这就是 Vue 的各类渲染方法了，从字面意思中可以知道一些方法的用途，这些方法用在Vue生成的渲染函数中。具体各个渲染函数的实现先不提~之后会专门写博客学习。<br>在 <code>$nextTick</code> 函数中执行了 <code>nextTick</code> 函数，找到该函数源码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">export function nextTick (cb?: Function, ctx?: Object) &#123;</span><br><span class="line">  let _resolve</span><br><span class="line">  callbacks.push(() =&gt; &#123;</span><br><span class="line">    if (cb) &#123;</span><br><span class="line">      try &#123;</span><br><span class="line">        cb.call(ctx)</span><br><span class="line">      &#125; catch (e) &#123;</span><br><span class="line">        handleError(e, ctx, &apos;nextTick&apos;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; else if (_resolve) &#123;</span><br><span class="line">      _resolve(ctx)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  if (!pending) &#123;</span><br><span class="line">    pending = true</span><br><span class="line">    if (useMacroTask) &#123;</span><br><span class="line">      macroTimerFunc()</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      microTimerFunc()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  // $flow-disable-line</span><br><span class="line">  if (!cb &amp;&amp; typeof Promise !== &apos;undefined&apos;) &#123;</span><br><span class="line">    return new Promise(resolve =&gt; &#123;</span><br><span class="line">      _resolve = resolve</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>现在来说关键的 <code>_render</code> 方法，关键在这个 try…catch 方法中，执行了Vue实例中的 render 方法生成一个vnode。如果生成失败，会试着生成 renderError 方法。如果vnode为空，则为vnode传一个空的VNode，最后返回vnode对象。</p>
+<h1 id="initRender"><a href="#initRender" class="headerlink" title="initRender"></a>initRender</h1><p>接下来看下 render 的初始化过程：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">initRender</span> (<span class="params">vm: Component</span>) </span>&#123;</span><br><span class="line">  vm._vnode = <span class="literal">null</span> <span class="comment">// the root of the child tree</span></span><br><span class="line">  vm._staticTrees = <span class="literal">null</span> <span class="comment">// v-once cached trees</span></span><br><span class="line">  <span class="keyword">const</span> options = vm.$options</span><br><span class="line">  <span class="keyword">const</span> parentVnode = vm.$vnode = options._parentVnode <span class="comment">// the placeholder node in parent tree</span></span><br><span class="line">  <span class="keyword">const</span> renderContext = parentVnode &amp;&amp; parentVnode.context</span><br><span class="line">  vm.$slots = resolveSlots(options._renderChildren, renderContext)</span><br><span class="line">  vm.$scopedSlots = emptyObject</span><br><span class="line">  <span class="comment">// 将 createElement 方法绑定到这个实例，这样我们就可以在其中得到适当的 render context。</span></span><br><span class="line">  vm._c = <span class="function">(<span class="params">a, b, c, d</span>) =&gt;</span> createElement(vm, a, b, c, d, <span class="literal">false</span>)</span><br><span class="line">  <span class="comment">// 规范化一直应用于公共版本，用于用户编写的 render 函数。</span></span><br><span class="line">  vm.$createElement = <span class="function">(<span class="params">a, b, c, d</span>) =&gt;</span> createElement(vm, a, b, c, d, <span class="literal">true</span>)</span><br><span class="line">  <span class="comment">// 父级组件数据</span></span><br><span class="line">  <span class="keyword">const</span> parentData = parentVnode &amp;&amp; parentVnode.data</span><br><span class="line">  <span class="comment">// 监听事件</span></span><br><span class="line">  defineReactive(vm, <span class="string">'$attrs'</span>, parentData &amp;&amp; parentData.attrs || emptyObject, <span class="literal">null</span>, <span class="literal">true</span>)</span><br><span class="line">  defineReactive(vm, <span class="string">'$listeners'</span>, options._parentListeners || emptyObject, <span class="literal">null</span>, <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在 initRender 方法中，为Vue的实例方法添加了几个属性值，最后定义了 <code>$attrs</code> 和 <code>$listeners</code> 的监听方法。<br>看下 <code>createElement</code> 方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// src/core/vdom/create-element.js</span><br><span class="line">export function createElement (</span><br><span class="line">  context: Component,</span><br><span class="line">  tag: any,</span><br><span class="line">  data: any,</span><br><span class="line">  children: any,</span><br><span class="line">  normalizationType: any,</span><br><span class="line">  alwaysNormalize: boolean</span><br><span class="line">): VNode | Array&lt;VNode&gt; &#123;</span><br><span class="line">  if (Array.isArray(data) || isPrimitive(data)) &#123;</span><br><span class="line">    normalizationType = children</span><br><span class="line">    children = data</span><br><span class="line">    data = undefined</span><br><span class="line">  &#125;</span><br><span class="line">  if (isTrue(alwaysNormalize)) &#123;</span><br><span class="line">    normalizationType = ALWAYS_NORMALIZE</span><br><span class="line">  &#125;</span><br><span class="line">  return _createElement(context, tag, data, children, normalizationType)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里执行了 <code>_createElement</code> 方法，由于该方法太长，就不贴出来费篇幅了，代码看<a href="https://github.com/vuejs/vue/blob/dev/src/core/vdom/create-element.js#L47" target="_blank" rel="noopener">这里</a>。最终返回一个 VNode 对象，VNode 对象由 <code>createEmptyVNode</code> 或 <code>createComponent</code> 方法得到的。<br><code>createEmptyVNode</code> 创建了一个空的 VNode<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// src/core/vdom/vnode.js</span><br><span class="line">export const createEmptyVNode = (text: string = &apos;&apos;) =&gt; &#123;</span><br><span class="line">  const node = new VNode()</span><br><span class="line">  node.text = text</span><br><span class="line">  node.isComment = true</span><br><span class="line">  return node</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>createComponent</code> 创建了一个组件，最终也将返回一个 VNode 对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">// src/core/vdom/create-component.js</span><br><span class="line">export function createComponent (</span><br><span class="line">  Ctor: Class&lt;Component&gt; | Function | Object | void,</span><br><span class="line">  data: ?VNodeData,</span><br><span class="line">  context: Component,</span><br><span class="line">  children: ?Array&lt;VNode&gt;,</span><br><span class="line">  tag?: string</span><br><span class="line">): VNode | Array&lt;VNode&gt; | void &#123;</span><br><span class="line">  if (isUndef(Ctor)) &#123;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line">  const baseCtor = context.$options._base</span><br><span class="line">  if (isObject(Ctor)) &#123;</span><br><span class="line">    Ctor = baseCtor.extend(Ctor)</span><br><span class="line">  &#125;</span><br><span class="line">  if (typeof Ctor !== &apos;function&apos;) &#123;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  let asyncFactory</span><br><span class="line">  if (isUndef(Ctor.cid)) &#123;</span><br><span class="line">    asyncFactory = Ctor</span><br><span class="line">    Ctor = resolveAsyncComponent(asyncFactory, baseCtor, context)</span><br><span class="line">    if (Ctor === undefined) &#123;</span><br><span class="line">      return createAsyncPlaceholder(</span><br><span class="line">        asyncFactory,</span><br><span class="line">        data,</span><br><span class="line">        context,</span><br><span class="line">        children,</span><br><span class="line">        tag</span><br><span class="line">      )</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  data = data || &#123;&#125;</span><br><span class="line">  resolveConstructorOptions(Ctor)</span><br><span class="line">  if (isDef(data.model)) &#123;</span><br><span class="line">    transformModel(Ctor.options, data)</span><br><span class="line">  &#125;</span><br><span class="line">  const propsData = extractPropsFromVNodeData(data, Ctor, tag)</span><br><span class="line">  if (isTrue(Ctor.options.functional)) &#123;</span><br><span class="line">    return createFunctionalComponent(Ctor, propsData, data, context, children)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  const listeners = data.on</span><br><span class="line">  data.on = data.nativeOn</span><br><span class="line"></span><br><span class="line">  if (isTrue(Ctor.options.abstract)) &#123;</span><br><span class="line">    const slot = data.slot</span><br><span class="line">    data = &#123;&#125;</span><br><span class="line">    if (slot) &#123;</span><br><span class="line">      data.slot = slot</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  mergeHooks(data)</span><br><span class="line">  // 创建组件的 VNode</span><br><span class="line">  const name = Ctor.options.name || tag</span><br><span class="line">  const vnode = new VNode(</span><br><span class="line">    `vue-component-$&#123;Ctor.cid&#125;$&#123;name ? `-$&#123;name&#125;` : &apos;&apos;&#125;`,</span><br><span class="line">    data, undefined, undefined, undefined, context,</span><br><span class="line">    &#123; Ctor, propsData, listeners, tag, children &#125;,</span><br><span class="line">    asyncFactory</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  return vnode</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="初次渲染过程"><a href="#初次渲染过程" class="headerlink" title="初次渲染过程"></a>初次渲染过程</h1><p>既然是初次渲染，肯定会触发 <code>mounted</code> 生命周期钩子。所以我们从 <code>mount</code> 找起。在源码中定义了两次 <code>$mount</code> 方法，第一次返回了 <code>mountComponent</code> 方法；第二次定义了 Vue 实例的 <code>$options</code> 选项中的一些数据，然后再执行第一次的 <code>$mount</code> 方法，即执行 <code>mountComponent</code> 方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// src/platforms/web/runtime/index.js</span><br><span class="line">Vue.prototype.$mount = function (</span><br><span class="line">  el?: string | Element,</span><br><span class="line">  hydrating?: boolean</span><br><span class="line">): Component &#123;</span><br><span class="line">  el = el &amp;&amp; inBrowser ? query(el) : undefined</span><br><span class="line">  return mountComponent(this, el, hydrating)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">// src/platforms/web/entry-runtime-with-compiler.js</span><br><span class="line">const mount = Vue.prototype.$mount</span><br><span class="line">Vue.prototype.$mount = function (</span><br><span class="line">  el?: string | Element,</span><br><span class="line">  hydrating?: boolean</span><br><span class="line">): Component &#123;</span><br><span class="line">  el = el &amp;&amp; query(el)</span><br><span class="line"></span><br><span class="line">  if (el === document.body || el === document.documentElement) &#123;</span><br><span class="line">    return this</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  const options = this.$options</span><br><span class="line">  // resolve template/el and convert to render function</span><br><span class="line">  if (!options.render) &#123;</span><br><span class="line">    let template = options.template</span><br><span class="line">    if (template) &#123;</span><br><span class="line">      if (typeof template === &apos;string&apos;) &#123;</span><br><span class="line">        if (template.charAt(0) === &apos;#&apos;) &#123;</span><br><span class="line">          template = idToTemplate(template)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; else if (template.nodeType) &#123;</span><br><span class="line">        template = template.innerHTML</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        return this</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; else if (el) &#123;</span><br><span class="line">      template = getOuterHTML(el)</span><br><span class="line">    &#125;</span><br><span class="line">    if (template) &#123;</span><br><span class="line">      const &#123; render, staticRenderFns &#125; = compileToFunctions(template, &#123;</span><br><span class="line">        shouldDecodeNewlines,</span><br><span class="line">        shouldDecodeNewlinesForHref,</span><br><span class="line">        delimiters: options.delimiters,</span><br><span class="line">        comments: options.comments</span><br><span class="line">      &#125;, this)</span><br><span class="line">      options.render = render</span><br><span class="line">      options.staticRenderFns = staticRenderFns</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return mount.call(this, el, hydrating)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里需要注意的是 <code>compileToFunctions</code> 方法，该方法的作用是将 template 编译为 render 函数。<br><code>compileToFunctions</code> 方法是一个编译的过程，暂且不论。抓住主线，看渲染。所以去看看 <code>mountComponent</code> 方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">// src/core/instance/lifecycle.js</span><br><span class="line">export function mountComponent (</span><br><span class="line">  vm: Component,</span><br><span class="line">  el: ?Element,</span><br><span class="line">  hydrating?: boolean</span><br><span class="line">): Component &#123;</span><br><span class="line">  vm.$el = el</span><br><span class="line">  if (!vm.$options.render) &#123;</span><br><span class="line">    vm.$options.render = createEmptyVNode</span><br><span class="line">  &#125;</span><br><span class="line">  callHook(vm, &apos;beforeMount&apos;)</span><br><span class="line"></span><br><span class="line">  let updateComponent</span><br><span class="line">  updateComponent = () =&gt; &#123;</span><br><span class="line">    vm._update(vm._render(), hydrating)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  new Watcher(vm, updateComponent, noop, null, true /* isRenderWatcher */)</span><br><span class="line">  hydrating = false</span><br><span class="line"></span><br><span class="line">  if (vm.$vnode == null) &#123;</span><br><span class="line">    vm._isMounted = true</span><br><span class="line">    callHook(vm, &apos;mounted&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">  return vm</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，在 beforeMount 和 mounted 生命周期之间的代码：创建一个更新方法，然后创建一个Watcher监听该方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let updateComponent = () =&gt; &#123;</span><br><span class="line">  vm._update(vm._render(), hydrating)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">new Watcher(vm, updateComponent, noop, null, true /* isRenderWatcher */)</span><br></pre></td></tr></table></figure></p>
+<p>在 <code>new Watcher</code> 监听了 updateComponent 方法后，会立即执行 <code>updateComponent</code> 方法。在 <code>updateComponent</code> 方法中，我们之前提到 _render 方法最终返回一个编译过的 VNode 对象，即虚拟 DOM，这里我们就看看 _update 方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">// src/core/instance/lifecycle.js</span><br><span class="line">Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) &#123;</span><br><span class="line">  const vm: Component = this</span><br><span class="line">  if (vm._isMounted) &#123;</span><br><span class="line">    callHook(vm, &apos;beforeUpdate&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">  const prevEl = vm.$el</span><br><span class="line">  const prevVnode = vm._vnode</span><br><span class="line">  const prevActiveInstance = activeInstance</span><br><span class="line">  activeInstance = vm</span><br><span class="line">  vm._vnode = vnode</span><br><span class="line"></span><br><span class="line">  if (!prevVnode) &#123;</span><br><span class="line">    // initial render</span><br><span class="line">    vm.$el = vm.__patch__(</span><br><span class="line">      vm.$el, vnode, hydrating, false /* removeOnly */,</span><br><span class="line">      vm.$options._parentElm,</span><br><span class="line">      vm.$options._refElm</span><br><span class="line">    )</span><br><span class="line">    vm.$options._parentElm = vm.$options._refElm = null</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // updates</span><br><span class="line">    vm.$el = vm.__patch__(prevVnode, vnode)</span><br><span class="line">  &#125;</span><br><span class="line">  activeInstance = prevActiveInstance</span><br><span class="line">  // update __vue__ reference</span><br><span class="line">  if (prevEl) &#123;</span><br><span class="line">    prevEl.__vue__ = null</span><br><span class="line">  &#125;</span><br><span class="line">  if (vm.$el) &#123;</span><br><span class="line">    vm.$el.__vue__ = vm</span><br><span class="line">  &#125;</span><br><span class="line">  if (vm.$vnode &amp;&amp; vm.$parent &amp;&amp; vm.$vnode === vm.$parent._vnode) &#123;</span><br><span class="line">    vm.$parent.$el = vm.$el</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从注释可以看出，初次渲染会走到 <code>vm.__patch__</code> 方法中，这个方法就是比对虚拟 DOM ，局部更新 DOM 的方法，关于虚拟 DOM 和 VNode 节点，之后再聊。</p>
+<h1 id="小结一下"><a href="#小结一下" class="headerlink" title="小结一下"></a>小结一下</h1><ul>
+<li>通过 <code>renderMixin</code> 方法来定义一些渲染属性。</li>
+<li><code>initRender</code> 定义了各类渲染选项，并且对一些属性进行监听。</li>
+<li><code>$mount</code> 方法执行了 <code>mountComponent</code> 方法，监听<br><code>updateComponent</code> 方法并执行 <code>_update</code> 方法。</li>
+<li><code>_update</code> 方法中执行 <code>__patch__</code> 方法渲染 VNode。</li>
+</ul>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>这里简单理了理 <code>render</code> 渲染的代码流程，更深入的关于虚拟 DOM 的内容在下一篇中继续研究~<br>这里再提出几个问题，之后学习和解决：</p>
+<ul>
+<li>template 的具体编译细节</li>
+<li>已知 data 数据监测，如何在改变数据后对改变界面的显示。</li>
+<li>深入理解虚拟 DOM 的原理</li>
+<li>学习全局 API 的源码</li>
+<li>了解各类工具类</li>
+<li>了解 AST 语法树是什么~</li>
+</ul>
+<p>计划3月底完成Vue源码的系统学习，之后转战vue-router、vuex、vuxt、 devtools、webpack、vue-loader，今年目标把Vue全家老小、亲戚朋友都学习一遍！加油！</p>
+<h1 id="Vue-js学习系列"><a href="#Vue-js学习系列" class="headerlink" title="Vue.js学习系列"></a>Vue.js学习系列</h1><p>鉴于前端知识碎片化严重，我希望能够系统化的整理出一套关于Vue的学习系列博客。</p>
+<h1 id="Vue-js学习系列项目地址"><a href="#Vue-js学习系列项目地址" class="headerlink" title="Vue.js学习系列项目地址"></a>Vue.js学习系列项目地址</h1><p>本文源码已收入到GitHub中，以供参考，当然能留下一个star更好啦^-^。<br><a href="https://github.com/violetjack/VueStudyDemos" target="_blank" rel="noopener">https://github.com/violetjack/VueStudyDemos</a></p>
+<h1 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h1><p>VioletJack，高效学习前端工程师，喜欢研究提高效率的方法，也专注于Vue前端相关知识的学习、整理。<br>欢迎关注、点赞、评论留言~我将持续产出Vue相关优质内容。</p>
+<p>新浪微博： <a href="http://weibo.com/u/2640909603" target="_blank" rel="noopener">http://weibo.com/u/2640909603</a><br>掘金：<a href="https://gold.xitu.io/user/571d953d39b0570068145cd1" target="_blank" rel="noopener">https://gold.xitu.io/user/571d953d39b0570068145cd1</a><br>CSDN: <a href="http://blog.csdn.net/violetjack0808" target="_blank" rel="noopener">http://blog.csdn.net/violetjack0808</a><br>简书： <a href="http://www.jianshu.com/users/54ae4af3a98d/latest_articles" target="_blank" rel="noopener">http://www.jianshu.com/users/54ae4af3a98d/latest_articles</a><br>Github： <a href="https://github.com/violetjack" target="_blank" rel="noopener">https://github.com/violetjack</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://violetjack.github.io/2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/" data-id="cjdtq38d2000awfbtsorh2c33" class="article-share-link" data-share="baidu" data-title="Vue.js源码学习四 —— 渲染 Render 初始化过程学习">分享到</a>
+      
+
+      
+        <a href="https://violetjack.github.io/2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/02/17/Vue.js源码学习三 —— 事件 Event 学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Vue.js源码学习三 —— 事件 Event 学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/" data-title="Vue.js源码学习四 —— 渲染 Render 初始化过程学习" data-url="https://violetjack.github.io/2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/">Vue.js源码学习四 —— 渲染 Render 初始化过程学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/17/Vue.js源码学习三 —— 事件 Event 学习/">Vue.js源码学习三 —— 事件 Event 学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/16/Vue.js源码学习二 —— 生命周期 LifeCycle 学习/">Vue.js源码学习二 —— 生命周期 LifeCycle 学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/08/用hexo搭建博客笔记/">用hexo搭建博客笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/03/Vue.js源码学习一 —— 数据选项 State 学习/">Vue.js学习系列八 —— Vue源码学习之State学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">个人网站</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/violetjack" target="_blank">Github</a>
+          </li>
+        
+          <li>
+            <a href="https://segmentfault.com/u/violetjack" target="_blank">SegmentFault</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.csdn.net/violetjack0808" target="_blank">CSDN</a>
+          </li>
+        
+          <li>
+            <a href="https://www.jianshu.com/u/54ae4af3a98d" target="_blank">简书</a>
+          </li>
+        
+          <li>
+            <a href="https://juejin.im/user/571d953d39b0570068145cd1" target="_blank">掘金</a>
+          </li>
+        
+          <li>
+            <a href="https://www.zhihu.com/people/violetjack" target="_blank">知乎</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 VioletJack<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"reqianduan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

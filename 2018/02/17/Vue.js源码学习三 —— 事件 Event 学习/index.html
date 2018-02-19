@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Vue.js源码学习三 —— 事件 Event 学习 | Vue实验室</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="早上好！继续学习Vue源码~这次我们来学习 event 事件。  源码简析其实看了前两篇的同学已经知道源码怎么找了，这里再提一下。先找到Vue核心源码index方法 src/core/instance/index.js1234567891011121314function Vue (options) &amp;#123;  if (process.env.NODE_ENV !== &amp;apos;produ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue.js源码学习三 —— 事件 Event 学习">
+<meta property="og:url" content="https://violetjack.github.io/2018/02/17/Vue.js源码学习三 —— 事件 Event 学习/index.html">
+<meta property="og:site_name" content="Vue实验室">
+<meta property="og:description" content="早上好！继续学习Vue源码~这次我们来学习 event 事件。  源码简析其实看了前两篇的同学已经知道源码怎么找了，这里再提一下。先找到Vue核心源码index方法 src/core/instance/index.js1234567891011121314function Vue (options) &amp;#123;  if (process.env.NODE_ENV !== &amp;apos;produ">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-02-19T04:28:24.816Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue.js源码学习三 —— 事件 Event 学习">
+<meta name="twitter:description" content="早上好！继续学习Vue源码~这次我们来学习 event 事件。  源码简析其实看了前两篇的同学已经知道源码怎么找了，这里再提一下。先找到Vue核心源码index方法 src/core/instance/index.js1234567891011121314function Vue (options) &amp;#123;  if (process.env.NODE_ENV !== &amp;apos;produ">
+  
+    <link rel="alternative" href="/atom.xml" title="Vue实验室" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Vue实验室</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">专注于Vue相关知识的学习和分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">文章</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="violetjack.github.io">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-Vue.js源码学习三 —— 事件 Event 学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/02/17/Vue.js源码学习三 —— 事件 Event 学习/" class="article-date">
+  <time datetime="2018-02-16T16:00:00.000Z" itemprop="datePublished">2018-02-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Vue.js源码学习三 —— 事件 Event 学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>早上好！继续学习Vue源码~这次我们来学习 event 事件。</p>
+</blockquote>
+<h1 id="源码简析"><a href="#源码简析" class="headerlink" title="源码简析"></a>源码简析</h1><p>其实看了前两篇的同学已经知道源码怎么找了，这里再提一下。<br>先找到Vue核心源码index方法 <code>src/core/instance/index.js</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function Vue (options) &#123;</span><br><span class="line">  if (process.env.NODE_ENV !== &apos;production&apos; &amp;&amp;</span><br><span class="line">    !(this instanceof Vue)</span><br><span class="line">  ) &#123;</span><br><span class="line">    warn(&apos;Vue is a constructor and should be called with the `new` keyword&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">  this._init(options)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">initMixin(Vue)</span><br><span class="line">stateMixin(Vue)</span><br><span class="line">eventsMixin(Vue)</span><br><span class="line">lifecycleMixin(Vue)</span><br><span class="line">renderMixin(Vue)</span><br></pre></td></tr></table></figure></p>
+<p>index方法中定义了一个Vue的构造函数执行 <code>_init</code> 方法初始化，然后执行了多个 <code>xxxMixin</code> 方法，这些方法是为Vue 的构造函数定义各类属性的。比如我们今天关注的事件，Vue的几个事件方法都是在 <code>eventsMixin</code> 中定义的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">export function eventsMixin (Vue: Class&lt;Component&gt;) &#123;</span><br><span class="line">  Vue.prototype.$on = function (event: string | Array&lt;string&gt;, fn: Function): Component &#123;</span><br><span class="line">    ……</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Vue.prototype.$once = function (event: string, fn: Function): Component &#123;</span><br><span class="line">    ……</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Vue.prototype.$off = function (event?: string | Array&lt;string&gt;, fn?: Function): Component &#123;</span><br><span class="line">    ……</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Vue.prototype.$emit = function (event: string): Component &#123;</span><br><span class="line">    ……</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>另外要注意的是，<code>initMixin</code> 方法中定义了Vue的初始化方法 <code>_init</code>，该方法中对Vue各类属性进行了初始化。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">export function initMixin (Vue: Class&lt;Component&gt;) &#123;</span><br><span class="line">  Vue.prototype._init = function (options?: Object) &#123;</span><br><span class="line">    if (options &amp;&amp; options._isComponent) &#123;</span><br><span class="line">      initInternalComponent(vm, options)</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      vm.$options = mergeOptions(</span><br><span class="line">        resolveConstructorOptions(vm.constructor),</span><br><span class="line">        options || &#123;&#125;,</span><br><span class="line">        vm</span><br><span class="line">      )</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    initProxy(vm)</span><br><span class="line">    vm._self = vm</span><br><span class="line">    initLifecycle(vm)</span><br><span class="line">    initEvents(vm)</span><br><span class="line">    initRender(vm)</span><br><span class="line">    callHook(vm, &apos;beforeCreate&apos;)</span><br><span class="line">    initInjections(vm) // resolve injections before data/props</span><br><span class="line">    initState(vm)</span><br><span class="line">    initProvide(vm) // resolve provide after data/props</span><br><span class="line">    callHook(vm, &apos;created&apos;)</span><br><span class="line">    if (vm.$options.el) &#123;</span><br><span class="line">      vm.$mount(vm.$options.el)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以，在本篇博客中只需要关注 <code>initEvents</code> 和 <code>eventsMixin</code> 方法即可</p>
+<h1 id="initEvents"><a href="#initEvents" class="headerlink" title="initEvents"></a>initEvents</h1><p>初始化过程很简单，清空数据，并初始化连接父级的事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// src/core/instance/events.js</span><br><span class="line">export function initEvents (vm: Component) &#123;</span><br><span class="line">  vm._events = Object.create(null)</span><br><span class="line">  vm._hasHookEvent = false</span><br><span class="line">  // init parent attached events</span><br><span class="line">  const listeners = vm.$options._parentListeners</span><br><span class="line">  if (listeners) &#123;</span><br><span class="line">    updateComponentListeners(vm, listeners)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我深入看了下 <code>updateComponentListeners</code> 方法，最终走到了 <code>src/core/vdom/helpers/update-listeners.js</code> 的 <code>updateListeners</code> 方法中，因为并没有传 <code>oldOn</code> 参数，所以我简化了下代码，简化代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// src/core/vdom/helpers/update-listeners.js</span><br><span class="line">export function updateListeners (</span><br><span class="line">  on: Object,</span><br><span class="line">  oldOn: Object,</span><br><span class="line">  add: Function,</span><br><span class="line">  remove: Function,</span><br><span class="line">  vm: Component</span><br><span class="line">) &#123;</span><br><span class="line">  let name, def, cur, old, event</span><br><span class="line">  for (name in on) &#123;</span><br><span class="line">    def = cur = on[name]</span><br><span class="line">    old = oldOn[name]</span><br><span class="line">    event = normalizeEvent(name)</span><br><span class="line"></span><br><span class="line">    if (isUndef(old)) &#123;</span><br><span class="line">      if (isUndef(cur.fns)) &#123;</span><br><span class="line">        cur = on[name] = createFnInvoker(cur)</span><br><span class="line">      &#125;</span><br><span class="line">      add(event.name, cur, event.once, event.capture, event.passive, event.params)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中这个add方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// src/core/instance/events.js</span><br><span class="line">// target 临时引用vm，用完后即变为undefined</span><br><span class="line">var target;</span><br><span class="line"></span><br><span class="line">function add (event, fn, once) &#123;</span><br><span class="line">  if (once) &#123;</span><br><span class="line">    target.$once(event, fn);</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    target.$on(event, fn);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>整理下来就是将父级的事件定义到当前vm中。</p>
+<h1 id="on"><a href="#on" class="headerlink" title="$on"></a>$on</h1><blockquote>
+<p>监听当前实例上的自定义事件。事件可以由vm.$emit触发。回调函数会接收所有传入事件触发函数的额外参数。</p>
+</blockquote>
+<p>代码如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// src/core/instance/events.js</span><br><span class="line">Vue.prototype.$on = function (event: string | Array&lt;string&gt;, fn: Function): Component &#123;</span><br><span class="line">  const vm: Component = this</span><br><span class="line">  if (Array.isArray(event)) &#123;</span><br><span class="line">    for (let i = 0, l = event.length; i &lt; l; i++) &#123;</span><br><span class="line">      this.$on(event[i], fn)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    (vm._events[event] || (vm._events[event] = [])).push(fn)</span><br><span class="line">    // 通过使用标记为注册而不是散列查找的布尔标记来优化钩子 hook: 事件成本。</span><br><span class="line">    if (hookRE.test(event)) &#123;</span><br><span class="line">      vm._hasHookEvent = true</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return vm</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果 event 是数组则遍历执行 $on 方法（2.2.0+ 中支持）；<br>否则 向 vm._events[event] 中传递回调函数 fn，这里既然 vm._events[event] 是一个数组，那么我猜想一个 event 可以执行多个回调函数咯？<br>如果是 event 字符串中有 <code>hook:</code>，修改 <code>vm._hasHookEvent</code> 的状态。如果 <code>_hasHookEvent</code> 为 true，那么在触发各类生命周期钩子的时候会触发如 <code>hook:created</code> 事件，这只是一种优化方式，与我们主题关系不大，具体请看代码~<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// src/core/instance/lifecycle.js</span><br><span class="line">export function callHook (vm: Component, hook: string) &#123;</span><br><span class="line">  const handlers = vm.$options[hook]</span><br><span class="line">  if (handlers) &#123;</span><br><span class="line">    for (let i = 0, j = handlers.length; i &lt; j; i++) &#123;</span><br><span class="line">      try &#123;</span><br><span class="line">        handlers[i].call(vm)</span><br><span class="line">      &#125; catch (e) &#123;</span><br><span class="line">        handleError(e, vm, `$&#123;hook&#125; hook`)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  if (vm._hasHookEvent) &#123;</span><br><span class="line">    vm.$emit(&apos;hook:&apos; + hook)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="once"><a href="#once" class="headerlink" title="$once"></a>$once</h1><blockquote>
+<p>监听一个自定义事件，但是只触发一次，在第一次触发之后移除监听器。</p>
+</blockquote>
+<p>代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// src/core/instance/events.js</span><br><span class="line">Vue.prototype.$once = function (event: string, fn: Function): Component &#123;</span><br><span class="line">  const vm: Component = this</span><br><span class="line">  function on () &#123;</span><br><span class="line">    vm.$off(event, on)</span><br><span class="line">    fn.apply(vm, arguments)</span><br><span class="line">  &#125;</span><br><span class="line">  on.fn = fn</span><br><span class="line">  vm.$on(event, on)</span><br><span class="line">  return vm</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个就简单了，定义一个 $on 事件监听，回调函数中使用 $off 方法取消事件监听，并执行回调函数。</p>
+<h1 id="off"><a href="#off" class="headerlink" title="$off"></a>$off</h1><blockquote>
+<p>移除自定义事件监听器。</p>
+<ul>
+<li>如果没有提供参数，则移除所有的事件监听器；</li>
+<li>如果只提供了事件，则移除该事件所有的监听器；</li>
+<li>如果同时提供了事件与回调，则只移除这个回调的监听器。</li>
+</ul>
+</blockquote>
+<p>代码如下，分析见注释。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">// src/core/instance/events.js</span><br><span class="line">Vue.prototype.$off = function (event?: string | Array&lt;string&gt;, fn?: Function): Component &#123;</span><br><span class="line">  const vm: Component = this</span><br><span class="line">  // 如果没有参数，关闭全部事件监听器</span><br><span class="line">  if (!arguments.length) &#123;</span><br><span class="line">    vm._events = Object.create(null)</span><br><span class="line">    return vm</span><br><span class="line">  &#125;</span><br><span class="line">  // 关闭数组中的事件监听器</span><br><span class="line">  if (Array.isArray(event)) &#123;</span><br><span class="line">    for (let i = 0, l = event.length; i &lt; l; i++) &#123;</span><br><span class="line">      this.$off(event[i], fn)</span><br><span class="line">    &#125;</span><br><span class="line">    return vm</span><br><span class="line">  &#125;</span><br><span class="line">  // 具体某个事件监听</span><br><span class="line">  const cbs = vm._events[event]</span><br><span class="line">  // 没有这个监听事件，直接返回vm</span><br><span class="line">  if (!cbs) &#123;</span><br><span class="line">    return vm</span><br><span class="line">  &#125;</span><br><span class="line">  // 没有 fn，将事件监听器变为null，返回vm</span><br><span class="line">  if (!fn) &#123;</span><br><span class="line">    vm._events[event] = null</span><br><span class="line">    return vm</span><br><span class="line">  &#125;</span><br><span class="line">  // 有回调函数</span><br><span class="line">  if (fn) &#123;</span><br><span class="line">    // specific handler</span><br><span class="line">    let cb</span><br><span class="line">    let i = cbs.length</span><br><span class="line">    while (i--) &#123;</span><br><span class="line">      // cbs = vm._events[event] 是一个数组</span><br><span class="line">      cb = cbs[i]</span><br><span class="line">      if (cb === fn || cb.fn === fn) &#123;</span><br><span class="line">        // 移除 fn 这个事件监听器</span><br><span class="line">        cbs.splice(i, 1)</span><br><span class="line">        break</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return vm</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="emit"><a href="#emit" class="headerlink" title="$emit"></a>$emit</h1><blockquote>
+<p>触发当前实例上的事件。附加参数都会传给监听器回调。</p>
+</blockquote>
+<p>代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// src/core/instance/events.js</span><br><span class="line">Vue.prototype.$emit = function (event: string): Component &#123;</span><br><span class="line">  const vm: Component = this</span><br><span class="line">  let cbs = vm._events[event]</span><br><span class="line">  if (cbs) &#123;</span><br><span class="line">    cbs = cbs.length &gt; 1 ? toArray(cbs) : cbs</span><br><span class="line">    const args = toArray(arguments, 1)</span><br><span class="line">    for (let i = 0, l = cbs.length; i &lt; l; i++) &#123;</span><br><span class="line">      try &#123;</span><br><span class="line">        cbs[i].apply(vm, args)</span><br><span class="line">      &#125; catch (e) &#123;</span><br><span class="line">        handleError(e, vm, `event handler for &quot;$&#123;event&#125;&quot;`)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return vm</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>代码分析：首先获取 vm._events[event] ，之前我们说过这玩意是个数组；如果有这个事件监听器，从第二个参数开始获取作为触发方法的传参 args，遍历事件监听器数组传参执行回调函数。</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>就这么多啦~其实事件还是很简单的。明后天研究研究渲染这个难点！我们后天见！</p>
+<h1 id="Vue-js学习系列"><a href="#Vue-js学习系列" class="headerlink" title="Vue.js学习系列"></a>Vue.js学习系列</h1><p>鉴于前端知识碎片化严重，我希望能够系统化的整理出一套关于Vue的学习系列博客。</p>
+<h1 id="Vue-js学习系列项目地址"><a href="#Vue-js学习系列项目地址" class="headerlink" title="Vue.js学习系列项目地址"></a>Vue.js学习系列项目地址</h1><p>本文源码已收入到GitHub中，以供参考，当然能留下一个star更好啦^-^。<br><a href="https://github.com/violetjack/VueStudyDemos" target="_blank" rel="noopener">https://github.com/violetjack/VueStudyDemos</a></p>
+<h1 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h1><p>VioletJack，高效学习前端工程师，喜欢研究提高效率的方法，也专注于Vue前端相关知识的学习、整理。<br>欢迎关注、点赞、评论留言~我将持续产出Vue相关优质内容。</p>
+<p>新浪微博： <a href="http://weibo.com/u/2640909603" target="_blank" rel="noopener">http://weibo.com/u/2640909603</a><br>掘金：<a href="https://gold.xitu.io/user/571d953d39b0570068145cd1" target="_blank" rel="noopener">https://gold.xitu.io/user/571d953d39b0570068145cd1</a><br>CSDN: <a href="http://blog.csdn.net/violetjack0808" target="_blank" rel="noopener">http://blog.csdn.net/violetjack0808</a><br>简书： <a href="http://www.jianshu.com/users/54ae4af3a98d/latest_articles" target="_blank" rel="noopener">http://www.jianshu.com/users/54ae4af3a98d/latest_articles</a><br>Github： <a href="https://github.com/violetjack" target="_blank" rel="noopener">https://github.com/violetjack</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://violetjack.github.io/2018/02/17/Vue.js源码学习三 —— 事件 Event 学习/" data-id="cjdtq38d00008wfbtf20ziy74" class="article-share-link" data-share="baidu" data-title="Vue.js源码学习三 —— 事件 Event 学习">分享到</a>
+      
+
+      
+        <a href="https://violetjack.github.io/2018/02/17/Vue.js源码学习三 —— 事件 Event 学习/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          Vue.js源码学习四 —— 渲染 Render 初始化过程学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/02/16/Vue.js源码学习二 —— 生命周期 LifeCycle 学习/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Vue.js源码学习二 —— 生命周期 LifeCycle 学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2018/02/17/Vue.js源码学习三 —— 事件 Event 学习/" data-title="Vue.js源码学习三 —— 事件 Event 学习" data-url="https://violetjack.github.io/2018/02/17/Vue.js源码学习三 —— 事件 Event 学习/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/">Vue.js源码学习四 —— 渲染 Render 初始化过程学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/17/Vue.js源码学习三 —— 事件 Event 学习/">Vue.js源码学习三 —— 事件 Event 学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/16/Vue.js源码学习二 —— 生命周期 LifeCycle 学习/">Vue.js源码学习二 —— 生命周期 LifeCycle 学习</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/08/用hexo搭建博客笔记/">用hexo搭建博客笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/03/Vue.js源码学习一 —— 数据选项 State 学习/">Vue.js学习系列八 —— Vue源码学习之State学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">个人网站</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/violetjack" target="_blank">Github</a>
+          </li>
+        
+          <li>
+            <a href="https://segmentfault.com/u/violetjack" target="_blank">SegmentFault</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.csdn.net/violetjack0808" target="_blank">CSDN</a>
+          </li>
+        
+          <li>
+            <a href="https://www.jianshu.com/u/54ae4af3a98d" target="_blank">简书</a>
+          </li>
+        
+          <li>
+            <a href="https://juejin.im/user/571d953d39b0570068145cd1" target="_blank">掘金</a>
+          </li>
+        
+          <li>
+            <a href="https://www.zhihu.com/people/violetjack" target="_blank">知乎</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 VioletJack<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"reqianduan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>
