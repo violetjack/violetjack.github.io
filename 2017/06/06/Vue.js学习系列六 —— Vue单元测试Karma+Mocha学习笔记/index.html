@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Vue.js学习系列," />
 
 
 
@@ -97,13 +97,14 @@
 
 
 <meta name="description" content="在使用vue-cli创建项目的时候，会提示要不要安装单元测试和e2e测试。既然官方推荐我们使用这两个测试框架，那么我们就动手去学习实践一下他们吧。  简介KarmaKarma是一个基于Node.js的JavaScript测试执行过程管理工具（Test Runner）。该工具在Vue中的主要作用是将项目运行在各种主流Web浏览器进行测试。换句话说，它是一个测试工具，能让你的代码在浏览器环境下测试。">
+<meta name="keywords" content="Vue.js学习系列">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vue.js学习系列六——Vue单元测试Karma+Mocha学习笔记">
 <meta property="og:url" content="https://violetjack.github.io/2017/06/06/Vue.js学习系列六 —— Vue单元测试Karma+Mocha学习笔记/index.html">
 <meta property="og:site_name" content="Vue实验室">
 <meta property="og:description" content="在使用vue-cli创建项目的时候，会提示要不要安装单元测试和e2e测试。既然官方推荐我们使用这两个测试框架，那么我们就动手去学习实践一下他们吧。  简介KarmaKarma是一个基于Node.js的JavaScript测试执行过程管理工具（Test Runner）。该工具在Vue中的主要作用是将项目运行在各种主流Web浏览器进行测试。换句话说，它是一个测试工具，能让你的代码在浏览器环境下测试。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-07T02:29:31.765Z">
+<meta property="og:updated_time" content="2018-03-01T05:43:18.292Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue.js学习系列六——Vue单元测试Karma+Mocha学习笔记">
 <meta name="twitter:description" content="在使用vue-cli创建项目的时候，会提示要不要安装单元测试和e2e测试。既然官方推荐我们使用这两个测试框架，那么我们就动手去学习实践一下他们吧。  简介KarmaKarma是一个基于Node.js的JavaScript测试执行过程管理工具（Test Runner）。该工具在Vue中的主要作用是将项目运行在各种主流Web浏览器进行测试。换句话说，它是一个测试工具，能让你的代码在浏览器环境下测试。">
@@ -279,7 +280,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="VioletJack">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -457,6 +458,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Vue-js学习系列/" rel="tag"># Vue.js学习系列</a>
+          
+        </div>
+      
 
       
       
@@ -476,8 +483,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/12/01/Vue源码学习笔记/" rel="prev" title="Vue源码学习笔记">
-                Vue源码学习笔记 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/12/01/weex项目弃坑小结/" rel="prev" title="weex项目弃坑小结">
+                weex项目弃坑小结 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -543,7 +550,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/images/avatar.gif"
+               src="/images/avatar.jpg"
                alt="VioletJack" />
           <p class="site-author-name" itemprop="name">VioletJack</p>
            
@@ -555,7 +562,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -563,6 +570,15 @@
 
           
 
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
           
 
         </nav>

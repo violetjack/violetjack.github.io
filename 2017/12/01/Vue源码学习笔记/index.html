@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Vue.js源码学习," />
 
 
 
@@ -97,6 +97,7 @@
 
 
 <meta name="description" content="最近偷懒好久没有写博客了，一直想继续Vue学习系列，想深入Vue源码来写。结果发现自己层次不够，对js的理解差好多。所以一直想写一直搁置着。最近重新振作决心看完Vue源码，并且以我们这类前端小白的角度来一步步弄懂Vue源码。  PS：以下文章为笔记类，记录了本人在看源码过程中的一些问题和感悟。 Vue源码的本质是什么Vue.js 本质上就是一个包含各种逻辑的一个function。而我们通常初始化">
+<meta name="keywords" content="Vue.js源码学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vue源码学习笔记">
 <meta property="og:url" content="https://violetjack.github.io/2017/12/01/Vue源码学习笔记/index.html">
@@ -106,7 +107,7 @@
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-51c2e9112e90eeef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-ff4ba64d71f9d5b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-c11e06d42cf94a2c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-02-07T02:28:06.353Z">
+<meta property="og:updated_time" content="2018-03-01T05:44:15.852Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue源码学习笔记">
 <meta name="twitter:description" content="最近偷懒好久没有写博客了，一直想继续Vue学习系列，想深入Vue源码来写。结果发现自己层次不够，对js的理解差好多。所以一直想写一直搁置着。最近重新振作决心看完Vue源码，并且以我们这类前端小白的角度来一步步弄懂Vue源码。  PS：以下文章为笔记类，记录了本人在看源码过程中的一些问题和感悟。 Vue源码的本质是什么Vue.js 本质上就是一个包含各种逻辑的一个function。而我们通常初始化">
@@ -283,7 +284,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="VioletJack">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -478,6 +479,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Vue-js源码学习/" rel="tag"># Vue.js源码学习</a>
+          
+        </div>
+      
 
       
       
@@ -487,8 +494,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/06/Vue.js学习系列六 —— Vue单元测试Karma+Mocha学习笔记/" rel="next" title="Vue.js学习系列六——Vue单元测试Karma+Mocha学习笔记">
-                <i class="fa fa-chevron-left"></i> Vue.js学习系列六——Vue单元测试Karma+Mocha学习笔记
+              <a href="/2017/12/01/weex项目弃坑小结/" rel="next" title="weex项目弃坑小结">
+                <i class="fa fa-chevron-left"></i> weex项目弃坑小结
               </a>
             
           </div>
@@ -497,8 +504,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/12/01/weex项目弃坑小结/" rel="prev" title="weex项目弃坑小结">
-                weex项目弃坑小结 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/01/18/ES6 学习笔记（上）/" rel="prev" title="ES6 学习笔记（上）">
+                ES6 学习笔记（上） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -564,7 +571,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/images/avatar.gif"
+               src="/images/avatar.jpg"
                alt="VioletJack" />
           <p class="site-author-name" itemprop="name">VioletJack</p>
            
@@ -576,7 +583,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -584,6 +591,15 @@
 
           
 
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
           
 
         </nav>

@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Vue.js源码学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Vue实验室" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="初六和家人出去玩，没写完博客。跳票了~  所谓虚拟DOM，是一个用于表示真实 DOM 结构和属性的 JavaScript 对象，这个对象用于对比虚拟 DOM 和当前真实 DOM 的差异化，然后进行局部渲染从而实现性能上的优化。在Vue.js 中虚拟 DOM 的 JavaScript 对象就是 VNode。接下来我们一步步分析： VNode 是什么？ 既然是虚拟 DOM 的作用是转为真实的 DOM">
+<meta name="keywords" content="Vue.js源码学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue.js 源码学习六 —— VNode虚拟DOM学习">
+<meta property="og:url" content="https://violetjack.github.io/2018/02/22/Vue.js源码学习六 —— VNode虚拟DOM学习/index.html">
+<meta property="og:site_name" content="Vue实验室">
+<meta property="og:description" content="初六和家人出去玩，没写完博客。跳票了~  所谓虚拟DOM，是一个用于表示真实 DOM 结构和属性的 JavaScript 对象，这个对象用于对比虚拟 DOM 和当前真实 DOM 的差异化，然后进行局部渲染从而实现性能上的优化。在Vue.js 中虚拟 DOM 的 JavaScript 对象就是 VNode。接下来我们一步步分析： VNode 是什么？ 既然是虚拟 DOM 的作用是转为真实的 DOM">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-fa2929532dc88449.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-3c53cb4442d3fc58?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-0b47f3cb7f762873?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-f6203babe1e15791?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-2a6b908889782ac4?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-d353c99c30bb5f25?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-c8aa456d7f2839da?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-03-01T05:44:00.589Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue.js 源码学习六 —— VNode虚拟DOM学习">
+<meta name="twitter:description" content="初六和家人出去玩，没写完博客。跳票了~  所谓虚拟DOM，是一个用于表示真实 DOM 结构和属性的 JavaScript 对象，这个对象用于对比虚拟 DOM 和当前真实 DOM 的差异化，然后进行局部渲染从而实现性能上的优化。在Vue.js 中虚拟 DOM 的 JavaScript 对象就是 VNode。接下来我们一步步分析： VNode 是什么？ 既然是虚拟 DOM 的作用是转为真实的 DOM">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1987062-fa2929532dc88449.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2018/02/22/Vue.js源码学习六 —— VNode虚拟DOM学习/"/>
+
+
+
+
+
+  <title>Vue.js 源码学习六 —— VNode虚拟DOM学习 | Vue实验室</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Vue实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">专注于Vue相关知识的学习和分享</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2018/02/22/Vue.js源码学习六 —— VNode虚拟DOM学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Vue实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vue.js 源码学习六 —— VNode虚拟DOM学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-22T00:00:00+08:00">
+                2018-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>初六和家人出去玩，没写完博客。跳票了~</p>
+</blockquote>
+<p>所谓虚拟DOM，是一个用于表示真实 DOM 结构和属性的 JavaScript 对象，这个对象用于对比虚拟 DOM 和当前真实 DOM 的差异化，然后进行局部渲染从而实现性能上的优化。在Vue.js 中虚拟 DOM 的 JavaScript 对象就是 VNode。<br>接下来我们一步步分析：</p>
+<h1 id="VNode-是什么？"><a href="#VNode-是什么？" class="headerlink" title="VNode 是什么？"></a>VNode 是什么？</h1><hr>
+<p>既然是虚拟 DOM 的作用是转为真实的 DOM，那这就是一个渲染的过程。所以我们看看 render 方法。在之前的学习中我们知道了，vue 的渲染函数 <code>_render</code> 方法返回的就是一个 VNode 对象。而在 <code>initRender</code> 初始化渲染的方法中定义的 <code>vm._c</code> 和 <code>vm.$createElement</code> 方法中，<code>createElement</code> 最终也是返回 VNode 对象。所以 VNode 是渲染的关键所在。<br>话不多说，来看看这个VNode为何方神圣。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">// src/core/vdom/vnode.js</span><br><span class="line">export default class VNode &#123;</span><br><span class="line">  tag: string | void;</span><br><span class="line">  data: VNodeData | void;</span><br><span class="line">  children: ?Array&lt;VNode&gt;;</span><br><span class="line">  text: string | void;</span><br><span class="line">  elm: Node | void;</span><br><span class="line">  ns: string | void;</span><br><span class="line">  context: Component | void; // rendered in this component&apos;s scope</span><br><span class="line">  key: string | number | void;</span><br><span class="line">  componentOptions: VNodeComponentOptions | void;</span><br><span class="line">  componentInstance: Component | void; // component instance</span><br><span class="line">  parent: VNode | void; // component placeholder node</span><br><span class="line"></span><br><span class="line">  // strictly internal</span><br><span class="line">  raw: boolean; // contains raw HTML? (server only)</span><br><span class="line">  isStatic: boolean; // hoisted static node</span><br><span class="line">  isRootInsert: boolean; // necessary for enter transition check</span><br><span class="line">  isComment: boolean; // empty comment placeholder?</span><br><span class="line">  isCloned: boolean; // is a cloned node?</span><br><span class="line">  isOnce: boolean; // is a v-once node?</span><br><span class="line">  asyncFactory: Function | void; // async component factory function</span><br><span class="line">  asyncMeta: Object | void;</span><br><span class="line">  isAsyncPlaceholder: boolean;</span><br><span class="line">  ssrContext: Object | void;</span><br><span class="line">  fnContext: Component | void; // real context vm for functional nodes</span><br><span class="line">  fnOptions: ?ComponentOptions; // for SSR caching</span><br><span class="line">  fnScopeId: ?string; // functioanl scope id support</span><br><span class="line"></span><br><span class="line">  constructor (</span><br><span class="line">    tag?: string,</span><br><span class="line">    data?: VNodeData,</span><br><span class="line">    children?: ?Array&lt;VNode&gt;,</span><br><span class="line">    text?: string,</span><br><span class="line">    elm?: Node,</span><br><span class="line">    context?: Component,</span><br><span class="line">    componentOptions?: VNodeComponentOptions,</span><br><span class="line">    asyncFactory?: Function</span><br><span class="line">  ) &#123;</span><br><span class="line">    this.tag = tag // 当前节点标签名</span><br><span class="line">    this.data = data // 当前节点数据（VNodeData类型）</span><br><span class="line">    this.children = children // 当前节点子节点</span><br><span class="line">    this.text = text // 当前节点文本</span><br><span class="line">    this.elm = elm // 当前节点对应的真实DOM节点</span><br><span class="line">    this.ns = undefined // 当前节点命名空间</span><br><span class="line">    this.context = context // 当前节点上下文</span><br><span class="line">    this.fnContext = undefined // 函数化组件上下文</span><br><span class="line">    this.fnOptions = undefined // 函数化组件配置项</span><br><span class="line">    this.fnScopeId = undefined // 函数化组件ScopeId</span><br><span class="line">    this.key = data &amp;&amp; data.key // 子节点key属性</span><br><span class="line">    this.componentOptions = componentOptions // 组件配置项 </span><br><span class="line">    this.componentInstance = undefined // 组件实例</span><br><span class="line">    this.parent = undefined // 当前节点父节点</span><br><span class="line">    this.raw = false // 是否为原生HTML或只是普通文本</span><br><span class="line">    this.isStatic = false // 静态节点标志 keep-alive</span><br><span class="line">    this.isRootInsert = true // 是否作为根节点插入</span><br><span class="line">    this.isComment = false // 是否为注释节点</span><br><span class="line">    this.isCloned = false // 是否为克隆节点</span><br><span class="line">    this.isOnce = false // 是否为v-once节点</span><br><span class="line">    this.asyncFactory = asyncFactory // 异步工厂方法 </span><br><span class="line">    this.asyncMeta = undefined // 异步Meta</span><br><span class="line">    this.isAsyncPlaceholder = false // 是否为异步占位</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 容器实例向后兼容的别名</span><br><span class="line">  get child (): Component | void &#123;</span><br><span class="line">    return this.componentInstance</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其实就是一个普通的 JavaScript Class 类，中间有各种数据用于描述虚拟 DOM，下面用一个例子来看看VNode 是如何表现 DOM 的。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123; message &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">"item of list"</span> <span class="attr">class</span>=<span class="string">"item-cls"</span>&gt;</span>&#123;&#123; item &#125;&#125;<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">        el: <span class="string">'#app'</span>,</span></span><br><span class="line"><span class="undefined">        data: &#123;</span></span><br><span class="line"><span class="javascript">            message: <span class="string">'hello Vue.js'</span>,</span></span><br><span class="line"><span class="javascript">            list: [<span class="string">'jack'</span>, <span class="string">'rose'</span>, <span class="string">'james'</span>]</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;)</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这个例子最终结果如图：<img src="http://upload-images.jianshu.io/upload_images/1987062-fa2929532dc88449.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="HTML显示结果"><br>简化后的VNode对象结果如图：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"tag"</span>: <span class="string">"div"</span>,</span><br><span class="line">    <span class="attr">"data"</span>: &#123;</span><br><span class="line">        <span class="attr">"attr"</span>: &#123; <span class="attr">"id"</span>: <span class="string">"app"</span> &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"children"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"tag"</span>: <span class="string">"span"</span>,</span><br><span class="line">            <span class="attr">"children"</span>: [</span><br><span class="line">                &#123; <span class="attr">"text"</span>: <span class="string">"hello Vue.js"</span> &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"tag"</span>: <span class="string">"ul"</span>,</span><br><span class="line">            <span class="attr">"children"</span>: [</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"tag"</span>: <span class="string">"li"</span>,</span><br><span class="line">                    <span class="attr">"data"</span>: &#123; <span class="attr">"staticClass"</span>: <span class="string">"item-cls"</span> &#125;,</span><br><span class="line">                    <span class="attr">"children"</span>: [</span><br><span class="line">                        &#123; <span class="attr">"text"</span>: <span class="string">"jack"</span> &#125;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"tag"</span>: <span class="string">"li"</span>,</span><br><span class="line">                    <span class="attr">"data"</span>: &#123; <span class="attr">"staticClass"</span>: <span class="string">"item-cls"</span> &#125;,</span><br><span class="line">                    <span class="attr">"children"</span>: [</span><br><span class="line">                        &#123; <span class="attr">"text"</span>: <span class="string">"rose"</span> &#125;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"tag"</span>: <span class="string">"li"</span>,</span><br><span class="line">                    <span class="attr">"data"</span>: &#123; <span class="attr">"staticClass"</span>: <span class="string">"item-cls"</span> &#125;,</span><br><span class="line">                    <span class="attr">"children"</span>: [</span><br><span class="line">                        &#123; <span class="attr">"text"</span>: <span class="string">"james"</span> &#125;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"context"</span>: <span class="string">"$Vue$3"</span>,</span><br><span class="line">    <span class="attr">"elm"</span>: <span class="string">"div#app"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在看VNode的时候小结以下几点：</p>
+<ul>
+<li>所有对象的 <code>context</code> 选项都指向了 Vue 实例。</li>
+<li><code>elm</code> 属性则指向了其相对应的真实 DOM 节点。</li>
+<li>DOM 中的文本内容被当做了一个只有 <code>text</code> 没有 <code>tag</code> 的节点。</li>
+<li>像 class、id 等HTML属性都放在了 <code>data</code> 中</li>
+</ul>
+<p>我们了解了VNode 是如何描述 DOM 之后，来学习如何将虚拟<br> DOM 变为真实的 DOM。</p>
+<h1 id="patch-——-Virtual-DOM-的核心"><a href="#patch-——-Virtual-DOM-的核心" class="headerlink" title="patch —— Virtual DOM 的核心"></a>patch —— Virtual DOM 的核心</h1><hr>
+<p>从之前的文章中可以知道，Vue的渲染过程（无论是初始化视图还是更新视图）最终都将走到 <code>_update</code> 方法中，再来看看这个 <code>_update</code> 方法。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/instance/lifecycle.js</span></span><br><span class="line">Vue.prototype._update = <span class="function"><span class="keyword">function</span> (<span class="params">vnode: VNode, hydrating?: boolean</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> vm: Component = <span class="keyword">this</span></span><br><span class="line">  <span class="keyword">if</span> (vm._isMounted) &#123;</span><br><span class="line">    callHook(vm, <span class="string">'beforeUpdate'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> prevEl = vm.$el</span><br><span class="line">  <span class="keyword">const</span> prevVnode = vm._vnode</span><br><span class="line">  <span class="keyword">const</span> prevActiveInstance = activeInstance</span><br><span class="line">  activeInstance = vm</span><br><span class="line">  vm._vnode = vnode</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (!prevVnode) &#123;</span><br><span class="line">    <span class="comment">// 初始化渲染</span></span><br><span class="line">    vm.$el = vm.__patch__(</span><br><span class="line">      vm.$el, vnode, hydrating, <span class="literal">false</span> <span class="comment">/* removeOnly */</span>,</span><br><span class="line">      vm.$options._parentElm,</span><br><span class="line">      vm.$options._refElm</span><br><span class="line">    )</span><br><span class="line">    <span class="comment">// no need for the ref nodes after initial patch</span></span><br><span class="line">    <span class="comment">// this prevents keeping a detached DOM tree in memory (#5851)</span></span><br><span class="line">    vm.$options._parentElm = vm.$options._refElm = <span class="literal">null</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 更新渲染</span></span><br><span class="line">    vm.$el = vm.__patch__(prevVnode, vnode)</span><br><span class="line">  &#125;</span><br><span class="line">  activeInstance = prevActiveInstance</span><br><span class="line">  <span class="comment">// update __vue__ reference</span></span><br><span class="line">  <span class="keyword">if</span> (prevEl) &#123;</span><br><span class="line">    prevEl.__vue__ = <span class="literal">null</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (vm.$el) &#123;</span><br><span class="line">    vm.$el.__vue__ = vm</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// if parent is an HOC, update its $el as well</span></span><br><span class="line">  <span class="keyword">if</span> (vm.$vnode &amp;&amp; vm.$parent &amp;&amp; vm.$vnode === vm.$parent._vnode) &#123;</span><br><span class="line">    vm.$parent.$el = vm.$el</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// updated hook is called by the scheduler to ensure that children are</span></span><br><span class="line">  <span class="comment">// updated in a parent's updated hook.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不难发现更新试图都是使用了 <code>vm.__patch__</code> 方法，我们继续往下跟。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/platforms/web/runtime/index.js</span></span><br><span class="line">Vue.prototype.__patch__ = inBrowser ? patch : noop</span><br></pre></td></tr></table></figure></p>
+<p>这里啰嗦一句，要找vue的全局方法，如 <code>vm.aaa</code> ,直接查找 <code>Vue.prototype.aaa</code> 即可。<br>继续找下去：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// src/platforms/web/runtime/patch.js</span><br><span class="line">export const patch: Function = createPatchFunction(&#123; nodeOps, modules &#125;)</span><br></pre></td></tr></table></figure></p>
+<p>找到 <code>createPatchFunction</code> 方法~<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">// src/core/vdom/patch.js</span><br><span class="line">export function createPatchFunction (backend) &#123;</span><br><span class="line">  ……</span><br><span class="line">  return function patch (oldVnode, vnode, hydrating, removeOnly, parentElm, refElm) &#123;</span><br><span class="line">    // 当前 VNode 未定义、老的 VNode 定义了，调用销毁钩子。</span><br><span class="line">    if (isUndef(vnode)) &#123;</span><br><span class="line">      if (isDef(oldVnode)) invokeDestroyHook(oldVnode)</span><br><span class="line">      return</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    let isInitialPatch = false</span><br><span class="line">    const insertedVnodeQueue = []</span><br><span class="line"></span><br><span class="line">    if (isUndef(oldVnode)) &#123;</span><br><span class="line">      // 老的 VNode 未定义，初始化。</span><br><span class="line">      isInitialPatch = true</span><br><span class="line">      createElm(vnode, insertedVnodeQueue, parentElm, refElm)</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      // 当前 VNode 和老 VNode 都定义了，执行更新操作</span><br><span class="line">      // DOM 的 nodeType http://www.w3school.com.cn/jsref/prop_node_nodetype.asp</span><br><span class="line">      const isRealElement = isDef(oldVnode.nodeType) // 是否为真实 DOM 元素</span><br><span class="line">      if (!isRealElement &amp;&amp; sameVnode(oldVnode, vnode)) &#123;</span><br><span class="line">        // patch existing root node</span><br><span class="line">        // 修改已有根节点</span><br><span class="line">        patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly)</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        // 已有真实 DOM 元素，处理 oldVnode</span><br><span class="line">        if (isRealElement) &#123;</span><br><span class="line">          // 挂载一个真实元素，确认是否为服务器渲染环境或者是否可以执行成功的合并到真实 DOM 中</span><br><span class="line">          if (oldVnode.nodeType === 1 &amp;&amp; oldVnode.hasAttribute(SSR_ATTR)) &#123;</span><br><span class="line">            oldVnode.removeAttribute(SSR_ATTR)</span><br><span class="line">            hydrating = true</span><br><span class="line">          &#125;</span><br><span class="line">          if (isTrue(hydrating)) &#123;</span><br><span class="line">            if (hydrate(oldVnode, vnode, insertedVnodeQueue)) &#123;</span><br><span class="line">              // 调用 insert 钩子</span><br><span class="line">              // inserted：被绑定元素插入父节点时调用 </span><br><span class="line">              invokeInsertHook(vnode, insertedVnodeQueue, true)</span><br><span class="line">              return oldVnode</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          // 不是服务器渲染或者合并到真实 DOM 失败，创建一个空节点替换原有节点</span><br><span class="line">          oldVnode = emptyNodeAt(oldVnode)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 替换已有元素</span><br><span class="line">        const oldElm = oldVnode.elm</span><br><span class="line">        const parentElm = nodeOps.parentNode(oldElm)</span><br><span class="line"></span><br><span class="line">        // 创建新节点</span><br><span class="line">        createElm(</span><br><span class="line">          vnode,</span><br><span class="line">          insertedVnodeQueue,</span><br><span class="line">          oldElm._leaveCb ? null : parentElm,</span><br><span class="line">          nodeOps.nextSibling(oldElm)</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        // 递归更新父级占位节点元素，</span><br><span class="line">        if (isDef(vnode.parent)) &#123;</span><br><span class="line">          let ancestor = vnode.parent</span><br><span class="line">          const patchable = isPatchable(vnode)</span><br><span class="line">          while (ancestor) &#123;</span><br><span class="line">            for (let i = 0; i &lt; cbs.destroy.length; ++i) &#123;</span><br><span class="line">              cbs.destroy[i](ancestor)</span><br><span class="line">            &#125;</span><br><span class="line">            ancestor.elm = vnode.elm</span><br><span class="line">            if (patchable) &#123;</span><br><span class="line">              for (let i = 0; i &lt; cbs.create.length; ++i) &#123;</span><br><span class="line">                cbs.create[i](emptyNode, ancestor)</span><br><span class="line">              &#125;</span><br><span class="line">              const insert = ancestor.data.hook.insert</span><br><span class="line">              if (insert.merged) &#123;</span><br><span class="line">                for (let i = 1; i &lt; insert.fns.length; i++) &#123;</span><br><span class="line">                  insert.fns[i]()</span><br><span class="line">                &#125;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">              registerRef(ancestor)</span><br><span class="line">            &#125;</span><br><span class="line">            ancestor = ancestor.parent</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 销毁旧节点</span><br><span class="line">        if (isDef(parentElm)) &#123;</span><br><span class="line">          removeVnodes(parentElm, [oldVnode], 0, 0)</span><br><span class="line">        &#125; else if (isDef(oldVnode.tag)) &#123;</span><br><span class="line">          invokeDestroyHook(oldVnode)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    // 调用 insert 钩子</span><br><span class="line">    invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch)</span><br><span class="line">    return vnode.elm</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>具体解析看代码注释~抛开调用生命周期钩子和销毁就节点不谈，我们发现代码中的关键在于 <code>createElm</code> 和 <code>patchVnode</code> 方法。</p>
+<h2 id="createElm"><a href="#createElm" class="headerlink" title="createElm"></a>createElm</h2><p>先看 <code>createElm</code> 方法，这个方法创建了真实 DOM 元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">function createElm (</span><br><span class="line">  vnode,</span><br><span class="line">  insertedVnodeQueue,</span><br><span class="line">  parentElm,</span><br><span class="line">  refElm,</span><br><span class="line">  nested,</span><br><span class="line">  ownerArray,</span><br><span class="line">  index</span><br><span class="line">) &#123;</span><br><span class="line">  if (isDef(vnode.elm) &amp;&amp; isDef(ownerArray)) &#123;</span><br><span class="line">    vnode = ownerArray[index] = cloneVNode(vnode)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  vnode.isRootInsert = !nested // for transition enter check</span><br><span class="line">  // 创建组件</span><br><span class="line">  if (createComponent(vnode, insertedVnodeQueue, parentElm, refElm)) &#123;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  const data = vnode.data</span><br><span class="line">  const children = vnode.children</span><br><span class="line">  const tag = vnode.tag</span><br><span class="line">  if (isDef(tag)) &#123;</span><br><span class="line">    vnode.elm = vnode.ns</span><br><span class="line">      ? nodeOps.createElementNS(vnode.ns, tag)</span><br><span class="line">      : nodeOps.createElement(tag, vnode)</span><br><span class="line">    setScope(vnode)</span><br><span class="line"></span><br><span class="line">    createChildren(vnode, children, insertedVnodeQueue)</span><br><span class="line">    if (isDef(data)) &#123;</span><br><span class="line">      invokeCreateHooks(vnode, insertedVnodeQueue)</span><br><span class="line">    &#125;</span><br><span class="line">    insert(parentElm, vnode.elm, refElm)</span><br><span class="line">  &#125; else if (isTrue(vnode.isComment)) &#123;</span><br><span class="line">    vnode.elm = nodeOps.createComment(vnode.text)</span><br><span class="line">    insert(parentElm, vnode.elm, refElm)</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    vnode.elm = nodeOps.createTextNode(vnode.text)</span><br><span class="line">    insert(parentElm, vnode.elm, refElm)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>重点关注代码中的方法执行。代码太多，就不贴出来了，简单说说用途。</p>
+<ul>
+<li><code>cloneVNode</code> 用于克隆当前 vnode 对象。</li>
+<li><code>createComponent</code> 用于创建组件，在调用了组件初始化钩子之后，初始化组件，并且重新激活组件。在重新激活组件中使用 <code>insert</code> 方法操作 DOM。</li>
+<li><code>nodeOps.createElementNS</code> 和 <code>nodeOps.createElement</code> 方法，其实是真实 DOM 的方法。</li>
+<li><code>setScope</code> 用于为 scoped CSS 设置作用域 ID 属性</li>
+<li><code>createChildren</code> 用于创建子节点，如果子节点是数组，则遍历执行 <code>createElm</code> 方法，如果子节点的 text 属性有数据，则使用 <code>nodeOps.appendChild(...)</code> 在真实 DOM 中插入文本内容。</li>
+<li><code>insert</code> 用于将元素插入真实 DOM 中。</li>
+</ul>
+<p>所以，这里的 <code>nodeOps</code> 指的肯定就是真实的 DOM 节点了。最终，这些所有的方法都调用了 <code>nodeOps</code> 中的方法来操作 DOM 元素。</p>
+<blockquote>
+<p>这里顺便科普下 DOM 的<a href="http://www.w3school.com.cn/jsref/dom_obj_all.asp" target="_blank" rel="noopener">属性和方法</a>。下面把源码中用到的几个方法列出来便于学习：</p>
+<ul>
+<li>appendChild: 向元素添加新的子节点，作为最后一个子节点。</li>
+<li>insertBefore: 在指定的已有的子节点之前插入新节点。</li>
+<li>tagName: 返回元素的标签名。</li>
+<li>removeChild: 从元素中移除子节点。</li>
+<li>createElementNS: 创建带有指定命名空间的元素节点。</li>
+<li>createElement: 创建元素节点。</li>
+<li>createComment: 创建注释节点。</li>
+<li>createTextNode: 创建文本节点。</li>
+<li>setAttribute: 把指定属性设置或更改为指定值。</li>
+<li>nextSibling: 返回位于相同节点树层级的下一个节点。</li>
+<li>parentNode: 返回元素父节点。</li>
+<li>setTextContent: 获取文本内容（这个未在w3school中找到，不过应该就是这个意思了）。</li>
+</ul>
+</blockquote>
+<p>OK，知道以上方法就比较好理解了，<code>createElm</code> 方法的最终目的就是创建真实的 DOM 对象。</p>
+<h2 id="patchVnode"><a href="#patchVnode" class="headerlink" title="patchVnode"></a>patchVnode</h2><p>看过了创建真实 DOM 后，我们来学习虚拟 DOM 如何实现 DOM 的更新。这才是虚拟 DOM 的存在意义 —— 比对并局部更新 DOM 以达到性能优化的目的。<br>看代码~<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 补丁 vnode</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">patchVnode</span> (<span class="params">oldVnode, vnode, insertedVnodeQueue, removeOnly</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 新旧 vnode 相等</span></span><br><span class="line">  <span class="keyword">if</span> (oldVnode === vnode) &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> elm = vnode.elm = oldVnode.elm</span><br><span class="line">  <span class="comment">// 异步占位</span></span><br><span class="line">  <span class="keyword">if</span> (isTrue(oldVnode.isAsyncPlaceholder)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (isDef(vnode.asyncFactory.resolved)) &#123;</span><br><span class="line">      hydrate(oldVnode.elm, vnode, insertedVnodeQueue)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      vnode.isAsyncPlaceholder = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 如果新旧 vnode 为静态；新旧 vnode key相同；</span></span><br><span class="line">  <span class="comment">// 新 vnode 是克隆所得；新 vnode 有 v-once 的属性</span></span><br><span class="line">  <span class="comment">// 则新 vnode 的 componentInstance 用老的 vnode 的。</span></span><br><span class="line">  <span class="comment">// 即 vnode 的 componentInstance 保持不变。</span></span><br><span class="line">  <span class="keyword">if</span> (isTrue(vnode.isStatic) &amp;&amp;</span><br><span class="line">    isTrue(oldVnode.isStatic) &amp;&amp;</span><br><span class="line">    vnode.key === oldVnode.key &amp;&amp;</span><br><span class="line">    (isTrue(vnode.isCloned) || isTrue(vnode.isOnce))</span><br><span class="line">  ) &#123;</span><br><span class="line">    vnode.componentInstance = oldVnode.componentInstance</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> i</span><br><span class="line">  <span class="keyword">const</span> data = vnode.data</span><br><span class="line">  <span class="comment">// 执行 data.hook.prepatch 钩子。</span></span><br><span class="line">  <span class="keyword">if</span> (isDef(data) &amp;&amp; isDef(i = data.hook) &amp;&amp; isDef(i = i.prepatch)) &#123;</span><br><span class="line">    i(oldVnode, vnode)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> oldCh = oldVnode.children</span><br><span class="line">  <span class="keyword">const</span> ch = vnode.children</span><br><span class="line">  <span class="keyword">if</span> (isDef(data) &amp;&amp; isPatchable(vnode)) &#123;</span><br><span class="line">    <span class="comment">// 遍历 cbs，执行 update 方法</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)</span><br><span class="line">    <span class="comment">// 执行 data.hook.update 钩子</span></span><br><span class="line">    <span class="keyword">if</span> (isDef(i = data.hook) &amp;&amp; isDef(i = i.update)) i(oldVnode, vnode)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 旧 vnode 的 text 选项为 undefined</span></span><br><span class="line">  <span class="keyword">if</span> (isUndef(vnode.text)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (isDef(oldCh) &amp;&amp; isDef(ch)) &#123;</span><br><span class="line">      <span class="comment">// 新旧 vnode 都有 children，且不同，执行 updateChildren 方法。</span></span><br><span class="line">      <span class="keyword">if</span> (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(ch)) &#123;</span><br><span class="line">      <span class="comment">// 清空文本，添加 vnode</span></span><br><span class="line">      <span class="keyword">if</span> (isDef(oldVnode.text)) nodeOps.setTextContent(elm, <span class="string">''</span>)</span><br><span class="line">      addVnodes(elm, <span class="literal">null</span>, ch, <span class="number">0</span>, ch.length - <span class="number">1</span>, insertedVnodeQueue)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(oldCh)) &#123;</span><br><span class="line">      <span class="comment">// 移除 vnode</span></span><br><span class="line">      removeVnodes(elm, oldCh, <span class="number">0</span>, oldCh.length - <span class="number">1</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(oldVnode.text)) &#123;</span><br><span class="line">      <span class="comment">// 如果新旧 vnode 都是 undefined，清空文本</span></span><br><span class="line">      nodeOps.setTextContent(elm, <span class="string">''</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (oldVnode.text !== vnode.text) &#123;</span><br><span class="line">    <span class="comment">// 有不同文本内容，更新文本内容</span></span><br><span class="line">    nodeOps.setTextContent(elm, vnode.text)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (isDef(data)) &#123;</span><br><span class="line">    <span class="comment">// 执行 data.hook.postpatch 钩子，表明 patch 完毕</span></span><br><span class="line">    <span class="keyword">if</span> (isDef(i = data.hook) &amp;&amp; isDef(i = i.postpatch)) i(oldVnode, vnode)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>源码中添加了一些注释便于理解，来理一下逻辑。</p>
+<ol>
+<li>如果两个vnode相等，不需要 patch，退出。</li>
+<li>如果是异步占位，执行 hydrate 方法或者定义 isAsyncPlaceholder 为 true，然后退出。</li>
+<li>如果两个vnode都为静态，不用更新，所以讲以前的 componentInstance 实例传给当前 vnode，并退出。</li>
+<li>执行 prepatch 钩子。</li>
+<li>遍历调用 update 回调，并执行 update 钩子。</li>
+<li>如果两个 vnode 都有 children，且 vnode 没有 text、两个 vnode 不相等，执行 updateChildren 方法。这是虚拟 DOM 的关键。</li>
+<li>如果新 vnode 有 children，而老的没有，清空文本，并添加 vnode 节点。</li>
+<li>如果老 vnode 有 children，而新的没哟，清空文本，并移除 vnode 节点。</li>
+<li>如果两个 vnode 都没有 children，老 vnode 有 text ，新 vnode 没有 text ，则清空 DOM 文本内容。</li>
+<li>如果老 vnode 和新 vnode 的 text 不同，更新 DOM 元素文本内容。</li>
+<li>调用 postpatch 钩子。</li>
+</ol>
+<p>其中，<code>addVnodes</code> 方法和 <code>removeVnodes</code> 都比较简单，很好理解。这里我们来看看关键代码 <code>updateChildren</code> 方法。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateChildren</span> (<span class="params">parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> oldStartIdx = <span class="number">0</span></span><br><span class="line">  <span class="keyword">let</span> newStartIdx = <span class="number">0</span></span><br><span class="line">  <span class="keyword">let</span> oldEndIdx = oldCh.length - <span class="number">1</span></span><br><span class="line">  <span class="keyword">let</span> oldStartVnode = oldCh[<span class="number">0</span>]</span><br><span class="line">  <span class="keyword">let</span> oldEndVnode = oldCh[oldEndIdx]</span><br><span class="line">  <span class="keyword">let</span> newEndIdx = newCh.length - <span class="number">1</span></span><br><span class="line">  <span class="keyword">let</span> newStartVnode = newCh[<span class="number">0</span>]</span><br><span class="line">  <span class="keyword">let</span> newEndVnode = newCh[newEndIdx]</span><br><span class="line">  <span class="keyword">let</span> oldKeyToIdx, idxInOld, vnodeToMove, refElm</span><br><span class="line"></span><br><span class="line">  <span class="comment">// removeOnly 是一个只用于 &lt;transition-group&gt; 的特殊标签，</span></span><br><span class="line">  <span class="comment">// 确保移除元素过程中保持一个正确的相对位置。</span></span><br><span class="line">  <span class="keyword">const</span> canMove = !removeOnly</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">    checkDuplicateKeys(newCh)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (oldStartIdx &lt;= oldEndIdx &amp;&amp; newStartIdx &lt;= newEndIdx) &#123;</span><br><span class="line">    <span class="keyword">if</span> (isUndef(oldStartVnode)) &#123;</span><br><span class="line">      <span class="comment">// 开始老 vnode 向右一位</span></span><br><span class="line">      oldStartVnode = oldCh[++oldStartIdx] <span class="comment">// Vnode has been moved left</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isUndef(oldEndVnode)) &#123;</span><br><span class="line">      <span class="comment">// 结束老 vnode 向左一位</span></span><br><span class="line">      oldEndVnode = oldCh[--oldEndIdx]</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldStartVnode, newStartVnode)) &#123;</span><br><span class="line">      <span class="comment">// 新旧开始 vnode 相似，进行pacth。开始 vnode 向右一位</span></span><br><span class="line">      patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue)</span><br><span class="line">      oldStartVnode = oldCh[++oldStartIdx]</span><br><span class="line">      newStartVnode = newCh[++newStartIdx]</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldEndVnode, newEndVnode)) &#123;</span><br><span class="line">      <span class="comment">// 新旧结束 vnode 相似，进行patch。结束 vnode 向左一位</span></span><br><span class="line">      patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue)</span><br><span class="line">      oldEndVnode = oldCh[--oldEndIdx]</span><br><span class="line">      newEndVnode = newCh[--newEndIdx]</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldStartVnode, newEndVnode)) &#123; <span class="comment">// Vnode moved right</span></span><br><span class="line">      <span class="comment">// 新结束 vnode 和老开始 vnode 相似，进行patch。</span></span><br><span class="line">      patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue)</span><br><span class="line">      <span class="comment">// 老开始 vnode 插入到真实 DOM 中，老开始 vnode 向右一位，新结束 vnode 向左一位</span></span><br><span class="line">      canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm))</span><br><span class="line">      oldStartVnode = oldCh[++oldStartIdx]</span><br><span class="line">      newEndVnode = newCh[--newEndIdx]</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldEndVnode, newStartVnode)) &#123; <span class="comment">// Vnode moved left</span></span><br><span class="line">      <span class="comment">// 老结束 vnode 和新开始 vnode 相似，进行 patch。</span></span><br><span class="line">      patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue)</span><br><span class="line">      <span class="comment">// 老结束 vnode 插入到真实 DOM 中，老结束 vnode 向左一位，新开始 vnode 向右一位</span></span><br><span class="line">      canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm)</span><br><span class="line">      oldEndVnode = oldCh[--oldEndIdx]</span><br><span class="line">      newStartVnode = newCh[++newStartIdx]</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 获取老 Idx 的 key</span></span><br><span class="line">      <span class="keyword">if</span> (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)</span><br><span class="line">      <span class="comment">// 给老 idx 赋值</span></span><br><span class="line">      idxInOld = isDef(newStartVnode.key)</span><br><span class="line">        ? oldKeyToIdx[newStartVnode.key]</span><br><span class="line">        : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx)</span><br><span class="line">      <span class="keyword">if</span> (isUndef(idxInOld)) &#123;</span><br><span class="line">        <span class="comment">// 如果老 idx 为 undefined，说明没有这个元素，创建新 DOM 元素。</span></span><br><span class="line">        createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, <span class="literal">false</span>, newCh, newStartIdx)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 获取 vnode</span></span><br><span class="line">        vnodeToMove = oldCh[idxInOld]</span><br><span class="line">        <span class="keyword">if</span> (sameVnode(vnodeToMove, newStartVnode)) &#123;</span><br><span class="line">          <span class="comment">// 如果生成的 vnode 和新开始 vnode 相似，执行 patch。</span></span><br><span class="line">          patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue)</span><br><span class="line">          <span class="comment">// 赋值 undefined，插入 vnodeToMove 元素</span></span><br><span class="line">          oldCh[idxInOld] = <span class="literal">undefined</span></span><br><span class="line">          canMove &amp;&amp; nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">// 相同的key不同的元素，视为新元素</span></span><br><span class="line">          createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, <span class="literal">false</span>, newCh, newStartIdx)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 新开始 vnode 向右一位</span></span><br><span class="line">      newStartVnode = newCh[++newStartIdx]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 如果老开始 idx 大于老结束 idx，如果是有效数据则添加 vnode 到新 vnode 中。</span></span><br><span class="line">  <span class="keyword">if</span> (oldStartIdx &gt; oldEndIdx) &#123;</span><br><span class="line">    refElm = isUndef(newCh[newEndIdx + <span class="number">1</span>]) ? <span class="literal">null</span> : newCh[newEndIdx + <span class="number">1</span>].elm</span><br><span class="line">    addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue)</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (newStartIdx &gt; newEndIdx) &#123;</span><br><span class="line">    <span class="comment">// 移除 vnode</span></span><br><span class="line">    removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>表示已看晕……让我们慢慢捋一捋……</p>
+<ol>
+<li>看参数，其中 oldCh 和 newCh 即表示了新旧 vnode 数组，两组数组通过比对的方式来差异化更新 DOM。</li>
+<li>定义了一些变量：开始索引值、结束索引值、开始vnode、结束vnode等等……</li>
+<li>进行循环遍历，遍历条件为 oldStartIdx &lt;= oldEndIdx 和 newStartIdx &lt;= newEndIdx，在遍历过程中，oldStartIdx 和 newStartIdx 递增，oldEndIdx 和 newEndIdx 递减。当条件不符合跳出遍历循环。</li>
+<li>如果 oldStartVnode 和 newStartVnode 相似，执行 patch。<br><img src="http://upload-images.jianshu.io/upload_images/1987062-3c53cb4442d3fc58?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></li>
+<li>如果 oldEndVnode 和 newEndVnode 相似，执行 patch。</li>
+<li>如果 oldStartVnode 和 newEndVnode 相似，执行 patch，并且将该节点移动到 vnode 数组末一位。<br><img src="http://upload-images.jianshu.io/upload_images/1987062-0b47f3cb7f762873?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></li>
+<li>如果 oldEndVnode 和 newStartVnode 相似，执行 patch，并且将该节点移动到 vnode 数组第一位。<br><img src="http://upload-images.jianshu.io/upload_images/1987062-f6203babe1e15791?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></li>
+<li>如果没有相同的 idx，执行 createElm 方法创建元素。</li>
+<li>如果如有相同的 idx，如果两个 vnode 相似，执行 patch，并且将该节点移动到 vnode 数组第一位。如果两个 vnode 不相似，视为新元素，执行 createElm 创建。<br><img src="http://upload-images.jianshu.io/upload_images/1987062-2a6b908889782ac4?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></li>
+<li>如果老 vnode 数组的开始索引大于结束索引，说明新 node 数组长度大于老 vnode 数组，执行 addVnodes 方法添加这些新 vnode 到 DOM 中。<br><img src="http://upload-images.jianshu.io/upload_images/1987062-d353c99c30bb5f25?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></li>
+<li>如果老 vnode 数组的开始索引小于结束索引，说明老 node 数组长度大于新 vnode 数组，执行 removeVnodes 方法从 DOM 中移除老 vnode 数组中多余的 vnode。<br><img src="http://upload-images.jianshu.io/upload_images/1987062-c8aa456d7f2839da?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></li>
+</ol>
+<p>嗯……就是这样！</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>毕竟是Vue的核心功能之一，虽然省略了不少代码，但博客篇幅很长。写了两天才写完。不过写完博客后感觉对于 Vue 的理解又加深了很多。<br>在下一篇博客中，我们一起来学习template的解析。</p>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><ul>
+<li><a href="https://cn.vuejs.org/" target="_blank" rel="noopener">Vue官网</a></li>
+<li><a href="https://github.com/answershuto/learnVue/blob/master/docs/VirtualDOM%E4%B8%8Ediff(Vue%E5%AE%9E%E7%8E%B0" target="_blank" rel="noopener">VirtualDOM与diff(Vue实现)</a>.MarkDown)</li>
+<li><a href="http://hcysun.me/2017/03/03/Vue%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">Vue2.1.7源码学习</a></li>
+<li><a href="http://www.w3school.com.cn/index.html" target="_blank" rel="noopener">w3school</a></li>
+</ul>
+<h1 id="Vue-js学习系列"><a href="#Vue-js学习系列" class="headerlink" title="Vue.js学习系列"></a>Vue.js学习系列</h1><p>鉴于前端知识碎片化严重，我希望能够系统化的整理出一套关于Vue的学习系列博客。</p>
+<h1 id="Vue-js学习系列项目地址"><a href="#Vue-js学习系列项目地址" class="headerlink" title="Vue.js学习系列项目地址"></a>Vue.js学习系列项目地址</h1><p>本文源码已收入到GitHub中，以供参考，当然能留下一个star更好啦^-^。<br><a href="https://github.com/violetjack/VueStudyDemos" target="_blank" rel="noopener">https://github.com/violetjack/VueStudyDemos</a></p>
+<h1 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h1><p>VioletJack，高效学习前端工程师，喜欢研究提高效率的方法，也专注于Vue前端相关知识的学习、整理。<br>欢迎关注、点赞、评论留言~我将持续产出Vue相关优质内容。</p>
+<p>新浪微博： <a href="http://weibo.com/u/2640909603" target="_blank" rel="noopener">http://weibo.com/u/2640909603</a><br>掘金：<a href="https://gold.xitu.io/user/571d953d39b0570068145cd1" target="_blank" rel="noopener">https://gold.xitu.io/user/571d953d39b0570068145cd1</a><br>CSDN: <a href="http://blog.csdn.net/violetjack0808" target="_blank" rel="noopener">http://blog.csdn.net/violetjack0808</a><br>简书： <a href="http://www.jianshu.com/users/54ae4af3a98d/latest_articles" target="_blank" rel="noopener">http://www.jianshu.com/users/54ae4af3a98d/latest_articles</a><br>Github： <a href="https://github.com/violetjack" target="_blank" rel="noopener">https://github.com/violetjack</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="VioletJack WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="VioletJack Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue-js源码学习/" rel="tag"># Vue.js源码学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/20/Vue.js源码学习五 —— provide 和 inject 学习/" rel="next" title="Vue.js 源码学习五 —— provide 和 inject 学习">
+                <i class="fa fa-chevron-left"></i> Vue.js 源码学习五 —— provide 和 inject 学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="VioletJack" />
+          <p class="site-author-name" itemprop="name">VioletJack</p>
+           
+              <p class="site-description motion-element" itemprop="description">用一年的时间好好搞定Vue，以Vue为支点撬动前端知识体系。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://475966597@qq.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/violetjack" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/u/2640909603/home" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/violetjack/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      ZhiHu
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#VNode-是什么？"><span class="nav-number">1.</span> <span class="nav-text">VNode 是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#patch-——-Virtual-DOM-的核心"><span class="nav-number">2.</span> <span class="nav-text">patch —— Virtual DOM 的核心</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#createElm"><span class="nav-number">2.1.</span> <span class="nav-text">createElm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#patchVnode"><span class="nav-number">2.2.</span> <span class="nav-text">patchVnode</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">3.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文档"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vue-js学习系列"><span class="nav-number">5.</span> <span class="nav-text">Vue.js学习系列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vue-js学习系列项目地址"><span class="nav-number">6.</span> <span class="nav-text">Vue.js学习系列项目地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于作者"><span class="nav-number">7.</span> <span class="nav-text">关于作者</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

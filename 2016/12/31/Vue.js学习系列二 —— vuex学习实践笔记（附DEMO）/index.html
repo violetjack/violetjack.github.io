@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Vue.js学习系列," />
 
 
 
@@ -97,6 +97,7 @@
 
 
 <meta name="description" content="上次学习了vue-router的使用，让我能够在各个页面间切换，将页面搭建了起来。这次则要学习vue的状态管理模式——vuex。  注：本文只是个人对vuex学习的一些理解，要深刻掌握还需要认真查阅官方文档。 一、基本介绍Vuex 是一个专为 Vue.js 的SPA单页组件化应用程序开发的状态管理模式插件。由于Vue SPA应用的模块化，每个组件都有它各自的数据(state)、界面(view)、">
+<meta name="keywords" content="Vue.js学习系列">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）">
 <meta property="og:url" content="https://violetjack.github.io/2016/12/31/Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）/index.html">
@@ -107,7 +108,7 @@
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-5971ec429e2ac23b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-22872b0aa75b7f42.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-9867083201b0c86e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2018-02-07T02:31:12.170Z">
+<meta property="og:updated_time" content="2018-03-01T05:43:09.584Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue.js学习系列二 —— vuex学习实践笔记（附DEMO）">
 <meta name="twitter:description" content="上次学习了vue-router的使用，让我能够在各个页面间切换，将页面搭建了起来。这次则要学习vue的状态管理模式——vuex。  注：本文只是个人对vuex学习的一些理解，要深刻掌握还需要认真查阅官方文档。 一、基本介绍Vuex 是一个专为 Vue.js 的SPA单页组件化应用程序开发的状态管理模式插件。由于Vue SPA应用的模块化，每个组件都有它各自的数据(state)、界面(view)、">
@@ -284,7 +285,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="VioletJack">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -435,6 +436,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Vue-js学习系列/" rel="tag"># Vue.js学习系列</a>
+          
+        </div>
+      
 
       
       
@@ -444,8 +451,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/12/31/巧用jQuery选择器写表单办法总结（提高效率）/" rel="next" title="巧用jQuery选择器写表单办法总结（提高效率）">
-                <i class="fa fa-chevron-left"></i> 巧用jQuery选择器写表单办法总结（提高效率）
+              <a href="/2016/12/26/Vue.js学习系列一 —— vue-router2学习实践笔记（附DEMO）/" rel="next" title="Vue.js学习系列一 —— vue-router2学习实践笔记（附DEMO）">
+                <i class="fa fa-chevron-left"></i> Vue.js学习系列一 —— vue-router2学习实践笔记（附DEMO）
               </a>
             
           </div>
@@ -454,8 +461,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/01/09/Vue.js学习系列三 —— axios和网络传输相关知识的学习实践/" rel="prev" title="Vue.js学习系列三 —— axios和网络传输相关知识的学习实践">
-                Vue.js学习系列三 —— axios和网络传输相关知识的学习实践 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/12/31/巧用jQuery选择器写表单办法总结（提高效率）/" rel="prev" title="巧用jQuery选择器写表单办法总结（提高效率）">
+                巧用jQuery选择器写表单办法总结（提高效率） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -521,7 +528,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/images/avatar.gif"
+               src="/images/avatar.jpg"
                alt="VioletJack" />
           <p class="site-author-name" itemprop="name">VioletJack</p>
            
@@ -533,7 +540,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -541,6 +548,15 @@
 
           
 
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
           
 
         </nav>

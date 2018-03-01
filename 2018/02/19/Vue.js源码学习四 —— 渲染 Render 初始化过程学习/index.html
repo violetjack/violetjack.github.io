@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Vue.js源码学习," />
 
 
 
@@ -97,13 +97,14 @@
 
 
 <meta name="description" content="今天我们来学习下Vue的渲染 Render 源码~  还是从初始化方法开始找代码，在 src/core/instance/index.js 中，先执行了 renderMixin 方法，然后在Vue实例化的时候执行了 vm._init 方法，在这个 vm._init 方法中执行了 initRender 方法。renderMixin 和 initRender 都在 src/core/instance">
+<meta name="keywords" content="Vue.js源码学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vue.js源码学习四 —— 渲染 Render 初始化过程学习">
 <meta property="og:url" content="https://violetjack.github.io/2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/index.html">
 <meta property="og:site_name" content="Vue实验室">
 <meta property="og:description" content="今天我们来学习下Vue的渲染 Render 源码~  还是从初始化方法开始找代码，在 src/core/instance/index.js 中，先执行了 renderMixin 方法，然后在Vue实例化的时候执行了 vm._init 方法，在这个 vm._init 方法中执行了 initRender 方法。renderMixin 和 initRender 都在 src/core/instance">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-19T04:28:16.680Z">
+<meta property="og:updated_time" content="2018-03-01T05:44:06.110Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue.js源码学习四 —— 渲染 Render 初始化过程学习">
 <meta name="twitter:description" content="今天我们来学习下Vue的渲染 Render 源码~  还是从初始化方法开始找代码，在 src/core/instance/index.js 中，先执行了 renderMixin 方法，然后在Vue实例化的时候执行了 vm._init 方法，在这个 vm._init 方法中执行了 initRender 方法。renderMixin 和 initRender 都在 src/core/instance">
@@ -279,7 +280,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="VioletJack">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -423,6 +424,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Vue-js源码学习/" rel="tag"># Vue.js源码学习</a>
+          
+        </div>
+      
 
       
       
@@ -441,6 +448,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/20/Vue.js源码学习五 —— provide 和 inject 学习/" rel="prev" title="Vue.js 源码学习五 —— provide 和 inject 学习">
+                Vue.js 源码学习五 —— provide 和 inject 学习 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -505,7 +516,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/images/avatar.gif"
+               src="/images/avatar.jpg"
                alt="VioletJack" />
           <p class="site-author-name" itemprop="name">VioletJack</p>
            
@@ -517,7 +528,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -525,6 +536,15 @@
 
           
 
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
           
 
         </nav>
