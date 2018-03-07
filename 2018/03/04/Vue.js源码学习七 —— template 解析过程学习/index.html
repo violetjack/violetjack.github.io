@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Vue.js源码学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Vue实验室" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="这次，来学习下Vue是如何解析HTML代码的。  template 解析用在哪从之前学习 Render 的过程中我们知道，template 的编译在 $mount 方法中出现过。12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849// src/platforms/web/">
+<meta name="keywords" content="Vue.js源码学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue.js 源码学习七 —— template 解析过程学习">
+<meta property="og:url" content="https://violetjack.github.io/2018/03/04/Vue.js源码学习七 —— template 解析过程学习/index.html">
+<meta property="og:site_name" content="Vue实验室">
+<meta property="og:description" content="这次，来学习下Vue是如何解析HTML代码的。  template 解析用在哪从之前学习 Render 的过程中我们知道，template 的编译在 $mount 方法中出现过。12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849// src/platforms/web/">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1987062-61c14118fb4d28d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-03-07T02:02:05.777Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue.js 源码学习七 —— template 解析过程学习">
+<meta name="twitter:description" content="这次，来学习下Vue是如何解析HTML代码的。  template 解析用在哪从之前学习 Render 的过程中我们知道，template 的编译在 $mount 方法中出现过。12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849// src/platforms/web/">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1987062-61c14118fb4d28d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2018/03/04/Vue.js源码学习七 —— template 解析过程学习/"/>
+
+
+
+
+
+  <title>Vue.js 源码学习七 —— template 解析过程学习 | Vue实验室</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Vue实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">专注于Vue相关知识的学习和分享</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2018/03/04/Vue.js源码学习七 —— template 解析过程学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Vue实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Vue.js 源码学习七 —— template 解析过程学习</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-04T00:00:00+08:00">
+                2018-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>这次，来学习下Vue是如何解析HTML代码的。</p>
+</blockquote>
+<h1 id="template-解析用在哪"><a href="#template-解析用在哪" class="headerlink" title="template 解析用在哪"></a>template 解析用在哪</h1><p>从之前学习 Render 的过程中我们知道，template 的编译在 <code>$mount</code> 方法中出现过。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/platforms/web/entry-runtime-with-compiler.js</span></span><br><span class="line"><span class="keyword">const</span> mount = Vue.prototype.$mount</span><br><span class="line">Vue.prototype.$mount = <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  el?: string | Element,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrating?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Component</span> </span>&#123;</span><br><span class="line">  el = el &amp;&amp; query(el)</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">  <span class="keyword">if</span> (el === <span class="built_in">document</span>.body || el === <span class="built_in">document</span>.documentElement) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> options = <span class="keyword">this</span>.$options</span><br><span class="line">  <span class="comment">// resolve template/el and convert to render function</span></span><br><span class="line">  <span class="keyword">if</span> (!options.render) &#123;</span><br><span class="line">    <span class="keyword">let</span> template = options.template</span><br><span class="line">    <span class="keyword">if</span> (template) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> template === <span class="string">'string'</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (template.charAt(<span class="number">0</span>) === <span class="string">'#'</span>) &#123;</span><br><span class="line">          <span class="comment">// 首字母为#号，看作是ID。</span></span><br><span class="line">          template = idToTemplate(template)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (template.nodeType) &#123;</span><br><span class="line">        <span class="comment">// 为真实 DOM，直接获取html</span></span><br><span class="line">        template = template.innerHTML</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (el) &#123;</span><br><span class="line">      <span class="comment">// 获取 HTML</span></span><br><span class="line">      template = getOuterHTML(el)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (template) &#123;</span><br><span class="line">      <span class="comment">// 进行编译并赋值给 vm.$options</span></span><br><span class="line">      <span class="keyword">const</span> &#123; render, staticRenderFns &#125; = compileToFunctions(template, &#123;</span><br><span class="line">        shouldDecodeNewlines,</span><br><span class="line">        shouldDecodeNewlinesForHref,</span><br><span class="line">        delimiters: options.delimiters,</span><br><span class="line">        comments: options.comments</span><br><span class="line">      &#125;, <span class="keyword">this</span>)</span><br><span class="line">      <span class="comment">// 渲染函数</span></span><br><span class="line">      options.render = render</span><br><span class="line">      <span class="comment">// 静态渲染方法</span></span><br><span class="line">      options.staticRenderFns = staticRenderFns</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> mount.call(<span class="keyword">this</span>, el, hydrating)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其实以上代码总结起来就4步：</p>
+<ol>
+<li>获取el元素。</li>
+<li>判断el是否为body或者html。</li>
+<li>为$options编译render函数。</li>
+<li>执行之前的mount函数。</li>
+</ol>
+<p>关键在于第三步，编译 render 函数上。先获取 template，即获取HTML内容，然后执行 compileToFunctions 来编译，最后将 render 和 staticRenderFns 传给 vm.$options 对象。<br>顺便看看这两个方法都用在哪里？<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/instance/render.js</span></span><br><span class="line">Vue.prototype._render = <span class="function"><span class="keyword">function</span> (<span class="params"></span>): <span class="title">VNode</span> </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    vnode = render.call(vm._renderProxy, vm.$createElement)</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    handleError(e, vm, <span class="string">`render`</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> vnode</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/instance/render-helpers/render-static.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">renderStatic</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  index: number,</span></span></span><br><span class="line"><span class="function"><span class="params">  isInFor: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">VNode</span> | <span class="title">Array</span>&lt;<span class="title">VNode</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> cached = <span class="keyword">this</span>._staticTrees || (<span class="keyword">this</span>._staticTrees = [])</span><br><span class="line">  <span class="keyword">let</span> tree = cached[index]</span><br><span class="line">  <span class="keyword">if</span> (tree &amp;&amp; !isInFor) &#123;</span><br><span class="line">    <span class="keyword">return</span> tree</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// otherwise, render a fresh tree.</span></span><br><span class="line">  tree = cached[index] = <span class="keyword">this</span>.$options.staticRenderFns[index].call(</span><br><span class="line">    <span class="keyword">this</span>._renderProxy,</span><br><span class="line">    <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">this</span> </span><br><span class="line">  )</span><br><span class="line">  markStatic(tree, <span class="string">`__static__<span class="subst">$&#123;index&#125;</span>`</span>, <span class="literal">false</span>)</span><br><span class="line">  <span class="keyword">return</span> tree</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由此可见，template 编译生成的方法都用在了渲染行为中。</p>
+<h1 id="编译-template-的整体逻辑"><a href="#编译-template-的整体逻辑" class="headerlink" title="编译 template 的整体逻辑"></a>编译 template 的整体逻辑</h1><p>下面我们顺着编译代码往下找。在 mount 方法中执行了 <code>compileToFunctions</code> 方法。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; render, staticRenderFns &#125; = compileToFunctions(template, &#123;</span><br><span class="line">  shouldDecodeNewlines,</span><br><span class="line">  shouldDecodeNewlinesForHref,</span><br><span class="line"> delimiters: options.delimiters,</span><br><span class="line"> comments: options.comments</span><br><span class="line">&#125;, <span class="keyword">this</span>)</span><br></pre></td></tr></table></figure></p>
+<p>找到方法的所在之处：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/platforms/web/compiler/index.js</span></span><br><span class="line"><span class="keyword">const</span> &#123; compile, compileToFunctions &#125; = createCompiler(baseOptions)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/compiler/index.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> createCompiler = createCompilerCreator(<span class="function"><span class="keyword">function</span> <span class="title">baseCompile</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  template: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  options: CompilerOptions</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">CompiledResult</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 将template转为AST语法树对象</span></span><br><span class="line">  <span class="keyword">const</span> ast = parse(template.trim(), options)</span><br><span class="line">  <span class="keyword">if</span> (options.optimize !== <span class="literal">false</span>) &#123;</span><br><span class="line">    <span class="comment">// 优化</span></span><br><span class="line">    optimize(ast, options)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 生成渲染代码</span></span><br><span class="line">  <span class="keyword">const</span> code = generate(ast, options)</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    ast,</span><br><span class="line">    render: code.render,</span><br><span class="line">    staticRenderFns: code.staticRenderFns</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>先看里面的 baseCompile 方法，其作用为将 HTML 字符串转为 AST 抽象语法树对象，并进行优化，最后生成渲染代码。返回值中 render 为渲染字符串，staticRenderFns 为渲染字符串数组。<br>之后再来看看 createCompilerCreator 方法：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/compiler/create-compiler.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createCompilerCreator</span> (<span class="params">baseCompile: Function</span>): <span class="title">Function</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">createCompiler</span> (<span class="params">baseOptions: CompilerOptions</span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">compile</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">      template: string,</span></span></span><br><span class="line"><span class="function"><span class="params">      options?: CompilerOptions</span></span></span><br><span class="line"><span class="function"><span class="params">    </span>): <span class="title">CompiledResult</span> </span>&#123;</span><br><span class="line">      <span class="keyword">const</span> finalOptions = <span class="built_in">Object</span>.create(baseOptions)</span><br><span class="line">      <span class="keyword">const</span> errors = []</span><br><span class="line">      <span class="keyword">const</span> tips = []</span><br><span class="line">      finalOptions.warn = <span class="function">(<span class="params">msg, tip</span>) =&gt;</span> &#123;</span><br><span class="line">        (tip ? tips : errors).push(msg)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (options) &#123;</span><br><span class="line">        <span class="comment">// merge custom modules</span></span><br><span class="line">        <span class="keyword">if</span> (options.modules) &#123;</span><br><span class="line">          finalOptions.modules =</span><br><span class="line">            (baseOptions.modules || []).concat(options.modules)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// merge custom directives</span></span><br><span class="line">        <span class="keyword">if</span> (options.directives) &#123;</span><br><span class="line">          finalOptions.directives = extend(</span><br><span class="line">            <span class="built_in">Object</span>.create(baseOptions.directives || <span class="literal">null</span>),</span><br><span class="line">            options.directives</span><br><span class="line">          )</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// copy other options</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> options) &#123;</span><br><span class="line">          <span class="keyword">if</span> (key !== <span class="string">'modules'</span> &amp;&amp; key !== <span class="string">'directives'</span>) &#123;</span><br><span class="line">            finalOptions[key] = options[key]</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 执行传入的编译方法，并返回结果对象</span></span><br><span class="line">      <span class="keyword">const</span> compiled = baseCompile(template, finalOptions)</span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">        errors.push.apply(errors, detectErrors(compiled.ast))</span><br><span class="line">      &#125;</span><br><span class="line">      compiled.errors = errors</span><br><span class="line">      compiled.tips = tips</span><br><span class="line">      <span class="keyword">return</span> compiled</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      compile,</span><br><span class="line">      compileToFunctions: createCompileToFunctionFn(compile)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>来看 compile 方法：合并 option 配置参数，然后执行外部传入的 baseCompile 方法，返回方法执行的返回结果。最终返回 <code>{ compile, compileToFunctions }</code>，<br>createCompileToFunctionFn 代码如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createCompileToFunctionFn</span> (<span class="params">compile: Function</span>): <span class="title">Function</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 定义缓存</span></span><br><span class="line">  <span class="keyword">const</span> cache = <span class="built_in">Object</span>.create(<span class="literal">null</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">compileToFunctions</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    template: string,</span></span></span><br><span class="line"><span class="function"><span class="params">    options?: CompilerOptions,</span></span></span><br><span class="line"><span class="function"><span class="params">    vm?: Component</span></span></span><br><span class="line"><span class="function"><span class="params">  </span>): <span class="title">CompiledFunctionResult</span> </span>&#123;</span><br><span class="line">    options = extend(&#123;&#125;, options)</span><br><span class="line">    <span class="keyword">const</span> warn = options.warn || baseWarn</span><br><span class="line">    <span class="keyword">delete</span> options.warn</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 确认缓存，有缓存直接返回</span></span><br><span class="line">    <span class="keyword">const</span> key = options.delimiters</span><br><span class="line">      ? <span class="built_in">String</span>(options.delimiters) + template</span><br><span class="line">      : template</span><br><span class="line">    <span class="keyword">if</span> (cache[key]) &#123;</span><br><span class="line">      <span class="keyword">return</span> cache[key]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// compile</span></span><br><span class="line">    <span class="keyword">const</span> compiled = compile(template, options)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// turn code into functions</span></span><br><span class="line">    <span class="keyword">const</span> res = &#123;&#125;</span><br><span class="line">    <span class="keyword">const</span> fnGenErrors = []</span><br><span class="line">    <span class="comment">// 生成 render 和 staticRenderFns 方法</span></span><br><span class="line">    res.render = createFunction(compiled.render, fnGenErrors)</span><br><span class="line">    res.staticRenderFns = compiled.staticRenderFns.map(<span class="function"><span class="params">code</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> createFunction(code, fnGenErrors)</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">// 返回方法并缓存</span></span><br><span class="line">    <span class="keyword">return</span> (cache[key] = res)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里就找到了我们在 mount 方法中看到的 render 和 staticRenderFns 方法了。createCompileToFunctionFn 方法其实就是将传入的 render 和 staticRenderFns 字符串转为真实方法。</p>
+<p>至此，捋一下思路：<br>template的编译用于render渲染行为中，所以template最后生成渲染函数。<br>template 的解析过程中</p>
+<ul>
+<li>通过 baseCompile 方法进行编译；</li>
+<li>通过 createCompilerCreator 中的 compile 方法合并配置参数并返回 baseCompile 方法执行结果；</li>
+<li>createCompilerCreator 返回 compile 方法和 compileToFunctions 方法；</li>
+<li>compileToFunctions 方法用于将方法字符串生成真实方法。</li>
+</ul>
+<p>其实 <code>const { compile, compileToFunctions } = createCompiler(baseOptions)</code> 就是 createCompilerCreator 的返回结果。所以，在 mount 中使用的 compileToFunctions 方法就是 createCompileToFunctionFn 方法生成的。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1987062-61c14118fb4d28d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="逻辑图"></p>
+<h1 id="baseCompile"><a href="#baseCompile" class="headerlink" title="baseCompile"></a>baseCompile</h1><p>整体思路滤清了，来看看关键的 baseCompile 方法。该方法进行了三步操作：</p>
+<ul>
+<li>parse 将HTML解析为 AST 元素。</li>
+<li>optimize 渲染优化。</li>
+<li>generate 解析成基本的 render 函数。</li>
+</ul>
+<h2 id="parse"><a href="#parse" class="headerlink" title="parse"></a>parse</h2><p>先来讲讲AST抽象语法树。维基百科的解释是：</p>
+<blockquote>
+<p>在计算机科学中，抽象语法树（abstract syntax tree或者缩写为AST），或者语法树（syntax tree），是源代码的抽象语法结构的树状表现形式，这里特指编程语言的源代码。</p>
+</blockquote>
+<p>parse 方法的最终目的就是将 template 解析为 AST 元素对象。在 parse 解析方法中，用到了大量的正则。正则的具体用法之前写过一篇文章：<a href="https://www.jianshu.com/p/0734cc319aa3" target="_blank" rel="noopener">一起来理解正则表达式</a>。代码量很多，考虑了各种解析的情况。这里不赘述太多，找一条主线来学习，其他内容我将在<a href="https://github.com/violetjack/VueStudyDemos/tree/master/VueCodes/vue" target="_blank" rel="noopener">项目</a>中注释。</p>
+<p>来看看 parse 方法。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">parse</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  template: string,</span></span></span><br><span class="line"><span class="function"><span class="params">  options: CompilerOptions</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">ASTElement</span> | <span class="title">void</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 定义了各种参数和方法</span></span><br><span class="line">  parseHTML(template, &#123;</span><br><span class="line">    warn,</span><br><span class="line">    expectHTML: options.expectHTML,</span><br><span class="line">    isUnaryTag: options.isUnaryTag,</span><br><span class="line">    canBeLeftOpenTag: options.canBeLeftOpenTag,</span><br><span class="line">    shouldDecodeNewlines: options.shouldDecodeNewlines,</span><br><span class="line">    shouldDecodeNewlinesForHref: options.shouldDecodeNewlinesForHref,</span><br><span class="line">    shouldKeepComment: options.comments,</span><br><span class="line">    start (tag, attrs, unary) &#123;&#125;,</span><br><span class="line">    end () &#123;&#125;</span><br><span class="line">    chars (text: string) &#123;&#125;,</span><br><span class="line">    comment (text: string) &#123;&#125;</span><br><span class="line">  )</span><br><span class="line">  <span class="keyword">return</span> root</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>实际上 parse 就是 parseHTML 的过程，最后返回AST元素对象。其中，传入的 options 配置对象中，start、end、chars、comment方法都会在 parseHTML 方法中用到。其实类似于生命周期钩子，在某个阶段执行。<br>parseHTML 方法是正则解析HTML的过程，这部分我将在之后的博客中单独说下，也可以看项目的注释，将不定时更新项目注释。</p>
+<h2 id="optimize"><a href="#optimize" class="headerlink" title="optimize"></a>optimize</h2><p>该方法只是做了些标记静态节点的行为，目的是为了在重新渲染时不重复渲染静态节点，以达到性能优化的目的。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">optimize</span> (<span class="params">root: ?ASTElement, options: CompilerOptions</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!root) <span class="keyword">return</span></span><br><span class="line">  isStaticKey = genStaticKeysCached(options.staticKeys || <span class="string">''</span>)</span><br><span class="line">  isPlatformReservedTag = options.isReservedTag || no</span><br><span class="line">  <span class="comment">// 标记所有非静态节点</span></span><br><span class="line">  markStatic(root)</span><br><span class="line">  <span class="comment">// 标记静态根节点</span></span><br><span class="line">  markStaticRoots(root, <span class="literal">false</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="generate"><a href="#generate" class="headerlink" title="generate"></a>generate</h2><p>generate 方法用于将 AST 元素生成 render 渲染字符串。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">generate</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  ast: ASTElement | void,</span></span></span><br><span class="line"><span class="function"><span class="params">  options: CompilerOptions</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">CodegenResult</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> state = <span class="keyword">new</span> CodegenState(options)</span><br><span class="line">  <span class="keyword">const</span> code = ast ? genElement(ast, state) : <span class="string">'_c("div")'</span></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    render: <span class="string">`with(this)&#123;return <span class="subst">$&#123;code&#125;</span>&#125;`</span>,</span><br><span class="line">    staticRenderFns: state.staticRenderFns</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后生成如下这样的渲染字符串：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">with(this)&#123;return _c(&apos;div&apos;,&#123;attrs:&#123;&quot;id&quot;:&quot;app&quot;&#125;&#125;,[_c(&apos;button&apos;,&#123;on:&#123;&quot;click&quot;:hey&#125;&#125;,[_v(_s(message))])])&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中的 _c _v _s 等方法在哪里呢~这个我们之前说起过:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/instance/render.js</span></span><br><span class="line"><span class="comment">// 创建vnode元素</span></span><br><span class="line">vm._c = <span class="function">(<span class="params">a, b, c, d</span>) =&gt;</span> createElement(vm, a, b, c, d, <span class="literal">false</span>)</span><br><span class="line"><span class="comment">// src/core/instance/render-helper/index.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">installRenderHelpers</span> (<span class="params">target: any</span>) </span>&#123;</span><br><span class="line">  target._o = markOnce</span><br><span class="line">  target._n = toNumber</span><br><span class="line">  target._s = toString</span><br><span class="line">  target._l = renderList</span><br><span class="line">  target._t = renderSlot</span><br><span class="line">  target._q = looseEqual</span><br><span class="line">  target._i = looseIndexOf</span><br><span class="line">  target._m = renderStatic</span><br><span class="line">  target._f = resolveFilter</span><br><span class="line">  target._k = checkKeyCodes</span><br><span class="line">  target._b = bindObjectProps</span><br><span class="line">  target._v = createTextVNode</span><br><span class="line">  target._e = createEmptyVNode</span><br><span class="line">  target._u = resolveScopedSlots</span><br><span class="line">  target._g = bindObjectListeners</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>其实template部分真的内容展开超级多，之后会展开细说。原本计划大前天就把博客写出来的，结果看代码看着看着绕进去了。所以，还是那句话，看代码得抓住主线，带着问题去看，不要在意细枝末节。<br>这也算是我的经验教训了，以后每次看代码，牢记待着明确的问题去看去解决。想一次看懂整个项目的代码是不可行的。<br>下期预告，parseHTML 细节解析</p>
+<h1 id="Vue-js学习系列"><a href="#Vue-js学习系列" class="headerlink" title="Vue.js学习系列"></a>Vue.js学习系列</h1><p>鉴于前端知识碎片化严重，我希望能够系统化的整理出一套关于Vue的学习系列博客。</p>
+<h1 id="Vue-js学习系列项目地址"><a href="#Vue-js学习系列项目地址" class="headerlink" title="Vue.js学习系列项目地址"></a>Vue.js学习系列项目地址</h1><p>本文源码已收入到GitHub中，以供参考，当然能留下一个star更好啦^-^。<br><a href="https://github.com/violetjack/VueStudyDemos" target="_blank" rel="noopener">https://github.com/violetjack/VueStudyDemos</a></p>
+<h1 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h1><p>VioletJack，高效学习前端工程师，喜欢研究提高效率的方法，也专注于Vue前端相关知识的学习、整理。<br>欢迎关注、点赞、评论留言~我将持续产出Vue相关优质内容。</p>
+<p>新浪微博： <a href="http://weibo.com/u/2640909603" target="_blank" rel="noopener">http://weibo.com/u/2640909603</a><br>掘金：<a href="https://gold.xitu.io/user/571d953d39b0570068145cd1" target="_blank" rel="noopener">https://gold.xitu.io/user/571d953d39b0570068145cd1</a><br>CSDN: <a href="http://blog.csdn.net/violetjack0808" target="_blank" rel="noopener">http://blog.csdn.net/violetjack0808</a><br>简书： <a href="http://www.jianshu.com/users/54ae4af3a98d/latest_articles" target="_blank" rel="noopener">http://www.jianshu.com/users/54ae4af3a98d/latest_articles</a><br>Github： <a href="https://github.com/violetjack" target="_blank" rel="noopener">https://github.com/violetjack</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="VioletJack WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="VioletJack Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue-js源码学习/" rel="tag"># Vue.js源码学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/22/Vue.js源码学习六 —— VNode虚拟DOM学习/" rel="next" title="Vue.js 源码学习六 —— VNode虚拟DOM学习">
+                <i class="fa fa-chevron-left"></i> Vue.js 源码学习六 —— VNode虚拟DOM学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/04/Vue.js源码学习八 —— HTML解析细节学习/" rel="prev" title="Vue.js 源码学习八 —— HTML解析细节学习">
+                Vue.js 源码学习八 —— HTML解析细节学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="VioletJack" />
+          <p class="site-author-name" itemprop="name">VioletJack</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://475966597@qq.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/violetjack" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/u/2640909603/home" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/violetjack/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      ZhiHu
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#template-解析用在哪"><span class="nav-number">1.</span> <span class="nav-text">template 解析用在哪</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译-template-的整体逻辑"><span class="nav-number">2.</span> <span class="nav-text">编译 template 的整体逻辑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#baseCompile"><span class="nav-number">3.</span> <span class="nav-text">baseCompile</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#parse"><span class="nav-number">3.1.</span> <span class="nav-text">parse</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#optimize"><span class="nav-number">3.2.</span> <span class="nav-text">optimize</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#generate"><span class="nav-number">3.3.</span> <span class="nav-text">generate</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vue-js学习系列"><span class="nav-number">5.</span> <span class="nav-text">Vue.js学习系列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vue-js学习系列项目地址"><span class="nav-number">6.</span> <span class="nav-text">Vue.js学习系列项目地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于作者"><span class="nav-number">7.</span> <span class="nav-text">关于作者</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
