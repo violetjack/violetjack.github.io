@@ -347,7 +347,7 @@
         
           
           从上一篇博客中，我们知道了template编译的整体逻辑和template编译后用在了哪里。本文着重讲下HTML的解析过程。
-parse 方法所有解析的起点就在 parse 方法中，parse方法最终将返回为一个 AST 语法树元素。12345678910111213141516171819202122232425262728293031// src/core/compiler/parser/in
+parse 方法所有解析的起点就在 parse 方法中，parse方法最终
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -476,7 +476,7 @@ parse 方法所有解析的起点就在 parse 方法中，parse方法最终将�
           
 这次，来学习下Vue是如何解析HTML代码的。
 
-template 解析用在哪从之前学习 Render 的过程中我们知道，template 的编译在 $mount 方法中出现过。12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849// src/platforms/web/
+template 解析用在哪从之前学习 Render 的过程中我们知道，template 的编译在 $mount 方法中出现过。1234567891
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -605,9 +605,7 @@ template 解析用在哪从之前学习 Render 的过程中我们知道，templa
           
 初六和家人出去玩，没写完博客。跳票了~
 
-所谓虚拟DOM，是一个用于表示真实 DOM 结构和属性的 JavaScript 对象，这个对象用于对比虚拟 DOM 和当前真实 DOM 的差异化，然后进行局部渲染从而实现性能上的优化。在Vue.js 中虚拟 DOM 的 JavaScript 对象就是 VNode。接下来我们一步步分析：
-VNode 是什么？
-既然是虚拟 DOM 的作用是转为真实的 DOM
+所谓虚拟DOM，是一个用于表示真实 DOM 结构和属性的 JavaScript 对象，这个对象用于对比虚拟 DOM 和当前真实 DOM 的差异化，然后进行局
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -737,7 +735,7 @@ VNode 是什么？
 早上好！继续开始学习Vue源码吧~
 
 在 Vue.js 的 2.2.0+ 版本中添加加了 provide 和 inject 选项。他们成对出现，用于父级组件向下传递数据。下面我们来看看源码~
-源码位置和之前一样，初始化的方法都是在 Vue 的 _init 方法中的。12345678910111213// src/core/instance/init.jsVue.prototype._init =
+源码位
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -866,7 +864,7 @@ VNode 是什么？
           
 今天我们来学习下Vue的渲染 Render 源码~
 
-还是从初始化方法开始找代码，在 src/core/instance/index.js 中，先执行了 renderMixin 方法，然后在Vue实例化的时候执行了 vm._init 方法，在这个 vm._init 方法中执行了 initRender 方法。renderMixin 和 initRender 都在 src/core/instance
+还是从初始化方法开始找代码，在 src/core/instance/index.js 中，先执行了 renderMixin 方法，然后在Vue实
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -995,7 +993,7 @@ VNode 是什么？
           
 早上好！继续学习Vue源码~这次我们来学习 event 事件。
 
-源码简析其实看了前两篇的同学已经知道源码怎么找了，这里再提一下。先找到Vue核心源码index方法 src/core/instance/index.js1234567891011121314function Vue (options) &#123;  if (process.env.NODE_ENV !== &apos;produ
+源码简析其实看了前两篇的同学已经知道源码怎么找了，这里再提一下。先找到Vue核心源码index方法 src/core/instanc
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1125,7 +1123,7 @@ VNode 是什么？
 春节继续写博客~加油！
 
 这次来学习一下Vue的生命周期，看看生命周期是怎么回事。
-callHook生命周期主要就是在源码某个时间点执行这个 callHook 方法来调用 vm.$options 的生命周期钩子方法（如果定义了生命周期钩子方法的话）。我们来看看 callHook 代码：123456789101112131415export function callHook (vm: Compo
+callHook生命周期主要就是在源码某个时间点执行这个 callHook 方法来调用 vm.$options 的
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1255,15 +1253,7 @@ callHook生命周期主要就是在源码某个时间点执行这个 callHook �
 一直想有个自己的 Github.io 博客，感觉逼格能够上升一大截。
 
 很久之前就看到网上各种博客搭建的文章，但是从内心中总感觉好像是个很麻烦的事情。所以，一直没有动手去做。
-昨天，趁着年前工作不忙，搭建了个博客，这里记录下过程。其实，搭建hexo博客是非常简单的事情。
-安装前提Mac安装前提
-
-Xcode
-Node.js
-Git
-
-这三个玩意儿对于我们开发者基本都是有的，没有装个就好。
-创建博
+昨天，趁着年前工作不忙
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1390,9 +1380,7 @@ Git
         
           
           
-关于Vue源码学习的博客， HcySunYang的Vue2.1.7源码学习是我所见过讲的最清晰明了的博客了，非常适合想了解Vue源码的同学入手。本文是在看了这篇博客之后进一步的学习心得。注意：本文所用Vue版本为 2.5.13PS：本文有点草率，之后会重写改进。
-
-关于源码学习关于学习源码，我有话要说~一开始我学习Vue的源码，是将 Vue.js 这个文件下载下来逐行去看……因为我听信了我同事说
+关于Vue源码学习的博客， HcySunYang的Vue2.1.7源码学习是我所见过讲的最清晰明了的博客了，非常适合想了解Vue源码的同学入手。本文是在看了这篇博客之后进一步的学习心得。注意：本文所
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1521,7 +1509,7 @@ Git
           
 我想通过社区的力量把《Vue学习系列》做到最优质的Vue系列博客
 
-解决学习痛点学习前端的同学都知道，前端有一大痛点就是知识点分散，学习的东西多。就像我学习Vue，一拿到手就告诉我有个全家桶要学习。虽然一个一个学习下来了，但是过程是比较漫长的。而且如果是刚入门前端世界，会发现还没开始写代码各种配置都能玩好几天。Webpack打包、ESLint代码检查、Babel语法转译等等……写本系列博客的本意
+解决学习痛点学习前端的同学都知道，前端有一大痛点就是知识点分散，学习的东西多。就像我学习Vue，一拿到手就告诉我有个全家桶要学习。
           ...
           <!--noindex-->
           <div class="post-button text-center">
