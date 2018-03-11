@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Vue实验室" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://cn.vuejs.org/images/icons/favicon-96x96.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="由于面试需要，先来几发 element 源码学习博客。Vue 源码还将继续更新。  好，现在我们开始学习 element —— 最受欢迎的 Vue UI 框架。 package.json我觉得要看一个前端项目，首先必须得看看 package.json 这个文件。 编译入口来看看编译的入口 123456789101112&quot;scripts&quot;: &amp;#123;  # 安装依赖  &quot;bootstrap&quot;:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="element源码学习一 —— 认识框架">
+<meta property="og:url" content="https://violetjack.github.io/2018/03/10/element-code-01/index.html">
+<meta property="og:site_name" content="Vue实验室">
+<meta property="og:description" content="由于面试需要，先来几发 element 源码学习博客。Vue 源码还将继续更新。  好，现在我们开始学习 element —— 最受欢迎的 Vue UI 框架。 package.json我觉得要看一个前端项目，首先必须得看看 package.json 这个文件。 编译入口来看看编译的入口 123456789101112&quot;scripts&quot;: &amp;#123;  # 安装依赖  &quot;bootstrap&quot;:">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://violetjack.github.io/img/bV5b6B">
+<meta property="og:image" content="https://violetjack.github.io/img/bV5ozA">
+<meta property="og:updated_time" content="2018-03-11T12:59:14.247Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="element源码学习一 —— 认识框架">
+<meta name="twitter:description" content="由于面试需要，先来几发 element 源码学习博客。Vue 源码还将继续更新。  好，现在我们开始学习 element —— 最受欢迎的 Vue UI 框架。 package.json我觉得要看一个前端项目，首先必须得看看 package.json 这个文件。 编译入口来看看编译的入口 123456789101112&quot;scripts&quot;: &amp;#123;  # 安装依赖  &quot;bootstrap&quot;:">
+<meta name="twitter:image" content="https://violetjack.github.io/img/bV5b6B">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2018/03/10/element-code-01/"/>
+
+
+
+
+
+  <title>element源码学习一 —— 认识框架 | Vue实验室</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Vue实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">专注于Vue相关知识的学习和分享</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2018/03/10/element-code-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Vue实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">element源码学习一 —— 认识框架</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-10T00:00:00+08:00">
+                2018-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>由于面试需要，先来几发 element 源码学习博客。Vue 源码还将继续更新。</p>
+</blockquote>
+<p>好，现在我们开始学习 element —— 最受欢迎的 Vue UI 框架。</p>
+<h1 id="package-json"><a href="#package-json" class="headerlink" title="package.json"></a>package.json</h1><p>我觉得要看一个前端项目，首先必须得看看 <code>package.json</code> 这个文件。</p>
+<h2 id="编译入口"><a href="#编译入口" class="headerlink" title="编译入口"></a>编译入口</h2><p>来看看编译的入口</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">  # 安装依赖</span><br><span class="line">  "bootstrap": "yarn || npm i",</span><br><span class="line">  # 构建文件</span><br><span class="line">  "build:file": "node build/bin/iconInit.js &amp; node build/bin/build-entry.js &amp; node build/bin/i18n.js &amp; node build/bin/version.js",</span><br><span class="line">  # 构建样式</span><br><span class="line">  "build:theme": "node build/bin/gen-cssfile &amp;&amp; gulp build --gulpfile packages/theme-chalk/gulpfile.js &amp;&amp; cp-cli packages/theme-chalk/lib lib/theme-chalk",</span><br><span class="line">  # 构建工具</span><br><span class="line">  "build:utils": "cross-env BABEL_ENV=utils babel src --out-dir lib --ignore src/index.js",</span><br><span class="line">  # 构建umd</span><br><span class="line">  "build:umd": "node build/bin/build-locale.js"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里我们以看源码的角度，先了解构建文件命令。其实就是 node 执行了几个 js 脚本。我们深入看下 <code>iconInit</code>、 <code>build-entry</code>、 <code>i18n</code>、 <code>version</code> 这些脚本文件。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// build/bin/build-all.js</span></span><br><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> components = <span class="built_in">require</span>(<span class="string">'../../components.json'</span>);</span><br><span class="line"><span class="keyword">const</span> execSync = <span class="built_in">require</span>(<span class="string">'child_process'</span>).execSync;</span><br><span class="line"><span class="keyword">const</span> existsSync = <span class="built_in">require</span>(<span class="string">'fs'</span>).existsSync;</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> componentPaths = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">delete</span> components.index;</span><br><span class="line"><span class="keyword">delete</span> components.font;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历 components 的 key，找到相应 component 的路径，将路径保存到 componentPaths 数组</span></span><br><span class="line"><span class="built_in">Object</span>.keys(components).forEach(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> filePath = path.join(__dirname, <span class="string">`../../packages/<span class="subst">$&#123;key&#125;</span>/cooking.conf.js`</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (existsSync(filePath)) &#123;</span><br><span class="line">    componentPaths.push(<span class="string">`packages/<span class="subst">$&#123;key&#125;</span>/cooking.conf.js`</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// pathA,pathB,pathC</span></span><br><span class="line"><span class="keyword">const</span> paths = componentPaths.join(<span class="string">','</span>);</span><br><span class="line"><span class="comment">// 拼接为 shell 命令，并调用 execSync 方法执行。</span></span><br><span class="line"><span class="keyword">const</span> cli = path.join(<span class="string">'node_modules'</span>, <span class="string">'.bin'</span>, <span class="string">'cooking'</span>) + <span class="string">` build -c <span class="subst">$&#123;paths&#125;</span> -p`</span>;</span><br><span class="line"></span><br><span class="line">execSync(cli, &#123;</span><br><span class="line">  stdio: <span class="string">'inherit'</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>以上方法主要是获取所有组件名，然后拼接为 shell 命令，执行 shell 命令进行 build。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// build/bin/iconInit.js</span></span><br><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> postcss = <span class="built_in">require</span>(<span class="string">'postcss'</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">var</span> fontFile = fs.readFileSync(path.resolve(__dirname, <span class="string">'../../packages/theme-chalk/src/icon.scss'</span>), <span class="string">'utf8'</span>);</span><br><span class="line"><span class="keyword">var</span> nodes = postcss.parse(fontFile).nodes;</span><br><span class="line"><span class="keyword">var</span> classList = [];</span><br><span class="line"><span class="comment">// 遍历匹配正则，符合则传入到数组中</span></span><br><span class="line">nodes.forEach(<span class="function">(<span class="params">node</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> selector = node.selector || <span class="string">''</span>;</span><br><span class="line">  <span class="keyword">var</span> reg = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="regexp">/\.el-icon-([^:]+):before/</span>); <span class="comment">// 正则： .el-icon-(多个非:字符):before</span></span><br><span class="line">  <span class="keyword">var</span> arr = selector.match(reg);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (arr &amp;&amp; arr[<span class="number">1</span>]) &#123;</span><br><span class="line">    classList.push(arr[<span class="number">1</span>]);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 导出 icon.json 文件</span></span><br><span class="line">fs.writeFile(path.resolve(__dirname, <span class="string">'../../examples/icon.json'</span>), <span class="built_in">JSON</span>.stringify(classList));</span><br></pre></td></tr></table></figure>
+<p>以上方法通过解析 icon.scss 最终导出 icon.json 文件，该文件保存了各种图标。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// build/bin/i18n.js</span></span><br><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="comment">// 获取 page.json</span></span><br><span class="line"><span class="keyword">var</span> langConfig = <span class="built_in">require</span>(<span class="string">'../../examples/i18n/page.json'</span>);</span><br><span class="line"></span><br><span class="line">langConfig.forEach(<span class="function"><span class="params">lang</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 获取文件信息</span></span><br><span class="line">    fs.statSync(path.resolve(__dirname, <span class="string">`../../examples/pages/<span class="subst">$&#123; lang.lang &#125;</span>`</span>));</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="comment">// 创建文件夹</span></span><br><span class="line">    fs.mkdirSync(path.resolve(__dirname, <span class="string">`../../examples/pages/<span class="subst">$&#123; lang.lang &#125;</span>`</span>));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 遍历写入文件</span></span><br><span class="line">  <span class="built_in">Object</span>.keys(lang.pages).forEach(<span class="function"><span class="params">page</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> templatePath = path.resolve(__dirname, <span class="string">`../../examples/pages/template/<span class="subst">$&#123; page &#125;</span>.tpl`</span>);</span><br><span class="line">    <span class="keyword">var</span> outputPath = path.resolve(__dirname, <span class="string">`../../examples/pages/<span class="subst">$&#123; lang.lang &#125;</span>/<span class="subst">$&#123; page &#125;</span>.vue`</span>);</span><br><span class="line">    <span class="keyword">var</span> content = fs.readFileSync(templatePath, <span class="string">'utf8'</span>);</span><br><span class="line">    <span class="keyword">var</span> pairs = lang.pages[page];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Object</span>.keys(pairs).forEach(<span class="function"><span class="params">key</span> =&gt;</span> &#123;</span><br><span class="line">      content = content.replace(<span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">`&lt;%=\\s*<span class="subst">$&#123; key &#125;</span>\\s*&gt;`</span>, <span class="string">'g'</span>), pairs[key]);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    fs.writeFileSync(outputPath, content);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>以上代码是国际化的过程，最终将会在 <code>examples/pages/</code> 目录中生成不同语言的内容。国际化具体内容请参照 <a href="http://element-cn.eleme.io/#/zh-CN/component/i18n" target="_blank" rel="noopener">国际化</a>。</p>
+<p><img src="/img/bV5b6B" alt="生成结果"></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// build/bin/version.js</span></span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">var</span> version = process.env.VERSION || <span class="built_in">require</span>(<span class="string">'../../package.json'</span>).version;</span><br><span class="line"><span class="keyword">var</span> content = &#123; <span class="string">'1.4.13'</span>: <span class="string">'1.4'</span>, <span class="string">'2.0.11'</span>: <span class="string">'2.0'</span>, <span class="string">'2.1.0'</span>: <span class="string">'2.1'</span> &#125;;</span><br><span class="line"><span class="keyword">if</span> (!content[version]) content[version] = <span class="string">'2.2'</span>;</span><br><span class="line">fs.writeFileSync(path.resolve(__dirname, <span class="string">'../../examples/versions.json'</span>), <span class="built_in">JSON</span>.stringify(content));</span><br></pre></td></tr></table></figure>
+<p>获取 version，定义了一个 content，如果当前版本不在 content 中，那么再添加一个版本数据。由于我学习的版本是 <code>2.2.1</code>，最终生成的结果是:<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"1.4.13"</span>:<span class="string">"1.4"</span>,<span class="attr">"2.0.11"</span>:<span class="string">"2.0"</span>,<span class="attr">"2.1.0"</span>:<span class="string">"2.1"</span>,<span class="attr">"2.2.1"</span>:<span class="string">"2.2"</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>出现这几个版本号的原因么，看下官网就能发现端倪，应该是几个重要的稳定版本。</p>
+<p><img src="/img/bV5ozA" alt="版本号"></p>
+<p>来看下 <code>build-entry.js</code> 文件<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// build/bin/build-entry.js</span></span><br><span class="line"><span class="keyword">var</span> Components = <span class="built_in">require</span>(<span class="string">'../../components.json'</span>); <span class="comment">// 组件数据</span></span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>); <span class="comment">// node文件系统</span></span><br><span class="line"><span class="keyword">var</span> render = <span class="built_in">require</span>(<span class="string">'json-templater/string'</span>);</span><br><span class="line"><span class="keyword">var</span> uppercamelcase = <span class="built_in">require</span>(<span class="string">'uppercamelcase'</span>); <span class="comment">// 驼峰大小写写法</span></span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>); <span class="comment">// node路径系统</span></span><br><span class="line"><span class="keyword">var</span> endOfLine = <span class="built_in">require</span>(<span class="string">'os'</span>).EOL;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导出路径</span></span><br><span class="line"><span class="keyword">var</span> OUTPUT_PATH = path.join(__dirname, <span class="string">'../../src/index.js'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导入template、安装组件template、主要template</span></span><br><span class="line"><span class="keyword">var</span> IMPORT_TEMPLATE = <span class="string">'import &#123;&#123;name&#125;&#125; from \'../packages/&#123;&#123;package&#125;&#125;/index.js\';'</span>;</span><br><span class="line"><span class="keyword">var</span> INSTALL_COMPONENT_TEMPLATE = <span class="string">'  &#123;&#123;name&#125;&#125;'</span>;</span><br><span class="line"><span class="keyword">var</span> MAIN_TEMPLATE = <span class="string">`/* Automatically generated by './build/bin/build-entry.js' */</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#123;&#123;include&#125;&#125;</span></span><br><span class="line"><span class="string">import locale from 'element-ui/src/locale';</span></span><br><span class="line"><span class="string">import CollapseTransition from 'element-ui/src/transitions/collapse-transition';</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">const components = [</span></span><br><span class="line"><span class="string">&#123;&#123;install&#125;&#125;,</span></span><br><span class="line"><span class="string">  CollapseTransition</span></span><br><span class="line"><span class="string">];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">const install = function(Vue, opts = &#123;&#125;) &#123;</span></span><br><span class="line"><span class="string">  locale.use(opts.locale);</span></span><br><span class="line"><span class="string">  locale.i18n(opts.i18n);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  components.map(component =&gt; &#123;</span></span><br><span class="line"><span class="string">    Vue.component(component.name, component);</span></span><br><span class="line"><span class="string">  &#125;);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  Vue.use(Loading.directive);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  const ELEMENT = &#123;&#125;;</span></span><br><span class="line"><span class="string">  ELEMENT.size = opts.size || '';</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  Vue.prototype.$loading = Loading.service;</span></span><br><span class="line"><span class="string">  Vue.prototype.$msgbox = MessageBox;</span></span><br><span class="line"><span class="string">  Vue.prototype.$alert = MessageBox.alert;</span></span><br><span class="line"><span class="string">  Vue.prototype.$confirm = MessageBox.confirm;</span></span><br><span class="line"><span class="string">  Vue.prototype.$prompt = MessageBox.prompt;</span></span><br><span class="line"><span class="string">  Vue.prototype.$notify = Notification;</span></span><br><span class="line"><span class="string">  Vue.prototype.$message = Message;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  Vue.prototype.$ELEMENT = ELEMENT;</span></span><br><span class="line"><span class="string">&#125;;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">/* istanbul ignore if */</span></span><br><span class="line"><span class="string">if (typeof window !== 'undefined' &amp;&amp; window.Vue) &#123;</span></span><br><span class="line"><span class="string">  install(window.Vue);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">module.exports = &#123;</span></span><br><span class="line"><span class="string">  version: '&#123;&#123;version&#125;&#125;',</span></span><br><span class="line"><span class="string">  locale: locale.use,</span></span><br><span class="line"><span class="string">  i18n: locale.i18n,</span></span><br><span class="line"><span class="string">  install,</span></span><br><span class="line"><span class="string">  CollapseTransition,</span></span><br><span class="line"><span class="string">  Loading,</span></span><br><span class="line"><span class="string">&#123;&#123;list&#125;&#125;</span></span><br><span class="line"><span class="string">&#125;;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">module.exports.default = module.exports;</span></span><br><span class="line"><span class="string">`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">delete</span> Components.font;</span><br><span class="line"><span class="comment">// 组件名</span></span><br><span class="line"><span class="keyword">var</span> ComponentNames = <span class="built_in">Object</span>.keys(Components);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> includeComponentTemplate = [];</span><br><span class="line"><span class="keyword">var</span> installTemplate = [];</span><br><span class="line"><span class="keyword">var</span> listTemplate = [];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历组件名解析template</span></span><br><span class="line">ComponentNames.forEach(<span class="function"><span class="params">name</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> componentName = uppercamelcase(name); <span class="comment">// 驼峰命名</span></span><br><span class="line"></span><br><span class="line">  includeComponentTemplate.push(render(IMPORT_TEMPLATE, &#123;</span><br><span class="line">    name: componentName,</span><br><span class="line">    package: name</span><br><span class="line">  &#125;));</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ([<span class="string">'Loading'</span>, <span class="string">'MessageBox'</span>, <span class="string">'Notification'</span>, <span class="string">'Message'</span>].indexOf(componentName) === <span class="number">-1</span>) &#123;</span><br><span class="line">    installTemplate.push(render(INSTALL_COMPONENT_TEMPLATE, &#123;</span><br><span class="line">      name: componentName,</span><br><span class="line">      component: name</span><br><span class="line">    &#125;));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (componentName !== <span class="string">'Loading'</span>) listTemplate.push(<span class="string">`  <span class="subst">$&#123;componentName&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 主要template</span></span><br><span class="line"><span class="keyword">var</span> template = render(MAIN_TEMPLATE, &#123;</span><br><span class="line">  include: includeComponentTemplate.join(endOfLine),</span><br><span class="line">  install: installTemplate.join(<span class="string">','</span> + endOfLine),</span><br><span class="line">  version: process.env.VERSION || <span class="built_in">require</span>(<span class="string">'../../package.json'</span>).version,</span><br><span class="line">  list: listTemplate.join(<span class="string">','</span> + endOfLine)</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 导出文件</span></span><br><span class="line">fs.writeFileSync(OUTPUT_PATH, template);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'[build entry] DONE:'</span>, OUTPUT_PATH);</span><br></pre></td></tr></table></figure></p>
+<p>以上代码中，先是定义了三个 template，然后使用 render 方法来渲染这些 template。最后生成一个主要 template 导出为文件。render 函数中的第二个参数为 template 中 <code></code> 的数据。<br>这个 render 方法来自 <a href="https://www.npmjs.com/package/json-templater" target="_blank" rel="noopener">json-templater</a> 库，这个库可以将字符串编译为 js 代码。</p>
+<h2 id="依赖关系"><a href="#依赖关系" class="headerlink" title="依赖关系"></a>依赖关系</h2><p>看看 element 都 depend 了些什么？下面对 element 的依赖作了注释。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line">"dependencies": &#123;</span><br><span class="line">  // 异步验证器</span><br><span class="line">  "async-validator": "~1.8.1",</span><br><span class="line">  // vue和jsx合并参数的语法转译器？</span><br><span class="line">  "babel-helper-vue-jsx-merge-props": "^2.0.0",</span><br><span class="line">  // 深入合并</span><br><span class="line">  "deepmerge": "^1.2.0",</span><br><span class="line">  // 鼠标滚轮在多个浏览器之间的标准化。</span><br><span class="line">  "normalize-wheel": "^1.0.1",</span><br><span class="line">  // 方法的 Throttle/debounce？ https://www.npmjs.com/package/throttle-debounce</span><br><span class="line">  "throttle-debounce": "^1.0.1"</span><br><span class="line">&#125;,</span><br><span class="line">"peerDependencies": &#123;</span><br><span class="line">  // vue核心源码</span><br><span class="line">  "vue": "^2.5.2"</span><br><span class="line">&#125;,</span><br><span class="line">"devDependencies": &#123;</span><br><span class="line">  // 一个托管的全文、数字和分面搜索引擎，能够在第一次按键时提供实时结果。</span><br><span class="line">  "algoliasearch": "^3.24.5",</span><br><span class="line">  // babel</span><br><span class="line">  "babel-cli": "^6.14.0",</span><br><span class="line">  "babel-core": "^6.14.0",</span><br><span class="line">  "babel-loader": "^6.2.5",</span><br><span class="line">  "babel-plugin-add-module-exports": "^0.2.1",</span><br><span class="line">  "babel-plugin-module-resolver": "^2.2.0",</span><br><span class="line">  "babel-plugin-syntax-jsx": "^6.8.0",</span><br><span class="line">  "babel-plugin-transform-vue-jsx": "^3.3.0",</span><br><span class="line">  "babel-preset-es2015": "^6.14.0",</span><br><span class="line">  // chai断言库</span><br><span class="line">  "chai": "^3.5.0",</span><br><span class="line">  // 为服务器专门设计的核心jQuery的快速、灵活、精益的实现。</span><br><span class="line">  "cheerio": "^0.18.0",</span><br><span class="line">  // node fs工具</span><br><span class="line">  "chokidar": "^1.7.0",</span><br><span class="line">  // cooking前端构建工具</span><br><span class="line">  "cooking": "^1.5.4",</span><br><span class="line">  "cooking-lint": "0.1.3",</span><br><span class="line">  // 继承vue2配置项的cooking插件</span><br><span class="line">  "cooking-vue2": "^0.3.3",</span><br><span class="line">  // 复制webpack插件</span><br><span class="line">  "copy-webpack-plugin": "^4.1.1",</span><br><span class="line">  // 代码测试覆盖率</span><br><span class="line">  "coveralls": "^2.11.14",</span><br><span class="line">  // 跨平台支持UNIX命令</span><br><span class="line">  "cp-cli": "^1.0.2",</span><br><span class="line">  // 运行在平台上设置和使用环境变量的脚本。</span><br><span class="line">  "cross-env": "^3.1.3",</span><br><span class="line">  // css 加载器</span><br><span class="line">  "css-loader": "^0.28.7",</span><br><span class="line">  // es6 promise支持</span><br><span class="line">  "es6-promise": "^4.0.5",</span><br><span class="line">  // eslint语法检测</span><br><span class="line">  "eslint": "4.14.0",</span><br><span class="line">  "eslint-config-elemefe": "0.1.1",</span><br><span class="line">  "eslint-loader": "^1.9.0",</span><br><span class="line">  "eslint-plugin-html": "^4.0.1",</span><br><span class="line">  "eslint-plugin-json": "^1.2.0",</span><br><span class="line">  "extract-text-webpack-plugin": "^3.0.1",</span><br><span class="line">  // 文件加载和保存</span><br><span class="line">  "file-loader": "^1.1.5",</span><br><span class="line">  "file-save": "^0.2.0",</span><br><span class="line">  // 将文件发布到github的 gh-pages 分支</span><br><span class="line">  "gh-pages": "^0.11.0",</span><br><span class="line">  // gulp打包</span><br><span class="line">  "gulp": "^3.9.1",</span><br><span class="line">  "gulp-autoprefixer": "^4.0.0",</span><br><span class="line">  "gulp-cssmin": "^0.1.7",</span><br><span class="line">  "gulp-postcss": "^6.1.1",</span><br><span class="line">  "gulp-sass": "^3.1.0",</span><br><span class="line">  // js 高亮</span><br><span class="line">  "highlight.js": "^9.3.0",</span><br><span class="line">  // html加载器</span><br><span class="line">  "html-loader": "^0.5.1",</span><br><span class="line">  // html webpack插件</span><br><span class="line">  "html-webpack-plugin": "^2.30.1",</span><br><span class="line">  // A Webpack loader for injecting code into modules via their dependencies</span><br><span class="line">  "inject-loader": "^3.0.1",</span><br><span class="line">  // isparta instrumenter loader for webpack，用于测试</span><br><span class="line">  "isparta-loader": "^2.0.0",</span><br><span class="line">  // json加载器</span><br><span class="line">  "json-loader": "^0.5.7",</span><br><span class="line">  // json和js的模板生成工具</span><br><span class="line">  "json-templater": "^1.0.4",</span><br><span class="line">  // karma测试库</span><br><span class="line">  "karma": "^1.3.0",</span><br><span class="line">  "karma-chrome-launcher": "^2.2.0",</span><br><span class="line">  "karma-coverage": "^1.1.1",</span><br><span class="line">  "karma-mocha": "^1.2.0",</span><br><span class="line">  "karma-sinon-chai": "^1.2.4",</span><br><span class="line">  "karma-sourcemap-loader": "^0.3.7",</span><br><span class="line">  "karma-spec-reporter": "0.0.26",</span><br><span class="line">  "karma-webpack": "^1.8.0",</span><br><span class="line">  // 用于管理具有多个包的JavaScript项目的工具。</span><br><span class="line">  "lerna": "^2.0.0-beta.32",</span><br><span class="line">  // 模拟时间工具</span><br><span class="line">  "lolex": "^1.5.1",</span><br><span class="line">  // markdown解析器</span><br><span class="line">  "markdown-it": "^6.1.1",</span><br><span class="line">  "markdown-it-anchor": "^2.5.0",</span><br><span class="line">  "markdown-it-container": "^2.0.0",</span><br><span class="line">  // mocha测试库</span><br><span class="line">  "mocha": "^3.1.1",</span><br><span class="line">  // node.js 的 sass</span><br><span class="line">  "node-sass": "^4.5.3",</span><br><span class="line">  // 视差滚动 https://perspective.js.org/#/zh-cn/</span><br><span class="line">  "perspective.js": "^1.0.0",</span><br><span class="line">  // postcss</span><br><span class="line">  "postcss": "^5.1.2",</span><br><span class="line">  "postcss-loader": "0.11.1",</span><br><span class="line">  "postcss-salad": "^1.0.8",</span><br><span class="line">  // node深度删除模块</span><br><span class="line">  "rimraf": "^2.5.4",</span><br><span class="line">  // sass加载器</span><br><span class="line">  "sass-loader": "^6.0.6",</span><br><span class="line">  // sinon测试框架</span><br><span class="line">  "sinon": "^1.17.6",</span><br><span class="line">  "sinon-chai": "^2.8.0",</span><br><span class="line">  // 样式加载器</span><br><span class="line">  "style-loader": "^0.19.0",</span><br><span class="line">  // utf-8 字符转换</span><br><span class="line">  "transliteration": "^1.1.11",</span><br><span class="line">  // 驼峰写法</span><br><span class="line">  "uppercamelcase": "^1.1.0",</span><br><span class="line">  "url-loader": "^0.6.2",</span><br><span class="line">  // vue</span><br><span class="line">  "vue": "^2.5.2",</span><br><span class="line">  "vue-loader": "^13.3.0",</span><br><span class="line">  "vue-markdown-loader": "1",</span><br><span class="line">  "vue-router": "2.7.0",</span><br><span class="line">  "vue-template-compiler": "^2.5.2",</span><br><span class="line">  "vue-template-es2015-compiler": "^1.6.0",</span><br><span class="line">  // webpack</span><br><span class="line">  "webpack": "^3.7.1",</span><br><span class="line">  "webpack-dev-server": "^2.9.1",</span><br><span class="line">  "webpack-node-externals": "^1.6.0"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>阿西吧，这依赖库真心多~~不知道他们如何找到这么多库的。</p>
+<h1 id="src目录"><a href="#src目录" class="headerlink" title="src目录"></a>src目录</h1><p>再来看看项目结构部分。按常理源码肯定是放在 <code>src</code> 目录中的，我们找到 <code>src/index.js</code>。代码有点长，只贴出 <code>install</code> 方法部分了。说下都干了什么：导入所有组件，定义安装方法，判断环境执行 <code>install</code> 方法，最后整体导出。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> install = <span class="function"><span class="keyword">function</span>(<span class="params">Vue, opts = &#123;&#125;</span>) </span>&#123;</span><br><span class="line">  locale.use(opts.locale);</span><br><span class="line">  locale.i18n(opts.i18n);</span><br><span class="line"></span><br><span class="line">  components.map(<span class="function"><span class="params">component</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 遍历将组件加入到Vue中</span></span><br><span class="line">    Vue.component(component.name, component);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 加载中</span></span><br><span class="line">  Vue.use(Loading.directive);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> ELEMENT = &#123;&#125;;</span><br><span class="line">  ELEMENT.size = opts.size || <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 定义Vue的原型 prototype</span></span><br><span class="line">  Vue.prototype.$loading = Loading.service;</span><br><span class="line">  Vue.prototype.$msgbox = MessageBox;</span><br><span class="line">  Vue.prototype.$alert = MessageBox.alert;</span><br><span class="line">  Vue.prototype.$confirm = MessageBox.confirm;</span><br><span class="line">  Vue.prototype.$prompt = MessageBox.prompt;</span><br><span class="line">  Vue.prototype.$notify = Notification;</span><br><span class="line">  Vue.prototype.$message = Message;</span><br><span class="line"></span><br><span class="line">  Vue.prototype.$ELEMENT = ELEMENT;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* istanbul ignore if */</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">window</span> !== <span class="string">'undefined'</span> &amp;&amp; <span class="built_in">window</span>.Vue) &#123;</span><br><span class="line">  install(<span class="built_in">window</span>.Vue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从组件的导入 <code>import Button from &#39;../packages/button/index.js&#39;;</code> 可以看到所有组件都是在 packages 目录下的。这部分我们会在之后重点学习。<br>那么问题来了，既然组件都在 <code>packages</code> 中了，那么 <code>src</code> 目录下都干了些什么呢？来看看各个目录的功能：</p>
+<ul>
+<li>directive 实现滚轮优化和避免重复点击。</li>
+<li>locale 用于 i18n 国际化功能。</li>
+<li>mixins 看样子应该是用于混合到 Vue 实例的 options 中的。</li>
+<li>transition 在渲染是操作style做过渡效果处理。</li>
+<li>utils 工具文件夹。</li>
+</ul>
+<p>主要目的是项目结构，就不深入展开了。如有需要后面再讲。</p>
+<h1 id="其他目录"><a href="#其他目录" class="headerlink" title="其他目录"></a>其他目录</h1><p>上面说过，package 目录中存放了所有 component 组件的代码。另外也存放了组件的样式 <code>.scss</code> 文件。<br>而对于type目录中，存放的 <code>.ts</code> 文件。都是 TypeScript 文件。但是有个问题，我不太清楚这些 <code>.ts</code> 都用在何处。而且在 package.json 中也未导入 TypeScript 的库，只是在更新日志中有 <code>新增 TypeScript 类型声明</code> 这么一句话。这点有所疑惑。<br>test 目录下是各个组件的单元测试用例，这部分是学习单元测试写法的很好的参考代码（我学习测试框架就是在这里学的）。需要学习单元测试的可以深入看看。<br>example 目录下是 element 的示例项目。我们的目的是学习源码，所以这部分先忽略~</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>简单了解了下项目的编译、项目的依赖库情况、项目的机构。下一篇开始学习一些组件的实现。逐步深入扒开element的神秘面纱。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>如果本博客对你有所帮助，请作者喝一杯咖啡如何？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="VioletJack WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="VioletJack Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/04/Vue.js源码学习八 —— HTML解析细节学习/" rel="next" title="Vue.js 源码学习八 —— HTML解析细节学习">
+                <i class="fa fa-chevron-left"></i> Vue.js 源码学习八 —— HTML解析细节学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/11/element-code-02/" rel="prev" title="element源码学习二 —— 简单组件学习">
+                element源码学习二 —— 简单组件学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="VioletJack" />
+          <p class="site-author-name" itemprop="name">VioletJack</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://violetjack@foxmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/violetjack" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/u/2640909603/home" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/violetjack/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      ZhiHu
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://segmentfault.com/u/violetjack" target="_blank" title="SF">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      SF
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://stackoverflow.com/users/4967859/violetjack" target="_blank" title="StackOverflow">
+                  
+                    <i class="fa fa-fw fa-stack-overflow"></i>
+                  
+                    
+                      StackOverflow
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#package-json"><span class="nav-number">1.</span> <span class="nav-text">package.json</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编译入口"><span class="nav-number">1.1.</span> <span class="nav-text">编译入口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖关系"><span class="nav-number">1.2.</span> <span class="nav-text">依赖关系</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#src目录"><span class="nav-number">2.</span> <span class="nav-text">src目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他目录"><span class="nav-number">3.</span> <span class="nav-text">其他目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

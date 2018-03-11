@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Vue实验室" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://cn.vuejs.org/images/icons/favicon-96x96.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="上一篇博客中学习了项目的结构，这篇博客来学几个简单的组件的实现。  在上一篇博客中我们提到了组件的源码都是存放在 packages 目录下的，所以我们从中挑一些组件来学习。先从简单的入手，来学习 button、radio、checkbox和InputNumber这四个组件的源码~ Button找到 packages/button/ 目录下，先看看 index.js 做了什么？12345678im">
+<meta property="og:type" content="article">
+<meta property="og:title" content="element源码学习二 —— 简单组件学习">
+<meta property="og:url" content="https://violetjack.github.io/2018/03/11/element-code-02/index.html">
+<meta property="og:site_name" content="Vue实验室">
+<meta property="og:description" content="上一篇博客中学习了项目的结构，这篇博客来学几个简单的组件的实现。  在上一篇博客中我们提到了组件的源码都是存放在 packages 目录下的，所以我们从中挑一些组件来学习。先从简单的入手，来学习 button、radio、checkbox和InputNumber这四个组件的源码~ Button找到 packages/button/ 目录下，先看看 index.js 做了什么？12345678im">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-11T12:59:31.795Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="element源码学习二 —— 简单组件学习">
+<meta name="twitter:description" content="上一篇博客中学习了项目的结构，这篇博客来学几个简单的组件的实现。  在上一篇博客中我们提到了组件的源码都是存放在 packages 目录下的，所以我们从中挑一些组件来学习。先从简单的入手，来学习 button、radio、checkbox和InputNumber这四个组件的源码~ Button找到 packages/button/ 目录下，先看看 index.js 做了什么？12345678im">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2018/03/11/element-code-02/"/>
+
+
+
+
+
+  <title>element源码学习二 —— 简单组件学习 | Vue实验室</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Vue实验室</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">专注于Vue相关知识的学习和分享</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2018/03/11/element-code-02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Vue实验室">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">element源码学习二 —— 简单组件学习</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-11T00:00:00+08:00">
+                2018-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>上一篇博客中学习了项目的结构，这篇博客来学几个简单的组件的实现。</p>
+</blockquote>
+<p>在上一篇博客中我们提到了组件的源码都是存放在 <code>packages</code> 目录下的，所以我们从中挑一些组件来学习。先从简单的入手，来学习 button、radio、checkbox和InputNumber这四个组件的源码~</p>
+<h1 id="Button"><a href="#Button" class="headerlink" title="Button"></a>Button</h1><p>找到 <code>packages/button/</code> 目录下，先看看 index.js 做了什么？<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ElButton <span class="keyword">from</span> <span class="string">'./src/button'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册全局组件</span></span><br><span class="line">ElButton.install = <span class="function"><span class="keyword">function</span>(<span class="params">Vue</span>) </span>&#123;</span><br><span class="line">  Vue.component(ElButton.name, ElButton);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> ElButton;</span><br></pre></td></tr></table></figure></p>
+<p>其实就是获取组件，然后全局注册组件。很好理解，我们自定义组件也经常这么干。看看组件内容吧~<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- packages/button/src/button.vue --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">"el-button"</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">click</span>=<span class="string">"handleClick"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:disabled</span>=<span class="string">"disabled || loading"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:autofocus</span>=<span class="string">"autofocus"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:type</span>=<span class="string">"nativeType"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:class</span>=<span class="string">"[</span></span></span><br><span class="line"><span class="tag"><span class="string">      type ? 'el-button--' + type : '',</span></span></span><br><span class="line"><span class="tag"><span class="string">      buttonSize ? 'el-button--' + buttonSize : '',</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123;</span></span></span><br><span class="line"><span class="tag"><span class="string">        'is-disabled': disabled,</span></span></span><br><span class="line"><span class="tag"><span class="string">        'is-loading': loading,</span></span></span><br><span class="line"><span class="tag"><span class="string">        'is-plain': plain,</span></span></span><br><span class="line"><span class="tag"><span class="string">        'is-round': round</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#125;</span></span></span><br><span class="line"><span class="tag"><span class="string">    ]"</span></span></span><br><span class="line"><span class="tag">  &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"el-icon-loading"</span> <span class="attr">v-if</span>=<span class="string">"loading"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">i</span> <span class="attr">:class</span>=<span class="string">"icon"</span> <span class="attr">v-if</span>=<span class="string">"icon &amp;&amp; !loading"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">v-if</span>=<span class="string">"$slots.default"</span>&gt;</span><span class="tag">&lt;<span class="name">slot</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">    name: <span class="string">'ElButton'</span>,</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 获取父级组件 provide 传递下来的数据。</span></span></span><br><span class="line"><span class="undefined">    inject: &#123;</span></span><br><span class="line"><span class="undefined">      elFormItem: &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="comment">// 属性 http://element-cn.eleme.io/#/zh-CN/component/button</span></span></span><br><span class="line"><span class="undefined">    props: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 类型 primary / success / warning / danger / info / text</span></span></span><br><span class="line"><span class="undefined">      type: &#123;</span></span><br><span class="line"><span class="javascript">        type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">'default'</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 尺寸 medium / small / mini</span></span></span><br><span class="line"><span class="javascript">      size: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 图标类名</span></span></span><br><span class="line"><span class="undefined">      icon: &#123;</span></span><br><span class="line"><span class="javascript">        type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 原生type属性 button / submit / reset</span></span></span><br><span class="line"><span class="undefined">      nativeType: &#123;</span></span><br><span class="line"><span class="javascript">        type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">'button'</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否加载中状态</span></span></span><br><span class="line"><span class="javascript">      loading: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否禁用状态</span></span></span><br><span class="line"><span class="javascript">      disabled: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否朴素按钮</span></span></span><br><span class="line"><span class="javascript">      plain: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否默认聚焦</span></span></span><br><span class="line"><span class="javascript">      autofocus: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否圆形按钮</span></span></span><br><span class="line"><span class="javascript">      round: <span class="built_in">Boolean</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    computed: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// elFormItem 尺寸获取</span></span></span><br><span class="line"><span class="undefined">      _elFormItemSize() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> (<span class="keyword">this</span>.elFormItem || &#123;&#125;).elFormItemSize;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 按钮尺寸计算</span></span></span><br><span class="line"><span class="undefined">      buttonSize() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.size || <span class="keyword">this</span>._elFormItemSize || (<span class="keyword">this</span>.$ELEMENT || &#123;&#125;).size;</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    methods: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 点击事件，使得组件的点击事件为 @click，与原生点击保持一致。</span></span></span><br><span class="line"><span class="undefined">      handleClick(evt) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$emit(<span class="string">'click'</span>, evt);</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>代码已注释~其实 script 部分很简单：通过inject和props获取数据，计算方法计算尺寸，事件处理点击事件。关键点在于button中的几个class。说白了，其实这就是个原生的button组件，只是样式上有所不同。<br>样式文件都是存在 <code>packages/theme-chalk/</code> 目录下的。所以 button 的样式目录位于 <code>packages/theme-chalk/src/button.scss</code>。由于自己 CSS 非常渣，所以这步先跳过~</p>
+<h1 id="Radio"><a href="#Radio" class="headerlink" title="Radio"></a>Radio</h1><p>来看下Radio。嗯……目录位置在 <code>packages/radio/</code> 目录下。index.js 文件和 button 是一样的 —— 导入组件、定义全局注册组件方法、导出。所以这边来看看 radio.vue 文件。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- packages/button/src/radio.vue --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">label</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">"el-radio"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:class</span>=<span class="string">"[</span></span></span><br><span class="line"><span class="tag"><span class="string">      border &amp;&amp; radioSize ? 'el-radio--' + radioSize : '',</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123; 'is-disabled': isDisabled &#125;,</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123; 'is-focus': focus &#125;,</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123; 'is-bordered': border &#125;,</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123; 'is-checked': model === label &#125;</span></span></span><br><span class="line"><span class="tag"><span class="string">    ]"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">role</span>=<span class="string">"radio"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:aria-checked</span>=<span class="string">"model === label"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:aria-disabled</span>=<span class="string">"isDisabled"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:tabindex</span>=<span class="string">"tabIndex"</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">keydown.space.stop.prevent</span>=<span class="string">"model = label"</span></span></span><br><span class="line"><span class="tag">  &gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- radio 图标部分 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"el-radio__input"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:class</span>=<span class="string">"&#123;</span></span></span><br><span class="line"><span class="tag"><span class="string">        'is-disabled': isDisabled,</span></span></span><br><span class="line"><span class="tag"><span class="string">        'is-checked': model === label</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#125;"</span></span></span><br><span class="line"><span class="tag">    &gt;</span> </span><br><span class="line">      <span class="comment">&lt;!-- 图标效果 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"el-radio__inner"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">input</span></span></span><br><span class="line"><span class="tag">        <span class="attr">class</span>=<span class="string">"el-radio__original"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:value</span>=<span class="string">"label"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">type</span>=<span class="string">"radio"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">v-model</span>=<span class="string">"model"</span></span></span><br><span class="line"><span class="tag">        @<span class="attr">focus</span>=<span class="string">"focus = true"</span></span></span><br><span class="line"><span class="tag">        @<span class="attr">blur</span>=<span class="string">"focus = false"</span></span></span><br><span class="line"><span class="tag">        @<span class="attr">change</span>=<span class="string">"handleChange"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:name</span>=<span class="string">"name"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:disabled</span>=<span class="string">"isDisabled"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">tabindex</span>=<span class="string">"-1"</span></span></span><br><span class="line"><span class="tag">      &gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 文本内容 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"el-radio__label"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">slot</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">template</span> <span class="attr">v-if</span>=<span class="string">"!$slots.default"</span>&gt;</span>&#123;&#123;label&#125;&#125;<span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">import</span> Emitter <span class="keyword">from</span> <span class="string">'element-ui/src/mixins/emitter'</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">    name: <span class="string">'ElRadio'</span>,</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 混合选项</span></span></span><br><span class="line"><span class="undefined">    mixins: [Emitter],</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    inject: &#123;</span></span><br><span class="line"><span class="undefined">      elForm: &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">      elFormItem: &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">    componentName: <span class="string">'ElRadio'</span>,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    props: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// value值</span></span></span><br><span class="line"><span class="undefined">      value: &#123;&#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// Radio 的 value</span></span></span><br><span class="line"><span class="undefined">      label: &#123;&#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否禁用</span></span></span><br><span class="line"><span class="javascript">      disabled: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 原生 name 属性</span></span></span><br><span class="line"><span class="javascript">      name: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否显示边框</span></span></span><br><span class="line"><span class="javascript">      border: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// Radio 的尺寸，仅在 border 为真时有效 medium / small / mini</span></span></span><br><span class="line"><span class="javascript">      size: <span class="built_in">String</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    data() &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">        focus: <span class="literal">false</span></span></span><br><span class="line"><span class="undefined">      &#125;;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    computed: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 向上遍历查询父级组件是否有 ElRadioGroup，即是否在按钮组中</span></span></span><br><span class="line"><span class="undefined">      isGroup() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> parent = <span class="keyword">this</span>.$parent;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">while</span> (parent) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (parent.$options.componentName !== <span class="string">'ElRadioGroup'</span>) &#123;</span></span><br><span class="line"><span class="undefined">            parent = parent.$parent;</span></span><br><span class="line"><span class="javascript">          &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>._radioGroup = parent;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined">          &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="literal">false</span>;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 重新定义 v-model 绑定内容的 get 和 set</span></span></span><br><span class="line"><span class="undefined">      model: &#123;</span></span><br><span class="line"><span class="undefined">        get() &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">return</span> <span class="keyword">this</span>.isGroup ? <span class="keyword">this</span>._radioGroup.value : <span class="keyword">this</span>.value;</span></span><br><span class="line"><span class="undefined">        &#125;,</span></span><br><span class="line"><span class="undefined">        set(val) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (<span class="keyword">this</span>.isGroup) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>.dispatch(<span class="string">'ElRadioGroup'</span>, <span class="string">'input'</span>, [val]);</span></span><br><span class="line"><span class="javascript">          &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>.$emit(<span class="string">'input'</span>, val);</span></span><br><span class="line"><span class="undefined">          &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// elFormItem 尺寸</span></span></span><br><span class="line"><span class="undefined">      _elFormItemSize() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> (<span class="keyword">this</span>.elFormItem || &#123;&#125;).elFormItemSize;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 计算 radio 尺寸，用于显示带有边框的radio的尺寸大小</span></span></span><br><span class="line"><span class="undefined">      radioSize() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> temRadioSize = <span class="keyword">this</span>.size || <span class="keyword">this</span>._elFormItemSize || (<span class="keyword">this</span>.$ELEMENT || &#123;&#125;).size;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.isGroup</span></span><br><span class="line"><span class="javascript">          ? <span class="keyword">this</span>._radioGroup.radioGroupSize || temRadioSize</span></span><br><span class="line"><span class="undefined">          : temRadioSize;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否禁用，如果radioGroup禁用则按钮禁用。</span></span></span><br><span class="line"><span class="undefined">      isDisabled() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.isGroup</span></span><br><span class="line"><span class="javascript">          ? <span class="keyword">this</span>._radioGroup.disabled || <span class="keyword">this</span>.disabled || (<span class="keyword">this</span>.elForm || &#123;&#125;).disabled</span></span><br><span class="line"><span class="javascript">          : <span class="keyword">this</span>.disabled || (<span class="keyword">this</span>.elForm || &#123;&#125;).disabled;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 标签索引 0 or -1</span></span></span><br><span class="line"><span class="undefined">      tabIndex() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> !<span class="keyword">this</span>.isDisabled ? (<span class="keyword">this</span>.isGroup ? (<span class="keyword">this</span>.model === <span class="keyword">this</span>.label ? <span class="number">0</span> : <span class="number">-1</span>) : <span class="number">0</span>) : <span class="number">-1</span>;</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    methods: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 处理 @change 事件，如果有按钮组，出发按钮组事件。</span></span></span><br><span class="line"><span class="undefined">      handleChange() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.$emit(<span class="string">'change'</span>, <span class="keyword">this</span>.model);</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.isGroup &amp;&amp; <span class="keyword">this</span>.dispatch(<span class="string">'ElRadioGroup'</span>, <span class="string">'handleChange'</span>, <span class="keyword">this</span>.model);</span></span><br><span class="line"><span class="undefined">        &#125;);</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>从代码中可以看到，radio不止是个input那么简单。后面还会显示的文本内容。script 部分的逻辑是：通过 inject 和 props 获取传参，data记录 radio 的 focus 状态。compute 中计算一些属性值；methods中处理onchange事件。radio 中多了些关于 radioGroup 的处理。具体我都写在注释中了。<br>另外要注意的还是 template 中的各类 class，radio的css文件想必也猜到了，文件位于 <code>packages/theme-chalk/src/radio.scss</code>。<strong>到这里就会发现：这些简单组件主要是样式上面的处理，对于逻辑上处理并不大。</strong><br>在 radio 中导入了 <code>element-ui/src/mixins/emitter.js</code> 文件，来看看它的作用是什么？<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/mixins/emitter.js</span></span><br><span class="line"><span class="comment">// 广播</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">broadcast</span>(<span class="params">componentName, eventName, params</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 遍历子组件</span></span><br><span class="line">  <span class="keyword">this</span>.$children.forEach(<span class="function"><span class="params">child</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 组件名</span></span><br><span class="line">    <span class="keyword">var</span> name = child.$options.componentName;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (name === componentName) &#123;</span><br><span class="line">      <span class="comment">// 触发事件</span></span><br><span class="line">      child.$emit.apply(child, [eventName].concat(params));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 执行broadcast方法</span></span><br><span class="line">      broadcast.apply(child, [componentName, eventName].concat([params]));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  methods: &#123;</span><br><span class="line">    dispatch(componentName, eventName, params) &#123;</span><br><span class="line">      <span class="comment">// 父级组件及其组件名</span></span><br><span class="line">      <span class="keyword">var</span> parent = <span class="keyword">this</span>.$parent || <span class="keyword">this</span>.$root;</span><br><span class="line">      <span class="keyword">var</span> name = parent.$options.componentName;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 有父级组件 同时 没有name 或者 name 不等于组件名</span></span><br><span class="line">      <span class="keyword">while</span> (parent &amp;&amp; (!name || name !== componentName)) &#123;</span><br><span class="line">        <span class="comment">// parent 向上获取父级组件</span></span><br><span class="line">        parent = parent.$parent;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (parent) &#123;</span><br><span class="line">          name = parent.$options.componentName;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 触发 eventName 事件</span></span><br><span class="line">      <span class="keyword">if</span> (parent) &#123;</span><br><span class="line">        parent.$emit.apply(parent, [eventName].concat(params));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    broadcast(componentName, eventName, params) &#123;</span><br><span class="line">      broadcast.call(<span class="keyword">this</span>, componentName, eventName, params);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>由注释可见，dispatch 方法向上获取父级组件并触发 eventName 事件。broadcast 方法向下遍历子组件触发 eventName 事件。</p>
+<p>至于 Vue 的 mixins 属性是干嘛的？</p>
+<blockquote>
+<p>混入 (mixins) 是一种分发 Vue 组件中可复用功能的非常灵活的方式。混入对象可以包含任意组件选项。当组件使用混入对象时，所有混入对象的选项将被混入该组件本身的选项。</p>
+</blockquote>
+<p>好啦，至于 radio 的 scss 解析？抱歉，暂时对scss不熟，之后补上~本篇关键将逻辑吧。</p>
+<h1 id="checkbox"><a href="#checkbox" class="headerlink" title="checkbox"></a>checkbox</h1><p>找到 checkbox 的项目目录，index.js 逻辑是一样的~所以只需看看 checkbox.vue 文件<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- packages/button/src/checkbox.vue --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">label</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">"el-checkbox"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:class</span>=<span class="string">"[</span></span></span><br><span class="line"><span class="tag"><span class="string">      border &amp;&amp; checkboxSize ? 'el-checkbox--' + checkboxSize : '',</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123; 'is-disabled': isDisabled &#125;,</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123; 'is-bordered': border &#125;,</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123; 'is-checked': isChecked &#125;</span></span></span><br><span class="line"><span class="tag"><span class="string">    ]"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">role</span>=<span class="string">"checkbox"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:aria-checked</span>=<span class="string">"indeterminate ? 'mixed': isChecked"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:aria-disabled</span>=<span class="string">"isDisabled"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:id</span>=<span class="string">"id"</span></span></span><br><span class="line"><span class="tag">  &gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- checkbox --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"el-checkbox__input"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:class</span>=<span class="string">"&#123;</span></span></span><br><span class="line"><span class="tag"><span class="string">        'is-disabled': isDisabled,</span></span></span><br><span class="line"><span class="tag"><span class="string">        'is-checked': isChecked,</span></span></span><br><span class="line"><span class="tag"><span class="string">        'is-indeterminate': indeterminate,</span></span></span><br><span class="line"><span class="tag"><span class="string">        'is-focus': focus</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#125;"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">aria-checked</span>=<span class="string">"mixed"</span></span></span><br><span class="line"><span class="tag">    &gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"el-checkbox__inner"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 如果有 true-value 或者 false-value --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">input</span></span></span><br><span class="line"><span class="tag">        <span class="attr">v-if</span>=<span class="string">"trueLabel || falseLabel"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">class</span>=<span class="string">"el-checkbox__original"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">type</span>=<span class="string">"checkbox"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:name</span>=<span class="string">"name"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:disabled</span>=<span class="string">"isDisabled"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:true-value</span>=<span class="string">"trueLabel"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:false-value</span>=<span class="string">"falseLabel"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">v-model</span>=<span class="string">"model"</span></span></span><br><span class="line"><span class="tag">        @<span class="attr">change</span>=<span class="string">"handleChange"</span></span></span><br><span class="line"><span class="tag">        @<span class="attr">focus</span>=<span class="string">"focus = true"</span></span></span><br><span class="line"><span class="tag">        @<span class="attr">blur</span>=<span class="string">"focus = false"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">input</span></span></span><br><span class="line"><span class="tag">        <span class="attr">v-else</span></span></span><br><span class="line"><span class="tag">        <span class="attr">class</span>=<span class="string">"el-checkbox__original"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">type</span>=<span class="string">"checkbox"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:disabled</span>=<span class="string">"isDisabled"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:value</span>=<span class="string">"label"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:name</span>=<span class="string">"name"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">v-model</span>=<span class="string">"model"</span></span></span><br><span class="line"><span class="tag">        @<span class="attr">change</span>=<span class="string">"handleChange"</span></span></span><br><span class="line"><span class="tag">        @<span class="attr">focus</span>=<span class="string">"focus = true"</span></span></span><br><span class="line"><span class="tag">        @<span class="attr">blur</span>=<span class="string">"focus = false"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 文本内容 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"el-checkbox__label"</span> <span class="attr">v-if</span>=<span class="string">"$slots.default || label"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">slot</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">template</span> <span class="attr">v-if</span>=<span class="string">"!$slots.default"</span>&gt;</span>&#123;&#123;label&#125;&#125;<span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">import</span> Emitter <span class="keyword">from</span> <span class="string">'element-ui/src/mixins/emitter'</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">    name: <span class="string">'ElCheckbox'</span>,</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 混合 Emitter</span></span></span><br><span class="line"><span class="undefined">    mixins: [Emitter],</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    inject: &#123;</span></span><br><span class="line"><span class="undefined">      elForm: &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="undefined">      elFormItem: &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">    componentName: <span class="string">'ElCheckbox'</span>,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    data() &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// checkbox model</span></span></span><br><span class="line"><span class="javascript">        selfModel: <span class="literal">false</span>,</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 焦点</span></span></span><br><span class="line"><span class="javascript">        focus: <span class="literal">false</span>,</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 超过限制？</span></span></span><br><span class="line"><span class="javascript">        isLimitExceeded: <span class="literal">false</span></span></span><br><span class="line"><span class="undefined">      &#125;;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    computed: &#123;</span></span><br><span class="line"><span class="undefined">      model: &#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 获取model值</span></span></span><br><span class="line"><span class="undefined">        get() &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">return</span> <span class="keyword">this</span>.isGroup</span></span><br><span class="line"><span class="javascript">            ? <span class="keyword">this</span>.store : <span class="keyword">this</span>.value !== <span class="literal">undefined</span></span></span><br><span class="line"><span class="javascript">              ? <span class="keyword">this</span>.value : <span class="keyword">this</span>.selfModel;</span></span><br><span class="line"><span class="undefined">        &#125;,</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 设置 selfModel</span></span></span><br><span class="line"><span class="undefined">        set(val) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="comment">// checkbox group 的set逻辑处理</span></span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (<span class="keyword">this</span>.isGroup) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="comment">// 处理 isLimitExceeded</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>.isLimitExceeded = <span class="literal">false</span>;</span></span><br><span class="line"><span class="javascript">            (<span class="keyword">this</span>._checkboxGroup.min !== <span class="literal">undefined</span> &amp;&amp;</span></span><br><span class="line"><span class="javascript">              val.length &lt; <span class="keyword">this</span>._checkboxGroup.min &amp;&amp;</span></span><br><span class="line"><span class="javascript">              (<span class="keyword">this</span>.isLimitExceeded = <span class="literal">true</span>));</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">            (<span class="keyword">this</span>._checkboxGroup.max !== <span class="literal">undefined</span> &amp;&amp;</span></span><br><span class="line"><span class="javascript">              val.length &gt; <span class="keyword">this</span>._checkboxGroup.max &amp;&amp;</span></span><br><span class="line"><span class="javascript">              (<span class="keyword">this</span>.isLimitExceeded = <span class="literal">true</span>));</span></span><br><span class="line"><span class="javascript">            <span class="comment">// 触发 ElCheckboxGroup 的 input 事件</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>.isLimitExceeded === <span class="literal">false</span> &amp;&amp;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>.dispatch(<span class="string">'ElCheckboxGroup'</span>, <span class="string">'input'</span>, [val]);</span></span><br><span class="line"><span class="javascript">          &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">            <span class="comment">// 触发当前组件 input 事件</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>.$emit(<span class="string">'input'</span>, val);</span></span><br><span class="line"><span class="javascript">            <span class="comment">// 赋值</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>.selfModel = val;</span></span><br><span class="line"><span class="undefined">          &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否选中</span></span></span><br><span class="line"><span class="undefined">      isChecked() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (&#123;&#125;.toString.call(<span class="keyword">this</span>.model) === <span class="string">'[object Boolean]'</span>) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">return</span> <span class="keyword">this</span>.model;</span></span><br><span class="line"><span class="javascript">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(<span class="keyword">this</span>.model)) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">return</span> <span class="keyword">this</span>.model.indexOf(<span class="keyword">this</span>.label) &gt; <span class="number">-1</span>;</span></span><br><span class="line"><span class="javascript">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.model !== <span class="literal">null</span> &amp;&amp; <span class="keyword">this</span>.model !== <span class="literal">undefined</span>) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">return</span> <span class="keyword">this</span>.model === <span class="keyword">this</span>.trueLabel;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否为按钮组</span></span></span><br><span class="line"><span class="undefined">      isGroup() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> parent = <span class="keyword">this</span>.$parent;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">while</span> (parent) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (parent.$options.componentName !== <span class="string">'ElCheckboxGroup'</span>) &#123;</span></span><br><span class="line"><span class="undefined">            parent = parent.$parent;</span></span><br><span class="line"><span class="javascript">          &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>._checkboxGroup = parent;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined">          &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="literal">false</span>;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 判断 group，checkbox 的 value 获取</span></span></span><br><span class="line"><span class="undefined">      store() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>._checkboxGroup ? <span class="keyword">this</span>._checkboxGroup.value : <span class="keyword">this</span>.value;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否禁用</span></span></span><br><span class="line"><span class="undefined">      isDisabled() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.isGroup</span></span><br><span class="line"><span class="javascript">          ? <span class="keyword">this</span>._checkboxGroup.disabled || <span class="keyword">this</span>.disabled || (<span class="keyword">this</span>.elForm || &#123;&#125;).disabled</span></span><br><span class="line"><span class="javascript">          : <span class="keyword">this</span>.disabled || (<span class="keyword">this</span>.elForm || &#123;&#125;).disabled;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// elFormItem 的尺寸</span></span></span><br><span class="line"><span class="undefined">      _elFormItemSize() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> (<span class="keyword">this</span>.elFormItem || &#123;&#125;).elFormItemSize;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// checkbox 尺寸，同样需要有边框才有效</span></span></span><br><span class="line"><span class="undefined">      checkboxSize() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> temCheckboxSize = <span class="keyword">this</span>.size || <span class="keyword">this</span>._elFormItemSize || (<span class="keyword">this</span>.$ELEMENT || &#123;&#125;).size;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.isGroup</span></span><br><span class="line"><span class="javascript">          ? <span class="keyword">this</span>._checkboxGroup.checkboxGroupSize || temCheckboxSize</span></span><br><span class="line"><span class="undefined">          : temCheckboxSize;</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    props: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// value值</span></span></span><br><span class="line"><span class="undefined">      value: &#123;&#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 选中状态的值（只有在checkbox-group或者绑定对象类型为array时有效）</span></span></span><br><span class="line"><span class="undefined">      label: &#123;&#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 设置 indeterminate 状态，只负责样式控制</span></span></span><br><span class="line"><span class="javascript">      indeterminate: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否禁用</span></span></span><br><span class="line"><span class="javascript">      disabled: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 当前是否勾选</span></span></span><br><span class="line"><span class="javascript">      checked: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 原生 name 属性</span></span></span><br><span class="line"><span class="javascript">      name: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 选中时的值</span></span></span><br><span class="line"><span class="javascript">      trueLabel: [<span class="built_in">String</span>, <span class="built_in">Number</span>],</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 没有选中时的值</span></span></span><br><span class="line"><span class="javascript">      falseLabel: [<span class="built_in">String</span>, <span class="built_in">Number</span>],</span></span><br><span class="line"><span class="javascript">      id: <span class="built_in">String</span>, <span class="comment">/* 当indeterminate为真时，为controls提供相关连的checkbox的id，表明元素间的控制关系*/</span></span></span><br><span class="line"><span class="javascript">      controls: <span class="built_in">String</span>, <span class="comment">/* 当indeterminate为真时，为controls提供相关连的checkbox的id，表明元素间的控制关系*/</span></span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否显示边框</span></span></span><br><span class="line"><span class="javascript">      border: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// Checkbox 的尺寸，仅在 border 为真时有效</span></span></span><br><span class="line"><span class="javascript">      size: <span class="built_in">String</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    methods: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 添加数据到model</span></span></span><br><span class="line"><span class="undefined">      addToStore() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (</span></span><br><span class="line"><span class="javascript">          <span class="built_in">Array</span>.isArray(<span class="keyword">this</span>.model) &amp;&amp;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.model.indexOf(<span class="keyword">this</span>.label) === <span class="number">-1</span></span></span><br><span class="line"><span class="undefined">        ) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.model.push(<span class="keyword">this</span>.label);</span></span><br><span class="line"><span class="javascript">        &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.model = <span class="keyword">this</span>.trueLabel || <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 处理 @change 事件，如果是 group 要处理 group 的 change 事件。</span></span></span><br><span class="line"><span class="undefined">      handleChange(ev) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (<span class="keyword">this</span>.isLimitExceeded) <span class="keyword">return</span>;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> value;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (ev.target.checked) &#123;</span></span><br><span class="line"><span class="javascript">          value = <span class="keyword">this</span>.trueLabel === <span class="literal">undefined</span> ? <span class="literal">true</span> : <span class="keyword">this</span>.trueLabel;</span></span><br><span class="line"><span class="javascript">        &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">          value = <span class="keyword">this</span>.falseLabel === <span class="literal">undefined</span> ? <span class="literal">false</span> : <span class="keyword">this</span>.falseLabel;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$emit(<span class="string">'change'</span>, value, ev);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (<span class="keyword">this</span>.isGroup) &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">this</span>.dispatch(<span class="string">'ElCheckboxGroup'</span>, <span class="string">'change'</span>, [<span class="keyword">this</span>._checkboxGroup.value]);</span></span><br><span class="line"><span class="undefined">          &#125;</span></span><br><span class="line"><span class="undefined">        &#125;);</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    created() &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 如果 checked 为 true，执行 addToStore 方法</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">this</span>.checked &amp;&amp; <span class="keyword">this</span>.addToStore();</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="javascript">    mounted() &#123; <span class="comment">// 为indeterminate元素 添加aria-controls 属性</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (<span class="keyword">this</span>.indeterminate) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$el.setAttribute(<span class="string">'aria-controls'</span>, <span class="keyword">this</span>.controls);</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>其实和radio逻辑差不多。从上面的内容中已知 emitter.js 用于触发子组件或父组件的事件，而参数上与radio也差不多。不同点有，在显示checkbox时，如果有true-babel 或 false-babel 属性和没有这两个属性显示的是不同的 checkbox(v-if,v-else)。其他都差不多。<br>具体代码注释即可。</p>
+<h1 id="InputNumber"><a href="#InputNumber" class="headerlink" title="InputNumber"></a>InputNumber</h1><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">dragstart.prevent</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:class</span>=<span class="string">"[</span></span></span><br><span class="line"><span class="tag"><span class="string">      'el-input-number',</span></span></span><br><span class="line"><span class="tag"><span class="string">      inputNumberSize ? 'el-input-number--' + inputNumberSize : '',</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123; 'is-disabled': inputNumberDisabled &#125;,</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123; 'is-without-controls': !controls &#125;,</span></span></span><br><span class="line"><span class="tag"><span class="string">      &#123; 'is-controls-right': controlsAtRight &#125;</span></span></span><br><span class="line"><span class="tag"><span class="string">    ]"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 减法 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"el-input-number__decrease"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">role</span>=<span class="string">"button"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">v-if</span>=<span class="string">"controls"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">v-repeat-click</span>=<span class="string">"decrease"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:class</span>=<span class="string">"&#123;'is-disabled': minDisabled&#125;"</span></span></span><br><span class="line"><span class="tag">      @<span class="attr">keydown.enter</span>=<span class="string">"decrease"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">i</span> <span class="attr">:class</span>=<span class="string">"`el-icon-$&#123;controlsAtRight ? 'arrow-down' : 'minus'&#125;`"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 加法 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"el-input-number__increase"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">role</span>=<span class="string">"button"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">v-if</span>=<span class="string">"controls"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">v-repeat-click</span>=<span class="string">"increase"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:class</span>=<span class="string">"&#123;'is-disabled': maxDisabled&#125;"</span></span></span><br><span class="line"><span class="tag">      @<span class="attr">keydown.enter</span>=<span class="string">"increase"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">i</span> <span class="attr">:class</span>=<span class="string">"`el-icon-$&#123;controlsAtRight ? 'arrow-up' : 'plus'&#125;`"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- el-input 内容 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">el-input</span></span></span><br><span class="line"><span class="tag">      <span class="attr">ref</span>=<span class="string">"input"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:value</span>=<span class="string">"currentValue"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:disabled</span>=<span class="string">"inputNumberDisabled"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:size</span>=<span class="string">"inputNumberSize"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:max</span>=<span class="string">"max"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:min</span>=<span class="string">"min"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:name</span>=<span class="string">"name"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">:label</span>=<span class="string">"label"</span></span></span><br><span class="line"><span class="tag">      @<span class="attr">keydown.up.native.prevent</span>=<span class="string">"increase"</span></span></span><br><span class="line"><span class="tag">      @<span class="attr">keydown.down.native.prevent</span>=<span class="string">"decrease"</span></span></span><br><span class="line"><span class="tag">      @<span class="attr">blur</span>=<span class="string">"handleBlur"</span></span></span><br><span class="line"><span class="tag">      @<span class="attr">focus</span>=<span class="string">"handleFocus"</span></span></span><br><span class="line"><span class="tag">      @<span class="attr">change</span>=<span class="string">"handleInputChange"</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 占位符模板 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">template</span> <span class="attr">slot</span>=<span class="string">"prepend"</span> <span class="attr">v-if</span>=<span class="string">"$slots.prepend"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">slot</span> <span class="attr">name</span>=<span class="string">"prepend"</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">template</span> <span class="attr">slot</span>=<span class="string">"append"</span> <span class="attr">v-if</span>=<span class="string">"$slots.append"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">slot</span> <span class="attr">name</span>=<span class="string">"append"</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">el-input</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">import</span> ElInput <span class="keyword">from</span> <span class="string">'element-ui/packages/input'</span>;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">import</span> Focus <span class="keyword">from</span> <span class="string">'element-ui/src/mixins/focus'</span>;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">import</span> RepeatClick <span class="keyword">from</span> <span class="string">'element-ui/src/directives/repeat-click'</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">  <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">    name: <span class="string">'ElInputNumber'</span>,</span></span><br><span class="line"><span class="javascript">    <span class="comment">// options 混合</span></span></span><br><span class="line"><span class="javascript">    mixins: [Focus(<span class="string">'input'</span>)],</span></span><br><span class="line"><span class="undefined">    inject: &#123;</span></span><br><span class="line"><span class="undefined">      elForm: &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="undefined">      elFormItem: &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 自定义指令</span></span></span><br><span class="line"><span class="undefined">    directives: &#123;</span></span><br><span class="line"><span class="undefined">      repeatClick: RepeatClick</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    components: &#123;</span></span><br><span class="line"><span class="undefined">      ElInput</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    props: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 计数器步长</span></span></span><br><span class="line"><span class="undefined">      step: &#123;</span></span><br><span class="line"><span class="javascript">        type: <span class="built_in">Number</span>,</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="number">1</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 设置计数器允许的最大值	</span></span></span><br><span class="line"><span class="undefined">      max: &#123;</span></span><br><span class="line"><span class="javascript">        type: <span class="built_in">Number</span>,</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="literal">Infinity</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 设置计数器允许的最小值</span></span></span><br><span class="line"><span class="undefined">      min: &#123;</span></span><br><span class="line"><span class="javascript">        type: <span class="built_in">Number</span>,</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: -<span class="literal">Infinity</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 绑定值</span></span></span><br><span class="line"><span class="undefined">      value: &#123;&#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否禁用计数器</span></span></span><br><span class="line"><span class="javascript">      disabled: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 计数器尺寸 large, small</span></span></span><br><span class="line"><span class="javascript">      size: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 是否使用控制按钮</span></span></span><br><span class="line"><span class="undefined">      controls: &#123;</span></span><br><span class="line"><span class="javascript">        type: <span class="built_in">Boolean</span>,</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="literal">true</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 控制按钮位置 right</span></span></span><br><span class="line"><span class="undefined">      controlsPosition: &#123;</span></span><br><span class="line"><span class="javascript">        type: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">        <span class="keyword">default</span>: <span class="string">''</span></span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 原生 name 属性</span></span></span><br><span class="line"><span class="javascript">      name: <span class="built_in">String</span>,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 输入框关联的label文字</span></span></span><br><span class="line"><span class="javascript">      label: <span class="built_in">String</span></span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    data() &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 当前值</span></span></span><br><span class="line"><span class="undefined">        currentValue: 0</span></span><br><span class="line"><span class="undefined">      &#125;;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    watch: &#123;</span></span><br><span class="line"><span class="undefined">      value: &#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 立即执行 get()</span></span></span><br><span class="line"><span class="javascript">        immediate: <span class="literal">true</span>,</span></span><br><span class="line"><span class="undefined">        handler(value) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">let</span> newVal = value === <span class="literal">undefined</span> ? value : <span class="built_in">Number</span>(value);</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (newVal !== <span class="literal">undefined</span> &amp;&amp; <span class="built_in">isNaN</span>(newVal)) <span class="keyword">return</span>;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (newVal &gt;= <span class="keyword">this</span>.max) newVal = <span class="keyword">this</span>.max;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">if</span> (newVal &lt;= <span class="keyword">this</span>.min) newVal = <span class="keyword">this</span>.min;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.currentValue = newVal;</span></span><br><span class="line"><span class="javascript">          <span class="comment">// 触发 @input 事件</span></span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.$emit(<span class="string">'input'</span>, newVal);</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    computed: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 最小禁用，无法再减</span></span></span><br><span class="line"><span class="undefined">      minDisabled() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>._decrease(<span class="keyword">this</span>.value, <span class="keyword">this</span>.step) &lt; <span class="keyword">this</span>.min;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 最大禁用，无法再加</span></span></span><br><span class="line"><span class="undefined">      maxDisabled() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>._increase(<span class="keyword">this</span>.value, <span class="keyword">this</span>.step) &gt; <span class="keyword">this</span>.max;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 精度</span></span></span><br><span class="line"><span class="undefined">      precision() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> &#123; value, step, getPrecision &#125; = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="built_in">Math</span>.max(getPrecision(value), getPrecision(step));</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 按钮是否要显示于右侧</span></span></span><br><span class="line"><span class="undefined">      controlsAtRight() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.controlsPosition === <span class="string">'right'</span>;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// FormItem尺寸</span></span></span><br><span class="line"><span class="undefined">      _elFormItemSize() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> (<span class="keyword">this</span>.elFormItem || &#123;&#125;).elFormItemSize;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 计算尺寸</span></span></span><br><span class="line"><span class="undefined">      inputNumberSize() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.size || <span class="keyword">this</span>._elFormItemSize || (<span class="keyword">this</span>.$ELEMENT || &#123;&#125;).size;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 获取禁用状态</span></span></span><br><span class="line"><span class="undefined">      inputNumberDisabled() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.disabled || (<span class="keyword">this</span>.elForm || &#123;&#125;).disabled;</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    methods: &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 计算精度</span></span></span><br><span class="line"><span class="undefined">      toPrecision(num, precision) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (precision === <span class="literal">undefined</span>) precision = <span class="keyword">this</span>.precision;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="built_in">parseFloat</span>(<span class="built_in">parseFloat</span>(<span class="built_in">Number</span>(num).toFixed(precision)));</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 获取精度</span></span></span><br><span class="line"><span class="undefined">      getPrecision(value) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (value === <span class="literal">undefined</span>) <span class="keyword">return</span> <span class="number">0</span>;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> valueString = value.toString();</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> dotPosition = valueString.indexOf(<span class="string">'.'</span>);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> precision = <span class="number">0</span>;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (dotPosition !== <span class="number">-1</span>) &#123;</span></span><br><span class="line"><span class="undefined">          precision = valueString.length - dotPosition - 1;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> precision;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 获取加法后的精度</span></span></span><br><span class="line"><span class="undefined">      _increase(val, step) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (<span class="keyword">typeof</span> val !== <span class="string">'number'</span> &amp;&amp; val !== <span class="literal">undefined</span>) <span class="keyword">return</span> <span class="keyword">this</span>.currentValue;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> precisionFactor = <span class="built_in">Math</span>.pow(<span class="number">10</span>, <span class="keyword">this</span>.precision);</span></span><br><span class="line"><span class="javascript">        <span class="comment">// Solve the accuracy problem of JS decimal calculation by converting the value to integer.</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.toPrecision((precisionFactor * val + precisionFactor * step) / precisionFactor);</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 获取减法后的精度</span></span></span><br><span class="line"><span class="undefined">      _decrease(val, step) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (<span class="keyword">typeof</span> val !== <span class="string">'number'</span> &amp;&amp; val !== <span class="literal">undefined</span>) <span class="keyword">return</span> <span class="keyword">this</span>.currentValue;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> precisionFactor = <span class="built_in">Math</span>.pow(<span class="number">10</span>, <span class="keyword">this</span>.precision);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="keyword">this</span>.toPrecision((precisionFactor * val - precisionFactor * step) / precisionFactor);</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 加法行为</span></span></span><br><span class="line"><span class="undefined">      increase() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (<span class="keyword">this</span>.inputNumberDisabled || <span class="keyword">this</span>.maxDisabled) <span class="keyword">return</span>;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> value = <span class="keyword">this</span>.value || <span class="number">0</span>;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> newVal = <span class="keyword">this</span>._increase(value, <span class="keyword">this</span>.step);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.setCurrentValue(newVal);</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 减法行为</span></span></span><br><span class="line"><span class="undefined">      decrease() &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (<span class="keyword">this</span>.inputNumberDisabled || <span class="keyword">this</span>.minDisabled) <span class="keyword">return</span>;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> value = <span class="keyword">this</span>.value || <span class="number">0</span>;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> newVal = <span class="keyword">this</span>._decrease(value, <span class="keyword">this</span>.step);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.setCurrentValue(newVal);</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 处理 blur 和 focus</span></span></span><br><span class="line"><span class="undefined">      handleBlur(event) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$emit(<span class="string">'blur'</span>, event);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$refs.input.setCurrentValue(<span class="keyword">this</span>.currentValue);</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="undefined">      handleFocus(event) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$emit(<span class="string">'focus'</span>, event);</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 设置当前value</span></span></span><br><span class="line"><span class="undefined">      setCurrentValue(newVal) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> oldVal = <span class="keyword">this</span>.currentValue;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (newVal &gt;= <span class="keyword">this</span>.max) newVal = <span class="keyword">this</span>.max;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (newVal &lt;= <span class="keyword">this</span>.min) newVal = <span class="keyword">this</span>.min;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (oldVal === newVal) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="comment">// 执行 el-input 中的 setCurrentValue 方法</span></span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.$refs.input.setCurrentValue(<span class="keyword">this</span>.currentValue);</span></span><br><span class="line"><span class="javascript">          <span class="keyword">return</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 触发事件，改变value</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$emit(<span class="string">'change'</span>, newVal, oldVal);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.$emit(<span class="string">'input'</span>, newVal);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">this</span>.currentValue = newVal;</span></span><br><span class="line"><span class="undefined">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 处理文本框变化</span></span></span><br><span class="line"><span class="undefined">      handleInputChange(value) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> newVal = value === <span class="string">''</span> ? <span class="literal">undefined</span> : <span class="built_in">Number</span>(value);</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (!<span class="built_in">isNaN</span>(newVal) || value === <span class="string">''</span>) &#123;</span></span><br><span class="line"><span class="javascript">          <span class="keyword">this</span>.setCurrentValue(newVal);</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">      &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    mounted() &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 更改 el-input 内部 input 的属性。</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">let</span> innerInput = <span class="keyword">this</span>.$refs.input.$refs.input;</span></span><br><span class="line"><span class="javascript">      innerInput.setAttribute(<span class="string">'role'</span>, <span class="string">'spinbutton'</span>);</span></span><br><span class="line"><span class="javascript">      innerInput.setAttribute(<span class="string">'aria-valuemax'</span>, <span class="keyword">this</span>.max);</span></span><br><span class="line"><span class="javascript">      innerInput.setAttribute(<span class="string">'aria-valuemin'</span>, <span class="keyword">this</span>.min);</span></span><br><span class="line"><span class="javascript">      innerInput.setAttribute(<span class="string">'aria-valuenow'</span>, <span class="keyword">this</span>.currentValue);</span></span><br><span class="line"><span class="javascript">      innerInput.setAttribute(<span class="string">'aria-disabled'</span>, <span class="keyword">this</span>.inputNumberDisabled);</span></span><br><span class="line"><span class="undefined">    &#125;,</span></span><br><span class="line"><span class="undefined">    updated() &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// 更改 el-input 内部 input 的属性。</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">let</span> innerInput = <span class="keyword">this</span>.$refs.input.$refs.input;</span></span><br><span class="line"><span class="javascript">      innerInput.setAttribute(<span class="string">'aria-valuenow'</span>, <span class="keyword">this</span>.currentValue);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  &#125;;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>先看HTML，这个组件由两个span按钮当做加减按钮，一个 el-input 组件显示数字结果。但是，对于最后两个 template 的作用不是很明白，不知道何时使用。<br>再看JS，代码中导入了 el-input 组件、 Focus 方法和 RepeatClick 方法。这两个方法之后详述。看到代码中还是以props、inject、compute方法来处理传入的数据。和前三个组件不同的地方在于，一是引用了组件需要处理组件，在 mounted 和 updated 方法执行时修改 el-input 组件中 input 的属性；二是加入了加法和减法的方法逻辑：求精度、做加减法、处理最大最小值限制。<br>从CSS角度上来说，要处理加法、减法按钮的位置和样式等功能……SCSS方面的内容暂且一概不论。</p>
+<p>顺便看看 Focus 和 RepeatClick 方法~<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/directives/repeat-click.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; once, on &#125; <span class="keyword">from</span> <span class="string">'element-ui/src/utils/dom'</span>;</span><br><span class="line"><span class="comment">// on 添加监听事件</span></span><br><span class="line"><span class="comment">// once 监听一次事件</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  bind(el, binding, vnode) &#123;</span><br><span class="line">    <span class="keyword">let</span> interval = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">let</span> startTime;</span><br><span class="line">    <span class="comment">// 执行表达式方法</span></span><br><span class="line">    <span class="keyword">const</span> handler = <span class="function"><span class="params">()</span> =&gt;</span> vnode.context[binding.expression].apply();</span><br><span class="line">    <span class="comment">// 清除interval</span></span><br><span class="line">    <span class="keyword">const</span> clear = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">new</span> <span class="built_in">Date</span>() - startTime &lt; <span class="number">100</span>) &#123;</span><br><span class="line">        handler();</span><br><span class="line">      &#125;</span><br><span class="line">      clearInterval(interval);</span><br><span class="line">      interval = <span class="literal">null</span>;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 监听 mousedown 鼠标点击事件</span></span><br><span class="line">    on(el, <span class="string">'mousedown'</span>, (e) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (e.button !== <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">      startTime = <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">      once(<span class="built_in">document</span>, <span class="string">'mouseup'</span>, clear);</span><br><span class="line">      clearInterval(interval);</span><br><span class="line">      <span class="comment">// setInterval() 方法可按照指定的周期（以毫秒计）来调用函数或计算表达式。</span></span><br><span class="line">      interval = setInterval(handler, <span class="number">100</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>其中导入的on和once方法类似于vue的方法，on用于监听事件，once监听一次事件。监听 mousedown 事件。如果触发每 100 毫秒执行一次 handler，如果监听到 mousedown 判断时间间隔如果短于100毫秒，执行 handler 方法。取消计时器并清空 interval。从而实现了重复点击的效果。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/mixins/focus.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span>(<span class="params">ref</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    methods: &#123;</span><br><span class="line">      focus() &#123;</span><br><span class="line">        <span class="keyword">this</span>.$refs[ref].focus();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>很简单的方法，就是用于定位一个元素，执行它的 focus 方法。</p>
+<p>所以说:<strong>src 中除了 locale 目录用于国际化和 utils 工具目录外，其他目录下都是用于组件的一些配置上的.</strong>如 mixins 目录用于 mixins 项,directives 目录下的用于 directives 项。</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>额……由于对于 CSS 比较菜，所以暂且不误人子弟，待我学成后再补上这部分内容。<br>总结下几个组件给我的感觉：其实 UI 框架主要在 UI 二字上。所以其实讲 UI 框架重点应该放在 CSS 上。逻辑部分其实蛮简单的。毕竟是组件不是整个项目，组件就是要易用性、可扩展性。<br><strong>所以说组件的主要逻辑都是进行传参的处理和计算。</strong><br>element的组件模式上其实是定义好 <code>[component].vue</code> 组件文件，然后导入到用户项目 Vue 实例的 components 项中来使用，其实和自定义 component 基本原理差不多。<br>下一篇，来看看一些复杂的组件的代码逻辑实现~~</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>如果本博客对你有所帮助，请作者喝一杯咖啡如何？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="VioletJack WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="VioletJack Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/10/element-code-01/" rel="next" title="element源码学习一 —— 认识框架">
+                <i class="fa fa-chevron-left"></i> element源码学习一 —— 认识框架
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="VioletJack" />
+          <p class="site-author-name" itemprop="name">VioletJack</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://violetjack@foxmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/violetjack" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/u/2640909603/home" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/violetjack/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      ZhiHu
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://segmentfault.com/u/violetjack" target="_blank" title="SF">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      SF
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://stackoverflow.com/users/4967859/violetjack" target="_blank" title="StackOverflow">
+                  
+                    <i class="fa fa-fw fa-stack-overflow"></i>
+                  
+                    
+                      StackOverflow
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Button"><span class="nav-number">1.</span> <span class="nav-text">Button</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Radio"><span class="nav-number">2.</span> <span class="nav-text">Radio</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#checkbox"><span class="nav-number">3.</span> <span class="nav-text">checkbox</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#InputNumber"><span class="nav-number">4.</span> <span class="nav-text">InputNumber</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">5.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
