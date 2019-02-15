@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Vue实验室</title>
+  <title>VioletJack 技术日志</title>
   
-  <subtitle>专注于Vue相关知识的学习和分享</subtitle>
+  <subtitle>专注！坚持！求真！</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://violetjack.github.io/"/>
