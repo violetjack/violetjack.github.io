@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="JavaScript 基础," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="VioletJack 技术日志" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="今天来聊聊 JavaScript 的类型。  JavaScript 的七大基本类型 undefined 未定义 null 空值 boolean 布尔值 string 字符串 number 数字 object 对象 symbol 符号（ES6）  怎么知道是有这么七个值呢，使用 typeof 运算符来查看。  上图中，大多数都如我们想的那样，但是有两个特例：  可以看到 typeof null 理">
+<meta name="keywords" content="JavaScript 基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 类型全知道">
+<meta property="og:url" content="https://violetjack.github.io/2019/02/14/type/index.html">
+<meta property="og:site_name" content="VioletJack 技术日志">
+<meta property="og:description" content="今天来聊聊 JavaScript 的类型。  JavaScript 的七大基本类型 undefined 未定义 null 空值 boolean 布尔值 string 字符串 number 数字 object 对象 symbol 符号（ES6）  怎么知道是有这么七个值呢，使用 typeof 运算符来查看。  上图中，大多数都如我们想的那样，但是有两个特例：  可以看到 typeof null 理">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-43607c1c53f7dca8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-354f1c86c7c9d36e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-2ecc22f6b5162ed1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-1e612c6730b31699.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-02-15T16:00:20.306Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript 类型全知道">
+<meta name="twitter:description" content="今天来聊聊 JavaScript 的类型。  JavaScript 的七大基本类型 undefined 未定义 null 空值 boolean 布尔值 string 字符串 number 数字 object 对象 symbol 符号（ES6）  怎么知道是有这么七个值呢，使用 typeof 运算符来查看。  上图中，大多数都如我们想的那样，但是有两个特例：  可以看到 typeof null 理">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1987062-43607c1c53f7dca8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2019/02/14/type/"/>
+
+
+
+
+
+  <title>JavaScript 类型全知道 | VioletJack 技术日志</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">VioletJack 技术日志</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">专注！坚持！求真！</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2019/02/14/type/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletJack 技术日志">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">JavaScript 类型全知道</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T00:00:00+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>今天来聊聊 JavaScript 的类型。</p>
+</blockquote>
+<h1 id="JavaScript-的七大基本类型"><a href="#JavaScript-的七大基本类型" class="headerlink" title="JavaScript 的七大基本类型"></a>JavaScript 的七大基本类型</h1><ul>
+<li>undefined 未定义</li>
+<li>null 空值</li>
+<li>boolean 布尔值</li>
+<li>string 字符串</li>
+<li>number 数字</li>
+<li>object 对象</li>
+<li>symbol 符号（ES6）</li>
+</ul>
+<p>怎么知道是有这么七个值呢，使用 typeof 运算符来查看。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1987062-43607c1c53f7dca8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="typeof"></p>
+<p>上图中，大多数都如我们想的那样，但是有两个特例：</p>
+<ol>
+<li>可以看到 <code>typeof null</code> 理论上应该返回 <code>&#39;null&#39;</code> 但却返回的是 <code>&#39;object&#39;</code>，这是一个存在20多年由来已久的bug，所以要判断对象是否为 null 时需要注意。</li>
+<li>当我们打印 <code>typeof function() {}</code> 的时候返回的类型是 <code>&#39;function&#39;</code>，是不是说明 function 也是基本类型呢？但其实 function 是 object 的子集，下面说引用类型的时候会提到。</li>
+</ol>
+<h1 id="null、undefined-和-undeclared"><a href="#null、undefined-和-undeclared" class="headerlink" title="null、undefined 和 undeclared"></a>null、undefined 和 undeclared</h1><p>在 JavaScript 的类型中有三种表示变量“不存在”的方式，null、undefined 和 undeclared。那么它们的区别是什么呢？看代码~</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1987062-354f1c86c7c9d36e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="三种空"></p>
+<ul>
+<li>我们定义了变量 a 却没有给他赋值，所以 a 就是 undefined</li>
+<li>我们没有定义变量 b，所以报错 b is not defined，我们称之为 undeclared。注意这和 undefined 是有区别的。</li>
+<li>我们定义了变量 c 并给他赋值 null，所以 b 就是 null</li>
+</ul>
+<p>小结下：undefined 是定义了变量却没有赋值；undeclared 是没有定义变量更没有赋值，会报错；null 是定义了变量并且赋值空值 null。</p>
+<h1 id="JavaScript-中的那些引用类型"><a href="#JavaScript-中的那些引用类型" class="headerlink" title="JavaScript 中的那些引用类型"></a>JavaScript 中的那些引用类型</h1><p>所有的引用类型都是 Object。我猜测由于在 JavaScript 中对于 Object 的访问是引用形式的，所以称之为引用类型。</p>
+<h2 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h2><p>Object 是一个函数，它可以用于创建对象，也可以用它带的 API 方法操作对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建对象</span></span><br><span class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> <span class="built_in">Object</span>(); <span class="comment">// 不推荐</span></span><br><span class="line"><span class="keyword">var</span> obj2 = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Object API</span></span><br><span class="line"><span class="keyword">var</span> obj3 = <span class="built_in">Object</span>.create(<span class="literal">null</span>)</span><br><span class="line"><span class="keyword">var</span> object2 = <span class="built_in">Object</span>.freeze(object1);</span><br></pre></td></tr></table></figure>
+<p>为什么可以使用这些 API？因为在 Object 函数的原型（关于原型可以看之前的文章）中有定义这些 API 方法。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1987062-2ecc22f6b5162ed1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="api 方法在这里"></p>
+<p>其他更多的 Object API 可以查阅 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object" target="_blank" rel="noopener">Object - JavaScript | MDN</a>。</p>
+<h2 id="Array"><a href="#Array" class="headerlink" title="Array"></a>Array</h2><p>同样的，Array 函数用于创建数组和提供操作数组的 API。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// create array</span></span><br><span class="line"><span class="keyword">var</span> arr1 = []</span><br><span class="line"><span class="keyword">var</span> arr2 = <span class="keyword">new</span> <span class="built_in">Array</span>()</span><br><span class="line"><span class="keyword">var</span> arr3 = <span class="built_in">Array</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">// api</span></span><br><span class="line"><span class="built_in">Array</span>.isArray(arr1);</span><br><span class="line">arr1.push(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>同样的，推荐查阅 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array" target="_blank" rel="noopener">Array - JavaScript | MDN</a> 获取更多 API 信息。</p>
+<h2 id="Date"><a href="#Date" class="headerlink" title="Date"></a>Date</h2><p>Data 用于创建时间对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> now = <span class="keyword">new</span> <span class="built_in">Date</span>()</span><br></pre></td></tr></table></figure>
+<p>Date 函数通过传递不同的参数在生产不同的时间对象，参考 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank" rel="noopener">Date - JavaScript | MDN</a>。</p>
+<p>注：在 ES6 中可以通过静态方法 Date.now() 来获取当前时间。</p>
+<h2 id="RegExp"><a href="#RegExp" class="headerlink" title="RegExp"></a>RegExp</h2><p>RegExp 构造函数创建了一个正则表达式对象，用于将文本与一个模式匹配。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> regex1 = <span class="regexp">/\w+/</span>; </span><br><span class="line"><span class="keyword">var</span> regex2 = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">'\\w+'</span>); <span class="comment">// 不推荐</span></span><br></pre></td></tr></table></figure>
+<h2 id="Function"><a href="#Function" class="headerlink" title="Function"></a>Function</h2><p>Function 构造函数 创建一个新的Function对象。 在 JavaScript 中, 每个函数实际上都是一个 Function 对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> e = <span class="keyword">new</span> <span class="built_in">Function</span>( <span class="string">"a"</span>, <span class="string">"return a * 2;"</span> ); <span class="comment">// 不推荐</span></span><br><span class="line"><span class="keyword">var</span> f = <span class="function"><span class="keyword">function</span>(<span class="params">a</span>) </span>&#123; <span class="keyword">return</span> a * <span class="number">2</span>; &#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">g</span>(<span class="params">a</span>) </span>&#123; <span class="keyword">return</span> a * <span class="number">2</span>; &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="包装器对象（Boolean、String-和-Number）"><a href="#包装器对象（Boolean、String-和-Number）" class="headerlink" title="包装器对象（Boolean、String 和 Number）"></a>包装器对象（Boolean、String 和 Number）</h2><blockquote>
+<p>Boolean、String 和 Number 分别是基本类型 boolean、string 和 number 的包装器对象，有很多共性，所以就拿来一起讲了。</p>
+</blockquote>
+<h3 id="创建值"><a href="#创建值" class="headerlink" title="创建值"></a>创建值</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> bool = <span class="literal">true</span></span><br><span class="line"><span class="keyword">var</span> bool2 = <span class="built_in">Boolean</span>(<span class="literal">true</span>) <span class="comment">// 不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">'hello world'</span></span><br><span class="line"><span class="keyword">var</span> str2 = <span class="built_in">String</span>(<span class="string">'hello world'</span>) <span class="comment">// 不推荐</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> num = <span class="number">100</span></span><br><span class="line"><span class="keyword">var</span> num2 = <span class="built_in">Number</span>(<span class="number">100</span>) <span class="comment">// 不推荐</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，第二种创建方式非常的画蛇添足，但是这种写法可以有别的用处。</p>
+<h3 id="自动包装"><a href="#自动包装" class="headerlink" title="自动包装"></a>自动包装</h3><p>上面我们定义了三个不同基本类型的变量，这几个变量后面可以加一些方法来进行操作。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bool.toString();</span><br><span class="line">str.split(<span class="string">' '</span>)</span><br><span class="line">num..toFixed(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>为什么明明基本类型没有这些属性和方法却可以使用呢？<br>这就要提到这三个基本类型的自动包装特性了。即虽然这三个基本类型没有属性，但是当我们调用其属性和函数时，会自动包装成相应的对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Boolean</span>(bool).toString()</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">String</span>(str).split(<span class="string">' '</span>)</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Number</span>(num).toFixed(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看下 String 的原型中的确包含了 string 类型用到的所有的属性和方法。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1987062-1e612c6730b31699.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="string"></p>
+<h3 id="强制类型转换"><a href="#强制类型转换" class="headerlink" title="强制类型转换"></a>强制类型转换</h3><p>对象包装器另外一个作用 —— 强制类型转换：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Boolean</span>(<span class="string">''</span>); <span class="comment">// false</span></span><br><span class="line"><span class="built_in">Boolean</span>(<span class="number">1</span>); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">String</span>(<span class="literal">null</span>); <span class="comment">// 'null'</span></span><br><span class="line"><span class="built_in">String</span>(<span class="number">12138</span>); <span class="comment">// '12138'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Number</span>(<span class="string">"123"</span>)  <span class="comment">// 123</span></span><br><span class="line"><span class="built_in">Number</span>(<span class="string">""</span>) <span class="comment">// 0</span></span><br></pre></td></tr></table></figure>
+<p>直接使用包装器函数就可以对值进行强制类型转换行为。</p>
+<h2 id="Global"><a href="#Global" class="headerlink" title="Global"></a>Global</h2><p>Global 表示全局对象，具体的内容暂时没有找到，先贴一段网上的解释：</p>
+<blockquote>
+<p>《JavaScript高级程序设计》中谈到，global对象可以说是ECMAScript中最特别的一个对象了，因为不管你从什么角度上看，这个对象都是不存在的。从某种意义上讲，它是一个终极的“兜底儿对象”，换句话说呢，就是不属于任何其他对象的属性和方法，最终都是它的属性和方法。我理解为，这个global对象呢，就是整个JS的“老祖宗”，找不到归属的那些“子子孙孙”都可以到它这里来认祖归宗。所有在全局作用域中定义的属性和函数，都是global对象的属性和方法，比如isNaN()、parseInt()以及parseFloat()等，实际都是它的方法；还有就是常见的一些特殊值，如：NaN、undefined等都是它的属性，以及一些构造函数Object、Array等也都是它的方法。总之，记住一点：global对象就是“老祖宗”，所有找不到归属的就都是它的。</p>
+</blockquote>
+<h2 id="Math"><a href="#Math" class="headerlink" title="Math"></a>Math</h2><p>Math 是一个内置对象， 它具有数学常数和函数的属性和方法。不是一个函数对象。举几个栗子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Math</span>.abs(<span class="number">-1</span>);     <span class="comment">// 取绝对值 1</span></span><br><span class="line"><span class="built_in">Math</span>.max(<span class="number">10</span>, <span class="number">20</span>);   <span class="comment">//  取最大值 20</span></span><br><span class="line"><span class="built_in">Math</span>.random(); <span class="comment">// 取随机数</span></span><br></pre></td></tr></table></figure>
+<h2 id="Symbol"><a href="#Symbol" class="headerlink" title="Symbol"></a>Symbol</h2><p>Symbol 函数是 ES6 添加的，用于表示有唯一性的特殊值。创建方法如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="built_in">Symbol</span>(<span class="string">'this is a symbol'</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="Error"><a href="#Error" class="headerlink" title="Error"></a>Error</h2><p>Error 函数用于创建错误对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> err1 = <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'I was created using a function call!'</span>)</span><br><span class="line"><span class="keyword">var</span> err2 = <span class="built_in">Error</span>(<span class="string">'I was created using a function call!'</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>本文先是介绍了七大基本类型，之后有简单介绍了 JavaScript 中的引用类型。主要想达到归纳整理的作用，让大家知道都有哪些类型，而具体使用中则强烈推荐查阅 <a href="https://developer.mozilla.org/zh-CN/" target="_blank" rel="noopener">MDN</a> 来使用各种方法和属性。</p>
+<p>希望本文对你有所帮助~明天聊聊我最近从 Vue 转 React 项目的一些体会，明天见！</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>如果本博客对你有所帮助，请作者喝一杯咖啡如何？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="VioletJack WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="VioletJack Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JavaScript-基础/" rel="tag"># JavaScript 基础</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/13/behavior/" rel="next" title="聊聊对象行为委托">
+                <i class="fa fa-chevron-left"></i> 聊聊对象行为委托
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/15/vue-react/" rel="prev" title="从 Vue 转 React 的一些体验">
+                从 Vue 转 React 的一些体验 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="VioletJack" />
+          <p class="site-author-name" itemprop="name">VioletJack</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="mailto:violetjack@foxmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/violetjack" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/u/2640909603/home" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.jianshu.com/u/54ae4af3a98d" target="_blank" title="JianShu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      JianShu
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JavaScript-的七大基本类型"><span class="nav-number">1.</span> <span class="nav-text">JavaScript 的七大基本类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null、undefined-和-undeclared"><span class="nav-number">2.</span> <span class="nav-text">null、undefined 和 undeclared</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JavaScript-中的那些引用类型"><span class="nav-number">3.</span> <span class="nav-text">JavaScript 中的那些引用类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Object"><span class="nav-number">3.1.</span> <span class="nav-text">Object</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Array"><span class="nav-number">3.2.</span> <span class="nav-text">Array</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Date"><span class="nav-number">3.3.</span> <span class="nav-text">Date</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RegExp"><span class="nav-number">3.4.</span> <span class="nav-text">RegExp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Function"><span class="nav-number">3.5.</span> <span class="nav-text">Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#包装器对象（Boolean、String-和-Number）"><span class="nav-number">3.6.</span> <span class="nav-text">包装器对象（Boolean、String 和 Number）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建值"><span class="nav-number">3.6.1.</span> <span class="nav-text">创建值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动包装"><span class="nav-number">3.6.2.</span> <span class="nav-text">自动包装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强制类型转换"><span class="nav-number">3.6.3.</span> <span class="nav-text">强制类型转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Global"><span class="nav-number">3.7.</span> <span class="nav-text">Global</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Math"><span class="nav-number">3.8.</span> <span class="nav-text">Math</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Symbol"><span class="nav-number">3.9.</span> <span class="nav-text">Symbol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Error"><span class="nav-number">3.10.</span> <span class="nav-text">Error</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="JavaScript 基础," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="VioletJack 技术日志" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="JavaScript 中的原型也是一个非常让人头疼的东西，很多前端同学对此也是一知半解，比如我。今天我们就好好捋一捋这个原型。  创建对象的方式下面就是创建对象的几种方式： 1234567891011121314151617181920212223var o1 = &amp;#123;    a: 123,    b: &apos;hello world&apos;&amp;#125;console.log(o1.b)functi">
+<meta name="keywords" content="JavaScript 基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊 JavaScript 的原型">
+<meta property="og:url" content="https://violetjack.github.io/2019/02/12/prototype/index.html">
+<meta property="og:site_name" content="VioletJack 技术日志">
+<meta property="og:description" content="JavaScript 中的原型也是一个非常让人头疼的东西，很多前端同学对此也是一知半解，比如我。今天我们就好好捋一捋这个原型。  创建对象的方式下面就是创建对象的几种方式： 1234567891011121314151617181920212223var o1 = &amp;#123;    a: 123,    b: &apos;hello world&apos;&amp;#125;console.log(o1.b)functi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-1002cf3d69276266.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-c600260dc91c2314.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-aa7441f2c85bb6f5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-07ac0815c99f5d7d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-b592d69f559248af.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-02-15T16:01:53.492Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊聊 JavaScript 的原型">
+<meta name="twitter:description" content="JavaScript 中的原型也是一个非常让人头疼的东西，很多前端同学对此也是一知半解，比如我。今天我们就好好捋一捋这个原型。  创建对象的方式下面就是创建对象的几种方式： 1234567891011121314151617181920212223var o1 = &amp;#123;    a: 123,    b: &apos;hello world&apos;&amp;#125;console.log(o1.b)functi">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1987062-1002cf3d69276266.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2019/02/12/prototype/"/>
+
+
+
+
+
+  <title>聊聊 JavaScript 的原型 | VioletJack 技术日志</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">VioletJack 技术日志</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">专注！坚持！求真！</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2019/02/12/prototype/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletJack 技术日志">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">聊聊 JavaScript 的原型</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-12T00:00:00+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>JavaScript 中的原型也是一个非常让人头疼的东西，很多前端同学对此也是一知半解，比如我。今天我们就好好捋一捋这个原型。</p>
+</blockquote>
+<h1 id="创建对象的方式"><a href="#创建对象的方式" class="headerlink" title="创建对象的方式"></a>创建对象的方式</h1><p>下面就是创建对象的几种方式：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o1 = &#123;</span><br><span class="line">    a: <span class="number">123</span>,</span><br><span class="line">    b: <span class="string">'hello world'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(o1.b)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fun2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.a = <span class="number">33</span></span><br><span class="line">    <span class="keyword">this</span>.b = <span class="string">'hello o2'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> o2 = <span class="keyword">new</span> fun2()</span><br><span class="line"><span class="built_in">console</span>.log(o2.b)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fun3</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line">        <span class="keyword">this</span>.a = <span class="number">365</span></span><br><span class="line">        <span class="keyword">this</span>.b = <span class="string">'hello class'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> o3 = <span class="keyword">new</span> Fun3()</span><br><span class="line"><span class="built_in">console</span>.log(o3.b)</span><br></pre></td></tr></table></figure>
+<p>有人说这是三种创建方式，但是我认为其实是两种创建方式（因为 class 语法糖的本质还是 function）：<strong>直接定义对象</strong>和<strong>使用 new 关键词构造对象</strong>。</p>
+<h1 id="原型和原型链"><a href="#原型和原型链" class="headerlink" title="原型和原型链"></a>原型和原型链</h1><p>当我们创建了一个对象之后，就产生了原型（<code>Object.create(null)</code> 是特例）。</p>
+<h2 id="prototype-和-proto-的区别"><a href="#prototype-和-proto-的区别" class="headerlink" title="prototype 和 __proto__ 的区别"></a>prototype 和 <code>__proto__</code> 的区别</h2><p><code>__proto__</code> 是一个非正式的属性，很多环境中不支持该属性。它指向当前对象的原型。如下图：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1987062-1002cf3d69276266.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="__proto__"></p>
+<p>上面的代码是一段原型继承，可以看到对象 obj1 继承了对象 obj，所以 obj1 的 <code>__proto__</code> 就指向了 obj，而 obj 的 <code>__proto__</code> 则指向了 Object。所有对象的原型链最终都将指向 Object。</p>
+<p>而关于 prototype 我摘录了一段话：</p>
+<blockquote>
+<p>当你创建函数时，JS 会为这个函数自动添加 <code>prototype</code> 属性，值是一个有 constructor 属性的对象。而一旦你把这个函数当作构造函数（<code>constructor</code>）调用（即通过<code>new</code>关键字调用），那么 JS 就会帮你创建该构造函数的实例，实例继承构造函数 <code>prototype</code> 的所有属性和方法。</p>
+</blockquote>
+<p><img src="https://upload-images.jianshu.io/upload_images/1987062-c600260dc91c2314.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="prototype"></p>
+<p>可以看到，对象 bar 的 <code>__proto__</code> 属性指向了函数 func 的 <code>prototype</code>。</p>
+<p>总结下，<code>__proto__</code> 指向原型，而 <code>prototype</code> 是函数独有且构造的对象原型指向 <code>prototype</code>。</p>
+<h2 id="理解原型链"><a href="#理解原型链" class="headerlink" title="理解原型链"></a>理解原型链</h2><p>每个对象都是原型，而对象之间是可以继承的。所以就产生了原型链。看图说话：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1987062-aa7441f2c85bb6f5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="原型链"></p>
+<p>很好理解了，我们创建了四个对象逐层进行原型继承。最后打印 obj3 对象可以看到 <code>obj3 -&gt; obj2 -&gt; obj1 -&gt; obj -&gt; Object</code> 这就是原型链。</p>
+<p>如果我要在 obj3 对象上访问 a 属性，那么 JavaScript 就会顺着原型链逐层往下找，最终在 obj 对象上找到了a 属性，这就是原型链查找数据的方式。如果找到 Object 也没有找到属性就返回 <code>undefined</code>。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1987062-07ac0815c99f5d7d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="原型链查找"></p>
+<h1 id="为对象指定原型的两种方式"><a href="#为对象指定原型的两种方式" class="headerlink" title="为对象指定原型的两种方式"></a>为对象指定原型的两种方式</h1><p>那么如何为对象添加原型呢？</p>
+<h2 id="1-new-关键字"><a href="#1-new-关键字" class="headerlink" title="1. new 关键字"></a>1. new 关键字</h2><p>第一种就是通过构造器的方式来创建。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Foo</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.a = <span class="number">11</span></span><br><span class="line">    <span class="keyword">this</span>.b = <span class="number">22</span></span><br><span class="line">&#125;</span><br><span class="line">Foo.prototype.c = <span class="number">33</span></span><br><span class="line">Foo.prototype.func = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'hello'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> f = <span class="keyword">new</span> Foo()</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(f)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.getPrototypeOf(f))</span><br></pre></td></tr></table></figure>
+<p>当然，不得不说的是 ES6 的 class 语法糖写法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line">        <span class="keyword">this</span>.a = <span class="number">11</span></span><br><span class="line">        <span class="keyword">this</span>.b = <span class="number">22</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    func() &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'hello'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> f = <span class="keyword">new</span> Foo()</span><br></pre></td></tr></table></figure>
+<p>两者其实是一样的效果，但是 class 写法更接近常规的类写法。（终于可以让 function 回归它原本的作用上了。）</p>
+<h2 id="2-Object-create-obj-面向对象"><a href="#2-Object-create-obj-面向对象" class="headerlink" title="2. Object.create(obj) 面向对象"></a>2. Object.create(obj) 面向对象</h2><p>Object.create() 可以很好的实现原型继承行为，也能通过 Object API 来修改原型：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123; <span class="attr">a</span>: <span class="number">123</span>, <span class="attr">b</span>: <span class="number">456</span> &#125;</span><br><span class="line"><span class="built_in">Object</span>.setPrototypeOf(obj, &#123; <span class="attr">c</span>: <span class="number">789</span> &#125;)</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="built_in">Object</span>.create(obj)</span><br><span class="line">obj2.e = <span class="number">555</span></span><br></pre></td></tr></table></figure>
+<p>代码输出结果如下图，的确实现了为对象指定原型的行为。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1987062-b592d69f559248af.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="原型继承和修改"></p>
+<h1 id="引用流还是复制流？"><a href="#引用流还是复制流？" class="headerlink" title="引用流还是复制流？"></a>引用流还是复制流？</h1><p>使用 JavaScript 原型是特别要主义的一个点是：<strong>JavaScript 对于原型的继承是一种引用行为</strong>，即所引用的对象改变，继承对象的原型也会改变。</p>
+<p>与之相反的，有些语言会使用复制的方式。即在原型继承时复制一份原型到当前对象，从此被复制的对象和复制对象再无瓜葛。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>随着 Object.create() 等一系列新 API 和 ES6 的 class 写法的出现，使用 function 作为构造器并使用 prototype 来修改原型的方式将逐渐被抛弃。但是由于历史原因这部分知识还是要理解其中原理的。</p>
+<p>而 <code>__proto__</code> 属性是非正式属性，不适合在通用场景下使用。</p>
+<p>而对于原型的写法，我认为有两种不错的处理方式：</p>
+<blockquote>
+<ol>
+<li>完全使用 class 构造器写法来替代使用 function 构造器的写法来进行<strong>面向类</strong>的开发方式。</li>
+<li>放弃原型写法，使用 Object 系列 API 进行<strong>面向对象</strong>的开发（行为委托就是这样的方式）。</li>
+</ol>
+</blockquote>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>关于原型，先聊这么多。明天我们聊聊基于 Object API 来实现的面向对象模式 —— 行为委托，敬请期待。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>如果本博客对你有所帮助，请作者喝一杯咖啡如何？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="VioletJack WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="VioletJack Alipay"/>
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JavaScript-基础/" rel="tag"># JavaScript 基础</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/11/this/" rel="next" title="聊聊 JavaScript 的 this">
+                <i class="fa fa-chevron-left"></i> 聊聊 JavaScript 的 this
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/13/behavior/" rel="prev" title="聊聊对象行为委托">
+                聊聊对象行为委托 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="VioletJack" />
+          <p class="site-author-name" itemprop="name">VioletJack</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+           
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="mailto:violetjack@foxmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/violetjack" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://weibo.com/u/2640909603/home" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.jianshu.com/u/54ae4af3a98d" target="_blank" title="JianShu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      JianShu
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#创建对象的方式"><span class="nav-number">1.</span> <span class="nav-text">创建对象的方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原型和原型链"><span class="nav-number">2.</span> <span class="nav-text">原型和原型链</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#prototype-和-proto-的区别"><span class="nav-number">2.1.</span> <span class="nav-text">prototype 和 __proto__ 的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解原型链"><span class="nav-number">2.2.</span> <span class="nav-text">理解原型链</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为对象指定原型的两种方式"><span class="nav-number">3.</span> <span class="nav-text">为对象指定原型的两种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-new-关键字"><span class="nav-number">3.1.</span> <span class="nav-text">1. new 关键字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Object-create-obj-面向对象"><span class="nav-number">3.2.</span> <span class="nav-text">2. Object.create(obj) 面向对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引用流还是复制流？"><span class="nav-number">4.</span> <span class="nav-text">引用流还是复制流？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">6.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
