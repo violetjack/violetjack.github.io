@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="简单使用走马灯功能在展示图片时经常用到，而 element 中提供了 Carousel 组件。出于好奇学习一下它的实现原理。具体的功能详情请查阅官方文档。关于组件属性，该组件提供了组件高度、索引、指示器、切换时间等一众配置，这个只要动手试一遍都能理解。关于事件，提供了一个 change 事件。可以通过 v-on:change=&amp;quot;changeFun&amp;quot; 事件绑定来监听。该事件传递了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="element 源码学习六 —— Carousel 走马灯学习">
+<meta property="og:url" content="https://violetjack.github.io/2018/04/13/element 源码学习六 —— Carousel 走马灯学习/index.html">
+<meta property="og:site_name" content="VioletJack 技术日志">
+<meta property="og:description" content="简单使用走马灯功能在展示图片时经常用到，而 element 中提供了 Carousel 组件。出于好奇学习一下它的实现原理。具体的功能详情请查阅官方文档。关于组件属性，该组件提供了组件高度、索引、指示器、切换时间等一众配置，这个只要动手试一遍都能理解。关于事件，提供了一个 change 事件。可以通过 v-on:change=&amp;quot;changeFun&amp;quot; 事件绑定来监听。该事件传递了">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-08d5f9051a1f9174.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-eb167cd5660779e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-974136def5c81522.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-02-15T17:20:56.255Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="element 源码学习六 —— Carousel 走马灯学习">
+<meta name="twitter:description" content="简单使用走马灯功能在展示图片时经常用到，而 element 中提供了 Carousel 组件。出于好奇学习一下它的实现原理。具体的功能详情请查阅官方文档。关于组件属性，该组件提供了组件高度、索引、指示器、切换时间等一众配置，这个只要动手试一遍都能理解。关于事件，提供了一个 change 事件。可以通过 v-on:change=&amp;quot;changeFun&amp;quot; 事件绑定来监听。该事件传递了">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1987062-08d5f9051a1f9174.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="VioletJack 技术日志" type="application/atom+xml"/>
+
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2018/04/13/element 源码学习六 —— Carousel 走马灯学习/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>element 源码学习六 —— Carousel 走马灯学习 | VioletJack 技术日志</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">VioletJack 技术日志</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">专注！坚持！求真！</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archiv</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2018/04/13/element 源码学习六 —— Carousel 走马灯学习/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack"/>
+      <meta itemprop="description" content="Violetjack 的个人博客，记录了一些技术笔记和思考。"/>
+      <meta itemprop="image" content="/images/avatar.jpg"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletJack 技术日志"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">element 源码学习六 —— Carousel 走马灯学习
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Post created: 2018-04-13 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-13T00:00:00+08:00">2018-04-13</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Updated at: 2019-02-16 01:20:56" itemprop="dateModified" datetime="2019-02-16T01:20:56+08:00">2019-02-16</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h1><p>走马灯功能在展示图片时经常用到，而 element 中提供了 Carousel 组件。出于好奇学习一下它的实现原理。<br>具体的功能详情请查阅<a href="http://element-cn.eleme.io/#/zh-CN/component/carousel" target="_blank" rel="noopener">官方文档</a>。<br>关于组件属性，该组件提供了组件高度、索引、指示器、切换时间等一众配置，这个只要动手试一遍都能理解。<br>关于事件，提供了一个 <code>change</code> 事件。可以通过 <code>v-on:change=&quot;changeFun&quot;</code> 事件绑定来监听。该事件传递了两个参数：当前页索引和前一页索引。参考源码中的 <code>$emit</code> 方法：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">watch: &#123;</span><br><span class="line">  activeIndex(val, oldVal) &#123;</span><br><span class="line">    <span class="keyword">this</span>.resetItemPosition(oldVal);</span><br><span class="line">    <span class="keyword">this</span>.$emit(<span class="string">'change'</span>, val, oldVal);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>关于方法，组件提供了三个方法用于操作组件页面的切换。使用方法是通过 $ref <a href="https://cn.vuejs.org/v2/guide/components.html#子组件引用" target="_blank" rel="noopener">子组件引用</a>来访问子组件，执行其方法。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 假设为 el-carousel 设置了 ref="car"</span></span><br><span class="line"><span class="comment">// setActiveItem	手动切换幻灯片	需要切换的幻灯片的索引，从 0 开始；或相应 el-carousel-item 的 name 属性值</span></span><br><span class="line"><span class="comment">// prev	切换至上一张幻灯片</span></span><br><span class="line"><span class="comment">// next 切换至下一张幻灯片</span></span><br><span class="line">pre() &#123;</span><br><span class="line">    <span class="keyword">this</span>.$refs.car.prev()</span><br><span class="line">&#125;,</span><br><span class="line">next() &#123;</span><br><span class="line">    <span class="keyword">this</span>.$refs.car.next()</span><br><span class="line">&#125;,</span><br><span class="line">first() &#123;</span><br><span class="line">    <span class="keyword">this</span>.$refs.car.setActiveItem(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="源码位置"><a href="#源码位置" class="headerlink" title="源码位置"></a>源码位置</h1><p>Carousel 的源码位于 <code>package/carousel/</code> 目录下。源码目录如下：<br><img src="https://upload-images.jianshu.io/upload_images/1987062-08d5f9051a1f9174.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="源码目录"></p>
+<p>简单说下目录内容：</p>
+<ul>
+<li><strong>item.vue</strong> carousel-item 组件代码</li>
+<li><strong>main.vue</strong> carousel 组件代码</li>
+<li><strong>_index.js</strong> 导出 carousel-item 和 carousel </li>
+<li><strong>cooking.conf.js</strong> cooking 配置</li>
+<li><strong>index.js</strong> 导出 carousel 组件</li>
+<li><strong>package.json</strong> 组件信息</li>
+<li><strong>index.js</strong> 导出 carousel-item 组件</li>
+</ul>
+<p>其实主要就是两个 <code>.vue</code> 文件，其他都是些配置、导出的功能文件，这里可以忽略不看~</p>
+<h1 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h1><p>老规矩，我们通过几个问题切入去看源代码。</p>
+<h2 id="1-基本原理：页面切换-指示器-切换按钮的实现"><a href="#1-基本原理：页面切换-指示器-切换按钮的实现" class="headerlink" title="1. 基本原理：页面切换 + 指示器 + 切换按钮的实现"></a>1. 基本原理：页面切换 + 指示器 + 切换按钮的实现</h2><h3 id="页面切换"><a href="#页面切换" class="headerlink" title="页面切换"></a>页面切换</h3><p>看了一下 DOM 的 Elements 排列，<strong>发现页面切换使用的是 transform 2D 转换和 transition 过渡。</strong><br>一般页面切换其实是几个页面使用 translateX 进行位移切换。<br><img src="https://upload-images.jianshu.io/upload_images/1987062-eb167cd5660779e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="一般页面结构"></p>
+<p>而卡片变化切换同时使用了 translateX 位移和 scale 缩放实现中间一张卡最大，左右卡片小的效果的。<br><img src="https://upload-images.jianshu.io/upload_images/1987062-974136def5c81522.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="卡片化"></p>
+<p>而卡片的层叠使用 z-index 值得大小来实现。<br><strong>所以，逻辑计算只需要根据当前显示页面计算下每个页面的位移值。</strong>而 carousel-item 中也的确有计算的逻辑：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// item.vue</span></span><br><span class="line"><span class="comment">// index 当前 item 索引</span></span><br><span class="line"><span class="comment">// activeIndex 激活的 item 索引</span></span><br><span class="line"><span class="comment">// oldIndex 之前 item 索引</span></span><br><span class="line">translateItem(index, activeIndex, oldIndex) &#123;</span><br><span class="line">  <span class="comment">// 获取父元素宽度 https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetWidth</span></span><br><span class="line">  <span class="keyword">const</span> parentWidth = <span class="keyword">this</span>.$parent.$el.offsetWidth;</span><br><span class="line">  <span class="comment">// 获取 item 页面数量</span></span><br><span class="line">  <span class="keyword">const</span> length = <span class="keyword">this</span>.$parent.items.length;</span><br><span class="line">  <span class="comment">// 判断是否需要过渡动画 class</span></span><br><span class="line">  <span class="comment">// .el-carousel__item.is-animating &#123;</span></span><br><span class="line">  <span class="comment">//  transition: transform 0.4s ease-in-out;</span></span><br><span class="line">  <span class="comment">// &#125;</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.$parent.type !== <span class="string">"card"</span> &amp;&amp; oldIndex !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.animating = index === activeIndex || index === oldIndex;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 处理 index</span></span><br><span class="line">  <span class="keyword">if</span> (index !== activeIndex &amp;&amp; length &gt; <span class="number">2</span>) &#123;</span><br><span class="line">    index = <span class="keyword">this</span>.processIndex(index, activeIndex, length);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.$parent.type === <span class="string">"card"</span>) &#123;</span><br><span class="line">    <span class="comment">// 卡片化</span></span><br><span class="line">    <span class="keyword">this</span>.inStage = <span class="built_in">Math</span>.round(<span class="built_in">Math</span>.abs(index - activeIndex)) &lt;= <span class="number">1</span>; <span class="comment">// 激活组件及其前后组件定义 cursor: pointer; z-index: 1;</span></span><br><span class="line">    <span class="keyword">this</span>.active = index === activeIndex; <span class="comment">// 激活 class</span></span><br><span class="line">    <span class="comment">// 计算卡片化偏移量</span></span><br><span class="line">    <span class="keyword">this</span>.translate = <span class="keyword">this</span>.calculateTranslate(</span><br><span class="line">      index,</span><br><span class="line">      activeIndex,</span><br><span class="line">      parentWidth</span><br><span class="line">    );</span><br><span class="line">    <span class="comment">// 激活卡片不缩放，其他卡片缩放为 0.83</span></span><br><span class="line">    <span class="keyword">this</span>.scale = <span class="keyword">this</span>.active ? <span class="number">1</span> : CARD_SCALE;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 非卡片化</span></span><br><span class="line">    <span class="keyword">this</span>.active = index === activeIndex; <span class="comment">// 激活 class</span></span><br><span class="line">    <span class="keyword">this</span>.translate = parentWidth * (index - activeIndex); <span class="comment">// 计算位移 根据父组件宽度计算</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 计算完后显示</span></span><br><span class="line">  <span class="keyword">this</span>.ready = <span class="literal">true</span>;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<h3 id="指示器"><a href="#指示器" class="headerlink" title="指示器"></a>指示器</h3><p>指示器就是多个 button 组成的横向列表，根据当前显示页面修改某个指示器背景颜色。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span></span></span><br><span class="line"><span class="tag">  <span class="attr">class</span>=<span class="string">"el-carousel__indicators"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">v-if</span>=<span class="string">"indicatorPosition !== 'none'"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">:class</span>=<span class="string">"&#123; 'el-carousel__indicators--labels': hasLabel, 'el-carousel__indicators--outside': indicatorPosition === 'outside' || type === 'card' &#125;"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span></span></span><br><span class="line"><span class="tag">    <span class="attr">v-for</span>=<span class="string">"(item, index) in items"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">"el-carousel__indicator"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:class</span>=<span class="string">"&#123; 'is-active': index === activeIndex &#125;"</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">mouseenter</span>=<span class="string">"throttledIndicatorHover(index)"</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">click.stop</span>=<span class="string">"handleIndicatorClick(index)"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">class</span>=<span class="string">"el-carousel__button"</span>&gt;</span><span class="tag">&lt;<span class="name">span</span> <span class="attr">v-if</span>=<span class="string">"hasLabel"</span>&gt;</span>&#123;&#123; item.label &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="切换按钮"><a href="#切换按钮" class="headerlink" title="切换按钮"></a>切换按钮</h3><p>切换按钮其实就是两个 absolute 的按钮，点击实现页面切换即可。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">transition</span> <span class="attr">name</span>=<span class="string">"carousel-arrow-left"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span></span></span><br><span class="line"><span class="tag">    <span class="attr">type</span>=<span class="string">"button"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">v-if</span>=<span class="string">"arrow !== 'never'"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">v-show</span>=<span class="string">"arrow === 'always' || hover"</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">mouseenter</span>=<span class="string">"handleButtonEnter('left')"</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">mouseleave</span>=<span class="string">"handleButtonLeave"</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">click.stop</span>=<span class="string">"throttledArrowClick(activeIndex - 1)"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">"el-carousel__arrow el-carousel__arrow--left"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"el-icon-arrow-left"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">transition</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">transition</span> <span class="attr">name</span>=<span class="string">"carousel-arrow-right"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span></span></span><br><span class="line"><span class="tag">    <span class="attr">type</span>=<span class="string">"button"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">v-if</span>=<span class="string">"arrow !== 'never'"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">v-show</span>=<span class="string">"arrow === 'always' || hover"</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">mouseenter</span>=<span class="string">"handleButtonEnter('right')"</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">mouseleave</span>=<span class="string">"handleButtonLeave"</span></span></span><br><span class="line"><span class="tag">    @<span class="attr">click.stop</span>=<span class="string">"throttledArrowClick(activeIndex + 1)"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">"el-carousel__arrow el-carousel__arrow--right"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"el-icon-arrow-right"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">transition</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这里要注意的就是按钮外包裹了 <transition> 标签来实现按钮进入和离开的过渡效果。</transition></p>
+<h2 id="2-页面切换动画如何实现？"><a href="#2-页面切换动画如何实现？" class="headerlink" title="2. 页面切换动画如何实现？"></a>2. 页面切换动画如何实现？</h2><p>其实在基本原理里面都提到了，可以从源码中找到两个样式：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 内联样式</span><br><span class="line"><span class="selector-tag">element</span><span class="selector-class">.style</span> &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateX</span>(888.56px) <span class="built_in">scale</span>(0.83);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 过渡样式</span><br><span class="line"><span class="selector-class">.is-animating</span> &#123;</span><br><span class="line">  <span class="attribute">transition</span>: transform <span class="number">0.4s</span> ease-in-out;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>静态情况下，使用 transitionX 维持页面位置，显示当前页面。过渡行为时，加入 0.4 秒的 transition 过渡效果。</p>
+<h2 id="3-卡片化如何实现效果？"><a href="#3-卡片化如何实现效果？" class="headerlink" title="3. 卡片化如何实现效果？"></a>3. 卡片化如何实现效果？</h2><p>卡片化切换其实和一般的切换差不多，只是显示卡片从一张变为三张。中间的卡片 z-index 为 2，而左右的卡片 z-index 为 1，从而实现中间卡片在前面的样式。而计算三张卡片位置的方法如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">calculateTranslate(index, activeIndex, parentWidth) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.inStage) &#123;</span><br><span class="line">    <span class="keyword">return</span> parentWidth * ((<span class="number">2</span> - CARD_SCALE) * (index - activeIndex) + <span class="number">1</span>) / <span class="number">4</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (index &lt; activeIndex) &#123;</span><br><span class="line">    <span class="keyword">return</span> -(<span class="number">1</span> + CARD_SCALE) * parentWidth / <span class="number">4</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="number">3</span> + CARD_SCALE) * parentWidth / <span class="number">4</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>而卡片的宽度为容器宽度的一半~左右两边的卡片缩放了 83% 。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.el-carousel__item--card</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">transition</span>: transform <span class="number">0.4s</span> ease-in-out;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">element</span><span class="selector-class">.style</span> &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateX</span>(-39.44px) <span class="built_in">scale</span>(0.83)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>总结下：</p>
+<ul>
+<li>显示三张卡片。</li>
+<li>三张卡片高度跟随容器，宽度为容器的 50%。</li>
+<li>左右两张卡片缩放了 83% 大小。</li>
+<li>左右两张卡片 z-index 为 1；中间卡片 z-index 为 2。</li>
+</ul>
+<h2 id="4-按钮出现和消失的效果如何实现？"><a href="#4-按钮出现和消失的效果如何实现？" class="headerlink" title="4. 按钮出现和消失的效果如何实现？"></a>4. 按钮出现和消失的效果如何实现？</h2><p>使用了 vue 的 transition 标签来实现。具体效果为：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.el-carousel__arrow</span> &#123;</span><br><span class="line">  <span class="attribute">border</span>: none;</span><br><span class="line">  <span class="attribute">outline</span>: none;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">36px</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">36px</span>;</span><br><span class="line">  <span class="attribute">cursor</span>: pointer;</span><br><span class="line">  <span class="attribute">transition</span>: <span class="number">0.3s</span>;</span><br><span class="line">  <span class="attribute">border-radius</span>: <span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: <span class="built_in">rgba</span>(31, 45, 61, 0.11);</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#fff</span>;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">z-index</span>: <span class="number">10</span>;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateY</span>(-50%);</span><br><span class="line">  <span class="attribute">text-align</span>: center;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">12px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.carousel-arrow-left-enter</span>,</span><br><span class="line"><span class="selector-class">.carousel-arrow-left-leave-active</span> &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateY</span>(-50%) <span class="built_in">translateX</span>(-10px);</span><br><span class="line">  <span class="attribute">opacity</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.carousel-arrow-right-enter</span>,</span><br><span class="line"><span class="selector-class">.carousel-arrow-right-leave-active</span> &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateY</span>(-50%) <span class="built_in">translateX</span>(10px);</span><br><span class="line">  <span class="attribute">opacity</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>实现的效果为：左边箭头向从左边  10px 位置进入和离开，而右边箭头从右边 10px 位置进入和离开。而 <code>translateY</code> 是为了垂直居中。</p>
+<h2 id="5-如何实现自动切换功能？"><a href="#5-如何实现自动切换功能？" class="headerlink" title="5. 如何实现自动切换功能？"></a>5. 如何实现自动切换功能？</h2><p>使用 setInterval 方法来实现定时向后切换页面。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">playSlides() &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.activeIndex &lt; <span class="keyword">this</span>.items.length - <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.activeIndex++;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 如果是最后一页则跳转到第一页</span></span><br><span class="line">    <span class="keyword">this</span>.activeIndex = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line"><span class="comment">// 取消 timer</span></span><br><span class="line">pauseTimer() &#123;</span><br><span class="line">  clearInterval(<span class="keyword">this</span>.timer);</span><br><span class="line">&#125;,</span><br><span class="line"><span class="comment">// 开始 timer</span></span><br><span class="line">startTimer() &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.interval &lt;= <span class="number">0</span> || !<span class="keyword">this</span>.autoplay) <span class="keyword">return</span>;</span><br><span class="line">  <span class="keyword">this</span>.timer = setInterval(<span class="keyword">this</span>.playSlides, <span class="keyword">this</span>.interval);</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<h1 id="自己实现个走马灯玩玩"><a href="#自己实现个走马灯玩玩" class="headerlink" title="自己实现个走马灯玩玩~"></a>自己实现个走马灯玩玩~</h1><p>学以致用，这里写个简单的 demo，实现下走马灯功能。<br>例一：<strong><a href="https://jsfiddle.net/VioletJack/zkjtchL2/6/" target="_blank" rel="noopener">走马灯效果</a></strong><br>例二：<strong><a href="https://jsfiddle.net/VioletJack/jfvf6xmq/3/" target="_blank" rel="noopener">卡片化走马灯效果</a></strong><br>其中，例一和例二实现了走马灯和卡片化的自动切换、手动切换、切换效果。<br>这里留了一个问题待解决：</p>
+<ul>
+<li>走马灯中第一页和最后一页的切换如何做到更好？</li>
+</ul>
+<p>这些问题将会尽快解决！</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>至此，我们了解了走马灯的实现原理，以及一些小功能的实现。最后也用两个例子证明了我们的分析。</p>
+<h1 id="Vue-实验室"><a href="#Vue-实验室" class="headerlink" title="Vue 实验室"></a>Vue 实验室</h1><p>《Vue 实验室》 至今也写了不少了，作者将在把最后几篇计划中的博客写完后，以当前的知识认知水平重新改进《Vue 实验室》往期的文章，并整理到 gitbook 中便于读者阅读，敬请期待。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/12/Vue.js源码学习九 —— 过渡效果 transition 学习/" rel="next" title="Vue.js 源码学习九 —— 过渡效果 transition 学习">
+                <i class="fa fa-chevron-left"></i> Vue.js 源码学习九 —— 过渡效果 transition 学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/09/LeetCode 算法题刷题心得（JavaScript）/" rel="prev" title="LeetCode 算法题刷题心得（JavaScript）">
+                LeetCode 算法题刷题心得（JavaScript） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="VioletJack"/>
+            
+              <p class="site-author-name" itemprop="name">VioletJack</p>
+              <p class="site-description motion-element" itemprop="description">Violetjack 的个人博客，记录了一些技术笔记和思考。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">47</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">Tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/violetjack" title="GitHub &rarr; https://github.com/violetjack" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:violetjack@foxmail.com" title="E-Mail &rarr; mailto:violetjack@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/u/2640909603/home" title="Weibo &rarr; https://weibo.com/u/2640909603/home" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/54ae4af3a98d" title="JianShu &rarr; https://www.jianshu.com/u/54ae4af3a98d" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>JianShu</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简单使用"><span class="nav-number">1.</span> <span class="nav-text">简单使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码位置"><span class="nav-number">2.</span> <span class="nav-text">源码位置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码解析"><span class="nav-number">3.</span> <span class="nav-text">源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-基本原理：页面切换-指示器-切换按钮的实现"><span class="nav-number">3.1.</span> <span class="nav-text">1. 基本原理：页面切换 + 指示器 + 切换按钮的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#页面切换"><span class="nav-number">3.1.1.</span> <span class="nav-text">页面切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指示器"><span class="nav-number">3.1.2.</span> <span class="nav-text">指示器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#切换按钮"><span class="nav-number">3.1.3.</span> <span class="nav-text">切换按钮</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-页面切换动画如何实现？"><span class="nav-number">3.2.</span> <span class="nav-text">2. 页面切换动画如何实现？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-卡片化如何实现效果？"><span class="nav-number">3.3.</span> <span class="nav-text">3. 卡片化如何实现效果？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-按钮出现和消失的效果如何实现？"><span class="nav-number">3.4.</span> <span class="nav-text">4. 按钮出现和消失的效果如何实现？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-如何实现自动切换功能？"><span class="nav-number">3.5.</span> <span class="nav-text">5. 如何实现自动切换功能？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自己实现个走马灯玩玩"><span class="nav-number">4.</span> <span class="nav-text">自己实现个走马灯玩玩~</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">5.</span> <span class="nav-text">最后</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vue-实验室"><span class="nav-number">6.</span> <span class="nav-text">Vue 实验室</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.5.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.0"></script>
+
+  <script src="/js/src/motion.js?v=7.0.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="花了十几天，把《算法》看了一遍然后重新 AC 了一遍 LeetCode 的题，收获颇丰。这次好好记录下心得。我把所有做题的代码都放在 github 上以供参考。项目地址：https://github.com/violetjack/LeetCodeACByJS题目地址：https://leetcode.com/problemset/top-interview-questions/  说来惭愧，之前">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode 算法题刷题心得（JavaScript）">
+<meta property="og:url" content="https://violetjack.github.io/2018/05/09/LeetCode 算法题刷题心得（JavaScript）/index.html">
+<meta property="og:site_name" content="VioletJack 技术日志">
+<meta property="og:description" content="花了十几天，把《算法》看了一遍然后重新 AC 了一遍 LeetCode 的题，收获颇丰。这次好好记录下心得。我把所有做题的代码都放在 github 上以供参考。项目地址：https://github.com/violetjack/LeetCodeACByJS题目地址：https://leetcode.com/problemset/top-interview-questions/  说来惭愧，之前">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-15T17:20:56.252Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LeetCode 算法题刷题心得（JavaScript）">
+<meta name="twitter:description" content="花了十几天，把《算法》看了一遍然后重新 AC 了一遍 LeetCode 的题，收获颇丰。这次好好记录下心得。我把所有做题的代码都放在 github 上以供参考。项目地址：https://github.com/violetjack/LeetCodeACByJS题目地址：https://leetcode.com/problemset/top-interview-questions/  说来惭愧，之前">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="VioletJack 技术日志" type="application/atom+xml"/>
+
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2018/05/09/LeetCode 算法题刷题心得（JavaScript）/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>LeetCode 算法题刷题心得（JavaScript） | VioletJack 技术日志</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">VioletJack 技术日志</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">专注！坚持！求真！</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archiv</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2018/05/09/LeetCode 算法题刷题心得（JavaScript）/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack"/>
+      <meta itemprop="description" content="Violetjack 的个人博客，记录了一些技术笔记和思考。"/>
+      <meta itemprop="image" content="/images/avatar.jpg"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletJack 技术日志"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LeetCode 算法题刷题心得（JavaScript）
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Post created: 2018-05-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-05-09T00:00:00+08:00">2018-05-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Updated at: 2019-02-16 01:20:56" itemprop="dateModified" datetime="2019-02-16T01:20:56+08:00">2019-02-16</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>花了十几天，把《算法》看了一遍然后重新 AC 了一遍 LeetCode 的题，收获颇丰。这次好好记录下心得。<br>我把所有做题的代码都放在 github 上以供参考。<br>项目地址：<a href="https://github.com/violetjack/LeetCodeACByJS" target="_blank" rel="noopener">https://github.com/violetjack/LeetCodeACByJS</a><br>题目地址：<a href="https://leetcode.com/problemset/top-interview-questions/" target="_blank" rel="noopener">https://leetcode.com/problemset/top-interview-questions/</a></p>
+</blockquote>
+<p>说来惭愧，之前写的《LeetCode 逻辑题分享》其实自己动手做的比较少，都是看解决方案。更加关键的是<strong>我没有系统地去学习过算法</strong>（自学的编程）。所以导致以下几个问题：</p>
+<ul>
+<li>看题不懂方法论，理解他人方案困难。</li>
+<li>解题方法通过看别人的方案去归纳，照着抄。（其实都是有系统的算法写法的）</li>
+<li>很多题目看了答案只是知其然而不知其所以然。</li>
+<li>很多答案（讨论区的方案）是有错误的，却把它当正确答案来发。</li>
+</ul>
+<p>之后，我看了《算法（第4版）》一书，重新去做并且试着去 AC 题目，问题又是一堆堆的。所以这次比第一次刷题时间要久不少。</p>
+<h1 id="各类题的解决方案"><a href="#各类题的解决方案" class="headerlink" title="各类题的解决方案"></a>各类题的解决方案</h1><p>话不多说，系统整理下解题的一些算法和解决方案</p>
+<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><p>二叉树大多使用递归的方式左右两个元素向下递归。比如：</p>
+<p><strong>计算二叉树最大深度</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> maxDepth = <span class="function"><span class="keyword">function</span> (<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">null</span>) <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> + <span class="built_in">Math</span>.max(maxDepth(root.left), maxDepth(root.right))</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><strong>将二叉树以二维数组形式表现</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> levelOrder = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> ans = []</span><br><span class="line">    helper(root, ans, <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> ans</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">helper</span>(<span class="params">node, ans, i</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">null</span>) <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">if</span> (i == ans.length) ans.push([])</span><br><span class="line">    ans[i].push(node.val)</span><br><span class="line"></span><br><span class="line">    helper(node.left, ans, i + <span class="number">1</span>)</span><br><span class="line">    helper(node.right, ans, i + <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>都是通过递归方式逐层向下去查找二叉树数据。</p>
+<h2 id="可能性问题"><a href="#可能性问题" class="headerlink" title="可能性问题"></a>可能性问题</h2><p>这类题一般是告诉你一组数据，然后求出可能性、最小值或最大值。比如：</p>
+<p><strong>给定几种面额的硬币和一个总额，使用最少的硬币凑成这个总额。</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> coinChange = <span class="function"><span class="keyword">function</span> (<span class="params">coins, amount</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> max = amount + <span class="number">1</span></span><br><span class="line">    <span class="keyword">let</span> dp = <span class="keyword">new</span> <span class="built_in">Array</span>(amount + <span class="number">1</span>)</span><br><span class="line">    dp.fill(max)</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; max; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; coins.length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (coins[j] &lt;= i) &#123;</span><br><span class="line">                dp[i] = <span class="built_in">Math</span>.min(dp[i], dp[i - coins[j]] + <span class="number">1</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[amount] &gt; amount ? <span class="number">-1</span> : dp[amount]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>使用了动态规划（DP），将从 0 到目标额度所需的最小硬币数都列出来。</p>
+<p><strong>求出从矩阵左上角走到右下角，且只能向右向下移动，一共有多少种可能性。</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> uniquePaths = <span class="function"><span class="keyword">function</span> (<span class="params">m, n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> pos = <span class="keyword">new</span> <span class="built_in">Array</span>(m)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        pos[i] = <span class="keyword">new</span> <span class="built_in">Array</span>(n)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        pos[<span class="number">0</span>][i] = <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        pos[i][<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">1</span>; j &lt; n; j++) &#123;</span><br><span class="line">            pos[i][j] = pos[i - <span class="number">1</span>][j] + pos[i][j - <span class="number">1</span>]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pos[m - <span class="number">1</span>][n - <span class="number">1</span>]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这题就是使用了动态规划逐步列出每一格的可能性，最后返回右下角的可能性。</p>
+<p><strong>获取给定数组连续元素累加最大值</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> maxSubArray = <span class="function"><span class="keyword">function</span> (<span class="params">nums</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> count = nums[<span class="number">0</span>], maxCount = nums[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        count = <span class="built_in">Math</span>.max(count + nums[i], nums[i])</span><br><span class="line">        maxCount = <span class="built_in">Math</span>.max(maxCount, count)    </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxCount</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>上面这题通过不断对比最大值来保留并返回最大值。</p>
+<p>其实，可能性问题使用<strong>动态规划</strong>要比使用 DFS、BFS 算法更加简单而容易理解。（我使用 DFS 经常报 TLE）</p>
+<h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><p>一般遇到的查找问题，如查找某个值一般会用到一下方法：</p>
+<ul>
+<li>排序算法（排序便于查找）</li>
+<li>二分查找</li>
+<li>索引移动查找（这个方法名自己想的，大概就这个意思~）</li>
+</ul>
+<p><strong>查找横向和纵向都递增的二维矩阵中的某个值</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> searchMatrix = <span class="function"><span class="keyword">function</span> (<span class="params">matrix, target</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (matrix.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    <span class="keyword">let</span> row = <span class="number">0</span>, col = matrix[<span class="number">0</span>].length - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (matrix[row][col] &gt; target &amp;&amp; col &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            col--</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (matrix[row][col] &lt; target &amp;&amp; row &lt; matrix.length - <span class="number">1</span>) &#123;</span><br><span class="line">            row++</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (matrix[row][col] == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>先将位置定位在右上角，通过改变位置坐标来找到目标值。使用了索引移动查找法来找到结果。</p>
+<p><strong>找到数组中最左边和最右边的某个数字所在位置</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> searchRange = <span class="function"><span class="keyword">function</span> (<span class="params">nums, target</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> targetIndex = binarySearch(nums, target, <span class="number">0</span>, nums.length - <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> (targetIndex == <span class="number">-1</span>) <span class="keyword">return</span> [<span class="number">-1</span>, <span class="number">-1</span>]</span><br><span class="line">    <span class="keyword">let</span> l = targetIndex, r = targetIndex</span><br><span class="line">    <span class="keyword">while</span>(l &gt; <span class="number">0</span> &amp;&amp; nums[l - <span class="number">1</span>] == target)&#123;</span><br><span class="line">        l--</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(r &lt; nums.length - <span class="number">1</span> &amp;&amp; nums[r + <span class="number">1</span>] == target)&#123;</span><br><span class="line">        r++</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> [l, r]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">binarySearch</span>(<span class="params">arr, val, lo, hi</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hi &lt; lo) <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">    <span class="keyword">let</span> mid = lo + <span class="built_in">parseInt</span>((hi - lo) / <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (val &lt; arr[mid]) &#123;</span><br><span class="line">        <span class="keyword">return</span> binarySearch(arr, val, lo, mid - <span class="number">1</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (val &gt; arr[mid]) &#123;</span><br><span class="line">        <span class="keyword">return</span> binarySearch(arr, val, mid + <span class="number">1</span>, hi)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> mid</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这题使用<strong>二分法</strong>来查找到某个目标数字的索引值，然后<strong>索引移动法</strong>分别向左和向右查找字符。获取左右两侧的索引值返回。</p>
+<h2 id="回文"><a href="#回文" class="headerlink" title="回文"></a>回文</h2><p>所谓回文，就是正着读反着读是一样的。使用索引两边向中间移动的方式来判断是否为回文。</p>
+<p><strong>找到给定字符串中某段最长的回文</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> longestPalindrome = <span class="function"><span class="keyword">function</span> (<span class="params">s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> maxLength = <span class="number">0</span>, left = <span class="number">0</span>, right = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; s.length; i++) &#123;</span><br><span class="line">        <span class="keyword">let</span> singleCharLength = getPalLenByCenterChar(s, i, i)</span><br><span class="line">        <span class="keyword">let</span> doubleCharLength = getPalLenByCenterChar(s, i, i + <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">let</span> max = <span class="built_in">Math</span>.max(singleCharLength, doubleCharLength)</span><br><span class="line">        <span class="keyword">if</span> (max &gt; maxLength) &#123;</span><br><span class="line">            maxLength = max</span><br><span class="line">            left = i - <span class="built_in">parseInt</span>((max - <span class="number">1</span>) / <span class="number">2</span>)</span><br><span class="line">            right = i + <span class="built_in">parseInt</span>(max / <span class="number">2</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s.slice(left, right + <span class="number">1</span>)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getPalLenByCenterChar</span>(<span class="params">s, left, right</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 中间值为两个字符，确保两个字符相等</span></span><br><span class="line">    <span class="keyword">if</span> (s[left] != s[right])&#123;</span><br><span class="line">        <span class="keyword">return</span> right - left</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (left &gt; <span class="number">0</span> &amp;&amp; right &lt; s.length - <span class="number">1</span>) &#123;</span><br><span class="line">        left--</span><br><span class="line">        right++</span><br><span class="line">        <span class="keyword">if</span> (s[left] != s[right])&#123;</span><br><span class="line">            <span class="keyword">return</span> right - left - <span class="number">1</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> right - left + <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="路径题"><a href="#路径题" class="headerlink" title="路径题"></a>路径题</h2><p>路径题可以使用深度优先（DFS）和广度优先（BFS）算法来做。我比较常用的是使用 DFS 来做。通过递归将走过的路径进行标记来不断往前找到目标路径。如：</p>
+<p><strong>通过给定单词在二维字母数组中查找是否能使用邻近字母组成这个单词</strong>(<a href="https://leetcode.com/problems/word-search-ii/description/" target="_blank" rel="noopener">212题</a>)<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> hasWord = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> findWords = <span class="function"><span class="keyword">function</span> (<span class="params">board, words</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> ans = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> word <span class="keyword">of</span> words) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; board.length; j++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; board[<span class="number">0</span>].length; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (board[j][i] == word[<span class="number">0</span>]) &#123;</span><br><span class="line">                    hasWord = <span class="literal">false</span></span><br><span class="line">                    DFS(word, board, <span class="number">0</span>, j, i, <span class="string">""</span>)</span><br><span class="line">                    <span class="keyword">if</span> (hasWord) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (!ans.includes(word))</span><br><span class="line">                            ans.push(word)</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">DFS</span>(<span class="params">word, board, index, j, i, subStr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (word[index] == board[j][i]) &#123;</span><br><span class="line">        subStr += board[j][i]</span><br><span class="line">        board[j][i] = <span class="string">"*"</span></span><br><span class="line">        <span class="keyword">if</span> (j &lt; board.length - <span class="number">1</span>)</span><br><span class="line">            DFS(word, board, index + <span class="number">1</span>, j + <span class="number">1</span>, i, subStr)</span><br><span class="line">        <span class="keyword">if</span> (j &gt; <span class="number">0</span>)</span><br><span class="line">            DFS(word, board, index + <span class="number">1</span>, j - <span class="number">1</span>, i, subStr)</span><br><span class="line">        <span class="keyword">if</span> (i &lt; board[<span class="number">0</span>].length - <span class="number">1</span>)</span><br><span class="line">            DFS(word, board, index + <span class="number">1</span>, j, i + <span class="number">1</span>, subStr)</span><br><span class="line">        <span class="keyword">if</span> (i &gt; <span class="number">0</span>)</span><br><span class="line">            DFS(word, board, index + <span class="number">1</span>, j, i - <span class="number">1</span>, subStr)</span><br><span class="line">        board[j][i] = word[index]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= word.length || subStr == word) &#123;</span><br><span class="line">        hasWord = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由于 DFS 是一条路走到黑，如果每个元素都去使用 DFS 来找会出现超时的情况。如果条件允许（如查找递增数组）可以通过<strong>设置缓存</strong>来优化 DFS 查找超时问题。</p>
+<p><strong>获取二维矩阵中最大相邻递增数组长度。</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> dirs = [[<span class="number">0</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">-1</span>], [<span class="number">-1</span>, <span class="number">0</span>]]</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> longestIncreasingPath = <span class="function"><span class="keyword">function</span> (<span class="params">matrix</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (matrix.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">const</span> m = matrix.length, n = matrix[<span class="number">0</span>].length</span><br><span class="line">    <span class="keyword">let</span> max = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> cache = <span class="keyword">new</span> <span class="built_in">Array</span>(m)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; m; i++)&#123;</span><br><span class="line">        <span class="keyword">let</span> child = <span class="keyword">new</span> <span class="built_in">Array</span>(n)</span><br><span class="line">        child.fill(<span class="number">0</span>)</span><br><span class="line">        cache[i] = child</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">            <span class="keyword">let</span> len = dfs(matrix, i, j, m, n, cache)</span><br><span class="line">            max = <span class="built_in">Math</span>.max(max, len)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> max</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dfs</span>(<span class="params">matrix, i, j, m, n, cache</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (cache[i][j] != <span class="number">0</span>) <span class="keyword">return</span> cache[i][j]</span><br><span class="line">    <span class="keyword">let</span> max = <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> dir <span class="keyword">of</span> dirs)&#123;</span><br><span class="line">        <span class="keyword">let</span> x = i + dir[<span class="number">0</span>], y = j + dir[<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">if</span>(x &lt; <span class="number">0</span> || x &gt;= m || y &lt; <span class="number">0</span> || y &gt;= n || matrix[x][y] &lt;= matrix[i][j]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">let</span> len = <span class="number">1</span> + dfs(matrix, x, y, m, n, cache)</span><br><span class="line">        max = <span class="built_in">Math</span>.max(max, len)</span><br><span class="line">    &#125;</span><br><span class="line">    cache[i][j] = max</span><br><span class="line">    <span class="keyword">return</span> max</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将已使用 DFS 查找过的长度放入缓存，如果有其他元素走 DFS 走到当前值，直接返回缓存最大值即可。</p>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>链表从 JS 的角度来说就是一串对象使用指针连接的数据结构。合理使用 <code>next</code> 指针改变指向来完成对链表的一系列操作。如：</p>
+<p><strong>链表的排序：</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sortList = <span class="function"><span class="keyword">function</span> (<span class="params">head</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (head == <span class="literal">null</span> || head.next == <span class="literal">null</span>) <span class="keyword">return</span> head</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> prev = <span class="literal">null</span>, slow = head, fast = head</span><br><span class="line">    <span class="keyword">while</span> (fast != <span class="literal">null</span> &amp;&amp; fast.next != <span class="literal">null</span>) &#123;</span><br><span class="line">        prev = slow</span><br><span class="line">        slow = slow.next</span><br><span class="line">        fast = fast.next.next</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    prev.next = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> l1 = sortList(head)</span><br><span class="line">    <span class="keyword">let</span> l2 = sortList(slow)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> merge(l1, l2)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">merge</span>(<span class="params">l1, l2</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> l = <span class="keyword">new</span> ListNode(<span class="number">0</span>), p = l;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (l1 != <span class="literal">null</span> &amp;&amp; l2 != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (l1.val &lt; l2.val) &#123;</span><br><span class="line">            p.next = l1;</span><br><span class="line">            l1 = l1.next;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            p.next = l2;</span><br><span class="line">            l2 = l2.next;</span><br><span class="line">        &#125;</span><br><span class="line">        p = p.next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (l1 != <span class="literal">null</span>)</span><br><span class="line">        p.next = l1;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (l2 != <span class="literal">null</span>)</span><br><span class="line">        p.next = l2;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> l.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用了<strong>自上而下的归并排序方法</strong>对链表进行了排序。使用 <code>slow.next</code> 和 <code>fast.next.next</code> 两种速度获取链表节点，从而获取中间值。</p>
+<p><strong>链表的倒序</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> reverseList = <span class="function"><span class="keyword">function</span>(<span class="params">head</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> ans = <span class="literal">null</span>,cur = head</span><br><span class="line">    <span class="keyword">while</span> (cur != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> nextTmp = cur.next</span><br><span class="line">        cur.next = ans</span><br><span class="line">        ans = cur</span><br><span class="line">        cur = nextTmp</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><p>排序和查找算是算法中最重要的问题了。常用的排序算法有：</p>
+<ul>
+<li>插入排序</li>
+<li>选择排序</li>
+<li>快速排序</li>
+<li>归并排序</li>
+<li>计数排序</li>
+</ul>
+<p>更多排序算法的知识点可参考<a href="https://www.jianshu.com/p/1b4068ccd505" target="_blank" rel="noopener">《JS家的排序算法》</a>，文章作者图文并茂的讲解了各种排序算法，很容易理解。<br>举几个排序算法的栗子：</p>
+<p><strong>求数组中第K大的值</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @param &#123;number[]&#125; nums</span></span><br><span class="line"><span class="comment"> * @param &#123;number&#125; k</span></span><br><span class="line"><span class="comment"> * @return &#123;number&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> findKthLargest = <span class="function"><span class="keyword">function</span> (<span class="params">nums, k</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt;= k; i++) &#123;</span><br><span class="line">        <span class="keyword">let</span> max = i</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = i; j &lt; nums.length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[j] &gt; nums[max]) max = j</span><br><span class="line">        &#125;</span><br><span class="line">        swap(nums, i, max)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> nums[k - <span class="number">1</span>]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">swap</span>(<span class="params">arr, a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> tmp = arr[a]</span><br><span class="line">    arr[a] = arr[b]</span><br><span class="line">    arr[b] = tmp</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用了<strong>选择排序</strong>排列了前 K 个值得到结果。</p>
+<p><strong>对有重复值的数组 <code>[2,0,2,1,1,0]</code> 排序</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sortColors = <span class="function"><span class="keyword">function</span> (<span class="params">nums</span>) </span>&#123;</span><br><span class="line">    sort(nums, <span class="number">0</span>, nums.length - <span class="number">1</span>)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sort</span>(<span class="params">arr, lo, hi</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hi &lt;= lo) <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">let</span> lt = lo, i = lo + <span class="number">1</span>, gt = hi;</span><br><span class="line">    <span class="keyword">let</span> v = arr[lo]</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= gt) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; v) swap(arr, lt++, i++)</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; v) swap(arr, i, gt--)</span><br><span class="line">        <span class="keyword">else</span> i++</span><br><span class="line">    &#125;</span><br><span class="line">    sort(arr, lo, lt - <span class="number">1</span>)</span><br><span class="line">    sort(arr, gt + <span class="number">1</span>, hi)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">swap</span>(<span class="params">arr, a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> x = arr[a]</span><br><span class="line">    arr[a] = arr[b]</span><br><span class="line">    arr[b] = x</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这种有重复值的使用<strong>三向切分的快速排序</strong>是非常好的解决方案。当然，<strong>计数排序</strong>法可是不错的选择。<br>还有之前提到的链表的排序使用的是<strong>归并排序</strong>。</p>
+<h2 id="算术题"><a href="#算术题" class="headerlink" title="算术题"></a>算术题</h2><p>算术题看似简单，但是遇到最大的问题就是：如果使用累加、累成这种常熟级别的增长，遇到很大的数字会出现 TLE （超出时间限制）。所以，我们要用指数级别的增长来找到结果。如：</p>
+<p><strong>计算 x 的 n 次方</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myPow = <span class="function"><span class="keyword">function</span> (<span class="params">x, n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        n = -n</span><br><span class="line">        x = <span class="number">1</span> / x</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (n % <span class="number">2</span> == <span class="number">0</span>) ? myPow(x * x, <span class="built_in">parseInt</span>(n / <span class="number">2</span>)) : x * myPow(x * x, <span class="built_in">parseInt</span>(n / <span class="number">2</span>));</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>一开始我使用了 x<em>x 这么乘上 n 次，但是遇到 n 太大就直接超时了。使用以上方案：2^9^ = 2 </em> 4^4^ = 2 <em> 8^2^ = 2 </em> 64 = 128<br>直接从常熟级变化变为指数级变化，这一点在数学运算中是需要注意的。</p>
+<p><strong>求 x 的平方根</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> mySqrt = <span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> l = <span class="number">0</span>, r = x</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> mid = <span class="built_in">parseInt</span>(l + (r - l) / <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">if</span> (mid * mid &gt; x) &#123;</span><br><span class="line">            r = mid - <span class="number">1</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mid * mid &lt; x) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((mid + <span class="number">1</span>) * (mid + <span class="number">1</span>) &gt; x) &#123;</span><br><span class="line">                <span class="keyword">return</span> mid</span><br><span class="line">            &#125;</span><br><span class="line">            l = mid + <span class="number">1</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> mid</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这题使用二分法来找到结果。</p>
+<h2 id="二进制问题"><a href="#二进制问题" class="headerlink" title="二进制问题"></a>二进制问题</h2><p>二进制问题，一般使用<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators" target="_blank" rel="noopener">按位运算符</a>和二进制转换 <code>Number.parseInt()</code> 和 <code>Number.prototype.toString()</code>来解决。</p>
+<p><strong>将一个32位数字的二进制进行倒序</strong><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> reverseBits = <span class="function"><span class="keyword">function</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> t = n.toString(<span class="number">2</span>).split(<span class="string">""</span>);</span><br><span class="line">    <span class="keyword">while</span>(t.length &lt; <span class="number">32</span>) t.unshift(<span class="string">"0"</span>); <span class="comment">// 插入足够的 0</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">parseInt</span>(t.reverse().join(<span class="string">""</span>), <span class="number">2</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h1 id="常用算法"><a href="#常用算法" class="headerlink" title="常用算法"></a>常用算法</h1><p>讲了这么多，其实除了常用的排序、搜索，其他最常用的就是 DP、DFS、BFS 这三个算法了。可以这么说：掌握了排序和这三个算法，可以 AC 大多数的算法问题。这么牛逼的算法了解一下？</p>
+<h2 id="简单说说几种排序和查找"><a href="#简单说说几种排序和查找" class="headerlink" title="简单说说几种排序和查找"></a>简单说说几种排序和查找</h2><ul>
+<li><strong>冒泡排序</strong>：遍历数组，对比元素和后面相邻元素，如果当前元素大于后面元素，调换位置。这样从头遍历到尾，获取最后一位排序玩的元素。然后在 1 到 n - 1 中再次重复以上步骤。直到最后第一和第二个元素对比大小。是一种从后往前的排序。</li>
+<li><p><strong>选择排序</strong>：遍历数组，找到最小的元素位置，与第一个元素调换位置，然后缩小范围从第二个元素开始遍历，如此重复到最后一个元素。可以从后往前也可以从前往后排序。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sort</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> len = arr.length</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">let</span> min = i</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = i + <span class="number">1</span>; j &lt; len; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (arr[j] &lt; arr[min]) min = j</span><br><span class="line">        &#125;</span><br><span class="line">        swap(arr, i, min)</span><br><span class="line">        <span class="built_in">console</span>.log(arr)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>插入排序</strong>：遍历数组，选中某一个元素，与前面相邻元素对比，如果当前元素小于之前元素，调换位置，继续对比直到当前元素前的元素小于当前元素（或者到最前面），如此对所有元素排序一遍。是一种从前往后的排序。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sort</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> len = arr.length</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = i; j &gt; <span class="number">0</span> &amp;&amp; arr[j] &lt; arr[j - <span class="number">1</span>]; j--) &#123;</span><br><span class="line">            swap(arr, j, j - <span class="number">1</span>)</span><br><span class="line">            <span class="built_in">console</span>.log(arr)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>希尔排序</strong>：类似于插入排序，选中一个元素与元素前 n 个元素进行比大小和调换位置。之后再缩小 n 的值。这种方法可以减少插入排序中最小值在最后面，然后需要一个一个调换位置知道最前面这类问题。减少调换次数。是一种从前往后的排序。</p>
+</li>
+<li><p><strong>归并排序</strong>：在《算法》中提到了两种归并排序：一种是自上而下的归并排序。将数组不断二分到最小单位（1到2个元素）将他们进行排序，之后将前两个和后两个元素对比，如此往上最后完成整个数组的排序。还有一种自下而上的归并排序是直接将数组分割为若干个子数组进行排序然后合并。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> aux = <span class="keyword">new</span> <span class="built_in">Array</span>(arr.length)</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sort</span>(<span class="params">arr, lo, hi</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hi &lt;= lo) <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">let</span> mid = lo + (<span class="built_in">parseInt</span>((hi - lo) / <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">    sort(arr, lo, mid)</span><br><span class="line">    sort(arr, mid + <span class="number">1</span>, hi)</span><br><span class="line">    merge(arr, lo, mid, hi)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">merge</span>(<span class="params">arr, lo, mid, hi</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> i = lo, j = mid + <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> k = lo; k &lt;= hi; k++) &#123;</span><br><span class="line">        aux[k] = arr[k]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> k = lo; k &lt;= hi; k++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i &gt; mid) arr[k] = aux[j++]</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (j &gt; hi) arr[k] = aux[i++]</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (aux[j] &lt; aux[i]) arr[k] = aux[j++]</span><br><span class="line">        <span class="keyword">else</span> arr[k] = aux[i++]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(arr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>快速排序</strong>：选定第一个值为中间值，然后将小于中间值的元素放在中间值的左侧而大于中间值的元素放在中间值右侧，然后对两侧的元素分别再次切割，直到最小单位。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sort</span>(<span class="params">arr, lo, hi</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hi &lt;= lo + <span class="number">1</span>) <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">let</span> mid = partition(arr, lo, hi) <span class="comment">// 切分方法</span></span><br><span class="line">    sort(arr, lo, mid)</span><br><span class="line">    sort(arr, mid + <span class="number">1</span>, hi)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">partition</span>(<span class="params">arr, lo, hi</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> i = lo, j = hi + <span class="number">1</span></span><br><span class="line">    <span class="keyword">let</span> v = arr[lo]</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span>(arr[++i] &lt; v) <span class="keyword">if</span> (i == hi) <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">while</span>(v &lt; arr[--j]) <span class="keyword">if</span> (j == lo) <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">if</span> ((i &gt;= j)) <span class="keyword">break</span></span><br><span class="line">        swap(arr, i, j)</span><br><span class="line">        <span class="built_in">console</span>.log(arr)</span><br><span class="line">    &#125;</span><br><span class="line">    swap(arr, lo, j)</span><br><span class="line">    <span class="built_in">console</span>.log(arr)</span><br><span class="line">    <span class="keyword">return</span> j</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>三向切分的快速排序</strong>：类似于快速排序，优化点在于如果某个元素等于切分元素，元素位置不变。最后小于切分元素的到左边，等于切分元素的根据数量放在中间，大于切分元素的放在右边。<strong>适用于有大量相同大小元素的数组。</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sort</span>(<span class="params">arr, lo, hi</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (hi &lt;= lo) <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">let</span> lt = lo, i = lo + <span class="number">1</span>, gt = hi;</span><br><span class="line">    <span class="keyword">let</span> v = arr[lo]</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= gt) &#123;</span><br><span class="line">        <span class="keyword">if</span> (arr[i] &lt; v) swap(arr, lt++, i++)</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (arr[i] &gt; v) swap(arr, i, gt--)</span><br><span class="line">        <span class="keyword">else</span> i++</span><br><span class="line">        <span class="built_in">console</span>.log(arr)</span><br><span class="line">    &#125;</span><br><span class="line">    sort(arr, lo, lt - <span class="number">1</span>)</span><br><span class="line">    sort(arr, gt + <span class="number">1</span>, hi)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>堆排序</strong>：堆排序可以说是一种利用堆的概念来排序的选择排序。使用优先队列返回最大值的特性逐个返回当前堆的最大值。</p>
+</li>
+<li><strong>计数排序</strong>：就是将数组中所有元素的出现次数保存在一个数组中，然后按照从小到大返回排序后的数组。</li>
+<li><strong>桶排序</strong>：其实就是字符串排序的 LSD 和 MSD 排序。LSD 使用索引计数法从字符串右边向左边移动，根据当前值进行排序。而 MSD 是从左到右使用索引计数法来排序，在字符串第一个字符后，将字符串数组分为若干个相同首字符串的数组各自进行第二、第三次的 MSD 排序。</li>
+<li><strong>二分查找</strong>： 对有序数组去中间值与目标值相比对。如果目标值小于中间值，取前一半数组继续二分。如果目标值大于中间值，取后一半数组继续二分。如果目标值等于中间值，命中！</li>
+</ul>
+<h2 id="DP"><a href="#DP" class="headerlink" title="DP"></a>DP</h2><p>关于动态规划，可以看下<a href="http://www.cnblogs.com/little-YTMM/p/5372680.html" target="_blank" rel="noopener">详解动态规划——邹博讲动态规划</a>一文，其中讲了路径、硬币、最长子序列。都是 LeetCode 中有的题目。<br>我的理解：动态规划就是下一状态可以根据上一状态，或之前几个状态获取到的一种推理过程。</p>
+<h2 id="DFS"><a href="#DFS" class="headerlink" title="DFS"></a>DFS</h2><p>深度优先搜索（DFS）就是选中某条从条件1到条件2的某条可能性进行搜索，之后返回搜索其他一条可能性，如此一条条升入。举个栗子，如果有5条路，那么 DFS 算法就是只排出一个斥候先走一条路走到底去侦察，如果走不通那么返回走下一条路径。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DFS（顶点v）</span><br><span class="line">&#123;</span><br><span class="line">  标记v为已遍历；</span><br><span class="line">  <span class="keyword">for</span>（对于每一个邻接v且未标记遍历的点u）</span><br><span class="line">      DFS（u）;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>DFS 使用的是递归的方式进行搜索的。</p>
+<p><strong>示例：</strong>在二维字母矩阵中查找是否能够使用相邻字母组成目标单词。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> exist = <span class="function"><span class="keyword">function</span> (<span class="params">board, word</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> y = <span class="number">0</span>; y &lt; board.length; y++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> x = <span class="number">0</span>; x &lt; board[<span class="number">0</span>].length; x++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (find(board, word, y, x, <span class="number">0</span>)) <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">find</span>(<span class="params">board, word, y, x, d</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (d == word.length) <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    <span class="keyword">if</span> (y &lt; <span class="number">0</span> || x &lt; <span class="number">0</span> || y == board.length || x == board[y].length) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (board[y][x] != word[d]) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    <span class="keyword">let</span> tmp = board[y][x]</span><br><span class="line">    board[y][x] = <span class="string">"*"</span></span><br><span class="line">    <span class="keyword">let</span> exist = find(board, word, y, x + <span class="number">1</span>, d + <span class="number">1</span>)</span><br><span class="line">        || find(board, word, y, x - <span class="number">1</span>, d + <span class="number">1</span>)</span><br><span class="line">        || find(board, word, y + <span class="number">1</span>, x, d + <span class="number">1</span>)</span><br><span class="line">        || find(board, word, y - <span class="number">1</span>, x, d + <span class="number">1</span>)</span><br><span class="line">    board[y][x] = tmp</span><br><span class="line">    <span class="keyword">return</span> exist</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="BFS"><a href="#BFS" class="headerlink" title="BFS"></a>BFS</h2><p>广度优先搜索（BFS）就是将从条件1到条件2的所有可能性都列出来同步搜索的过程。适用于查找最短路径。举个栗子，如果有5条路，那么 BFS 算法就是分别向5条路排出斥候去侦察。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">BFS()</span><br><span class="line">&#123;</span><br><span class="line">  输入起始点；</span><br><span class="line">  初始化所有顶点标记为未遍历；</span><br><span class="line">  初始化一个队列queue并将起始点放入队列；</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span>（queue不为空）</span><br><span class="line">  &#123;</span><br><span class="line"></span><br><span class="line">    从队列中删除一个顶点s并标记为已遍历； </span><br><span class="line">    将s邻接的所有还没遍历的点加入队列；</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>BFS是使用数组存储下一顶点的方式。</p>
+<p><strong>示例：</strong>每次改变一次字母，通过给定数组中的单词，从单词 A 变为单词 B。（<a href="https://leetcode.com/problems/word-ladder/description/" target="_blank" rel="noopener">127题</a>）<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @param &#123;string&#125; beginWord</span></span><br><span class="line"><span class="comment"> * @param &#123;string&#125; endWord</span></span><br><span class="line"><span class="comment"> * @param &#123;string[]&#125; wordList</span></span><br><span class="line"><span class="comment"> * @return &#123;number&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> ladderLength = <span class="function"><span class="keyword">function</span> (<span class="params">beginWord, endWord, wordList</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!wordList.includes(endWord)) <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>(),</span><br><span class="line">        visited = <span class="keyword">new</span> <span class="built_in">Set</span>(),</span><br><span class="line">        len = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    set.add(beginWord)</span><br><span class="line">    visited.add(beginWord)</span><br><span class="line">    <span class="keyword">while</span> (set.size != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> tmp = <span class="keyword">new</span> <span class="built_in">Set</span>([...set])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> w <span class="keyword">of</span> tmp) &#123;</span><br><span class="line">            visited.add(w)</span><br><span class="line">            set.delete(w)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (changeOneChar(w, endWord))</span><br><span class="line">                <span class="keyword">return</span> len + <span class="number">1</span></span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">let</span> word <span class="keyword">of</span> wordList)&#123;</span><br><span class="line">                <span class="keyword">if</span> (changeOneChar(w, word) &amp;&amp; !visited.has(word))&#123;</span><br><span class="line">                    set.add(word)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        len++</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">changeOneChar</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> count = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; a.length; i++)</span><br><span class="line">        <span class="keyword">if</span> (a[i] != b[i])</span><br><span class="line">            count++</span><br><span class="line">    <span class="keyword">return</span> count == <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>写下 AC 一遍题目之后的收获。</p>
+<ul>
+<li>知道了方法论，做起题来轻松了不少。</li>
+<li>遇到问题多找轮子，一定有某种方法论可以用。</li>
+<li>不要耍小聪明用一些奇巧淫技，思路不对再怎么绕都是浪费时间。</li>
+<li>不要想着自己造轮子（特别是算法方面），绝大多数问题前辈一定有更好更完善的方案在。自己造轮子费时费事又没太大意义。</li>
+<li>看答案和自己做是两回事，自己动手实现了才能算是会了。</li>
+<li>算法之所以存在，就是用来适应某些场景、解决某类问题的。在对的场景选择对的算法才能体现算法的价值，不要滥用算法。</li>
+<li>没必要把所有算法都精通，但起码在遇到问题时可以找到最优算法解决问题。即知道算法的存在及其用途，按需深入学习。</li>
+</ul>
+<p>其实刷算法题还是很有趣的事情，之后计划把 <a href="https://leetcode.com/problemset/all/" target="_blank" rel="noopener">LeetCode 题库</a>中的所有问题都刷一遍~</p>
+<p><strong>PS：本文以及相关项目中有任何错误或者可以改进的地方，还请提出。共同进步~</strong></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/13/element 源码学习六 —— Carousel 走马灯学习/" rel="next" title="element 源码学习六 —— Carousel 走马灯学习">
+                <i class="fa fa-chevron-left"></i> element 源码学习六 —— Carousel 走马灯学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/10/数据集合常用 API 整理/" rel="prev" title="常用数据集合 API 整理">
+                常用数据集合 API 整理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="VioletJack"/>
+            
+              <p class="site-author-name" itemprop="name">VioletJack</p>
+              <p class="site-description motion-element" itemprop="description">Violetjack 的个人博客，记录了一些技术笔记和思考。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">47</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">Tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/violetjack" title="GitHub &rarr; https://github.com/violetjack" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:violetjack@foxmail.com" title="E-Mail &rarr; mailto:violetjack@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/u/2640909603/home" title="Weibo &rarr; https://weibo.com/u/2640909603/home" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/54ae4af3a98d" title="JianShu &rarr; https://www.jianshu.com/u/54ae4af3a98d" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>JianShu</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#各类题的解决方案"><span class="nav-number">1.</span> <span class="nav-text">各类题的解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树"><span class="nav-number">1.1.</span> <span class="nav-text">二叉树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可能性问题"><span class="nav-number">1.2.</span> <span class="nav-text">可能性问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找"><span class="nav-number">1.3.</span> <span class="nav-text">查找</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回文"><span class="nav-number">1.4.</span> <span class="nav-text">回文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#路径题"><span class="nav-number">1.5.</span> <span class="nav-text">路径题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链表"><span class="nav-number">1.6.</span> <span class="nav-text">链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#排序"><span class="nav-number">1.7.</span> <span class="nav-text">排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算术题"><span class="nav-number">1.8.</span> <span class="nav-text">算术题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制问题"><span class="nav-number">1.9.</span> <span class="nav-text">二进制问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用算法"><span class="nav-number">2.</span> <span class="nav-text">常用算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简单说说几种排序和查找"><span class="nav-number">2.1.</span> <span class="nav-text">简单说说几种排序和查找</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DP"><span class="nav-number">2.2.</span> <span class="nav-text">DP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DFS"><span class="nav-number">2.3.</span> <span class="nav-text">DFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFS"><span class="nav-number">2.4.</span> <span class="nav-text">BFS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">3.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.5.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.0"></script>
+
+  <script src="/js/src/motion.js?v=7.0.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="消息提示行为是开发中非常常见的功能，Element 为我们提供了非常好用和美观的消息提示组件。这里就简单学习下 Notice 组件的 CSS 和代码逻辑。  简介Notice 包括了五类组件：  Alert 用于页面中展示重要的提示信息。 Loading 加载数据时显示动效。 Message 常用于主动操作后的反馈提示。与 Notification 的区别是后者更多用于系统级通知的被动提醒。 M">
+<meta property="og:type" content="article">
+<meta property="og:title" content="element 源码学习五 —— Notice 系列组件学习">
+<meta property="og:url" content="https://violetjack.github.io/2018/04/03/element 源码学习五 —— Notice 系列组件学习/index.html">
+<meta property="og:site_name" content="VioletJack 技术日志">
+<meta property="og:description" content="消息提示行为是开发中非常常见的功能，Element 为我们提供了非常好用和美观的消息提示组件。这里就简单学习下 Notice 组件的 CSS 和代码逻辑。  简介Notice 包括了五类组件：  Alert 用于页面中展示重要的提示信息。 Loading 加载数据时显示动效。 Message 常用于主动操作后的反馈提示。与 Notification 的区别是后者更多用于系统级通知的被动提醒。 M">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-15T17:20:56.254Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="element 源码学习五 —— Notice 系列组件学习">
+<meta name="twitter:description" content="消息提示行为是开发中非常常见的功能，Element 为我们提供了非常好用和美观的消息提示组件。这里就简单学习下 Notice 组件的 CSS 和代码逻辑。  简介Notice 包括了五类组件：  Alert 用于页面中展示重要的提示信息。 Loading 加载数据时显示动效。 Message 常用于主动操作后的反馈提示。与 Notification 的区别是后者更多用于系统级通知的被动提醒。 M">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="VioletJack 技术日志" type="application/atom+xml"/>
+
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2018/04/03/element 源码学习五 —— Notice 系列组件学习/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>element 源码学习五 —— Notice 系列组件学习 | VioletJack 技术日志</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">VioletJack 技术日志</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">专注！坚持！求真！</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archiv</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2018/04/03/element 源码学习五 —— Notice 系列组件学习/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack"/>
+      <meta itemprop="description" content="Violetjack 的个人博客，记录了一些技术笔记和思考。"/>
+      <meta itemprop="image" content="/images/avatar.jpg"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletJack 技术日志"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">element 源码学习五 —— Notice 系列组件学习
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Post created: 2018-04-03 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-03T00:00:00+08:00">2018-04-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Updated at: 2019-02-16 01:20:56" itemprop="dateModified" datetime="2019-02-16T01:20:56+08:00">2019-02-16</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>消息提示行为是开发中非常常见的功能，Element 为我们提供了非常好用和美观的消息提示组件。这里就简单学习下 Notice 组件的 CSS 和代码逻辑。</p>
+</blockquote>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Notice 包括了五类组件：</p>
+<ul>
+<li><strong>Alert</strong> 用于页面中展示重要的提示信息。</li>
+<li><strong>Loading</strong> 加载数据时显示动效。</li>
+<li><strong>Message</strong> 常用于主动操作后的反馈提示。与 Notification 的区别是后者更多用于系统级通知的被动提醒。</li>
+<li><strong>MessageBox</strong> 模拟系统的消息提示框而实现的一套模态对话框组件，用于消息提示、确认消息和提交内容。</li>
+<li><strong>Notification</strong> 悬浮出现在页面角落，显示全局的通知提醒消息。</li>
+</ul>
+<p>本文中不同角度来学习这些组件（这些组件有很多相似性，所以一起学习啦~）。</p>
+<h1 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h1><p>下面是参照 element ui 写的一个小demo，尝试着了解下其中的 CSS<br>贴代码：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>My Notice<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.success-color</span> &#123;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">background-color</span>: <span class="selector-id">#f0f9eb</span>;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">color</span>: <span class="selector-id">#67c23a</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.info-color</span> &#123;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">background-color</span>: <span class="selector-id">#f4f4f5</span>;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">color</span>: <span class="selector-id">#909399</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.warning-color</span> &#123;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">background-color</span>: <span class="selector-id">#fdf6ec</span>;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">color</span>: <span class="selector-id">#e6a23c</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.error-color</span> &#123;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">background-color</span>: <span class="selector-id">#fef0f0</span>;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">color</span>: <span class="selector-id">#f56c6c</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.alert-container</span> &#123;</span></span><br><span class="line"><span class="undefined">            position: relative;</span></span><br><span class="line"><span class="undefined">            padding: 8px 16px;</span></span><br><span class="line"><span class="undefined">            border-radius: 5px;</span></span><br><span class="line"><span class="undefined">            opacity: 1;</span></span><br><span class="line"><span class="undefined">            align-items: center;</span></span><br><span class="line"><span class="undefined">            overflow: hidden;</span></span><br><span class="line"><span class="undefined">            display: flex;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.success-text</span> &#123;</span></span><br><span class="line"><span class="undefined">            font-size: 13px;</span></span><br><span class="line"><span class="undefined">            line-height: 18px;</span></span><br><span class="line"><span class="undefined">            padding: 0 8px;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">color</span>: <span class="selector-id">#67c23a</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.close</span> &#123;</span></span><br><span class="line"><span class="undefined">            font-size: 13px;</span></span><br><span class="line"><span class="undefined">            position: absolute;</span></span><br><span class="line"><span class="undefined">            top: 12px;</span></span><br><span class="line"><span class="undefined">            right: 15px;</span></span><br><span class="line"><span class="undefined">            cursor: pointer;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.loading-background</span> &#123;</span></span><br><span class="line"><span class="undefined">            position: fixed;</span></span><br><span class="line"><span class="undefined">            z-index: 2000;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">background-color</span>: <span class="selector-tag">rgba</span>(26, 26, 26, 0<span class="selector-class">.9</span>);</span></span><br><span class="line"><span class="undefined">            margin: 0;</span></span><br><span class="line"><span class="undefined">            top: 0;</span></span><br><span class="line"><span class="undefined">            right: 0;</span></span><br><span class="line"><span class="undefined">            bottom: 0;</span></span><br><span class="line"><span class="undefined">            left: 0;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">transition</span>: <span class="selector-tag">opacity</span> 0<span class="selector-class">.3s</span>;</span></span><br><span class="line"><span class="undefined">            z-index: 2000;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.loading-div</span> &#123;</span></span><br><span class="line"><span class="undefined">            top: 50%;</span></span><br><span class="line"><span class="undefined">            position: absolute;</span></span><br><span class="line"><span class="undefined">            margin-top: -20px;</span></span><br><span class="line"><span class="undefined">            height: 40px;</span></span><br><span class="line"><span class="undefined">            width: 100%;</span></span><br><span class="line"><span class="undefined">            align-items: center;</span></span><br><span class="line"><span class="undefined">            justify-content: center;</span></span><br><span class="line"><span class="undefined">            display: flex;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.loading-text</span> &#123;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">color</span>: <span class="selector-id">#f0f9eb</span>;</span></span><br><span class="line"><span class="undefined">            font-size: 15px;</span></span><br><span class="line"><span class="undefined">            overflow: hidden;</span></span><br><span class="line"><span class="undefined">            z-index: 2001;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.el-message</span> &#123;</span></span><br><span class="line"><span class="undefined">            min-width: 380px;</span></span><br><span class="line"><span class="undefined">            box-sizing: border-box;</span></span><br><span class="line"><span class="undefined">            border-radius: 4px;</span></span><br><span class="line"><span class="undefined">            border-width: 1px;</span></span><br><span class="line"><span class="undefined">            border-style: solid;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">border-color</span>: <span class="selector-id">#ebeef5</span>;</span></span><br><span class="line"><span class="undefined">            position: fixed;</span></span><br><span class="line"><span class="undefined">            left: 50%;</span></span><br><span class="line"><span class="undefined">            top: 20px;</span></span><br><span class="line"><span class="undefined">            transform: translateX(-50%);</span></span><br><span class="line"><span class="css">            <span class="selector-tag">background-color</span>: <span class="selector-id">#edf2fc</span>;</span></span><br><span class="line"><span class="css">            <span class="selector-tag">transition</span>: <span class="selector-tag">opacity</span> 0<span class="selector-class">.3s</span>, <span class="selector-tag">transform</span> 0<span class="selector-class">.4s</span>;</span></span><br><span class="line"><span class="undefined">            overflow: hidden;</span></span><br><span class="line"><span class="undefined">            padding: 15px 15px 15px 20px;</span></span><br><span class="line"><span class="undefined">            display: flex;</span></span><br><span class="line"><span class="undefined">            align-items: center;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"alert-container success-color"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"success-text"</span>&gt;</span>成功提示的文案<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"close"</span>&gt;</span>X<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"showLoading"</span>&gt;</span>显示加载中<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"showMessage"</span>&gt;</span>显示信息<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"el-message"</span> <span class="attr">id</span>=<span class="string">"message"</span> <span class="attr">style</span>=<span class="string">"display:none;"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">p</span>&gt;</span>这是一条消息<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> alertContainer = <span class="built_in">document</span>.getElementsByClassName(<span class="string">"alert-container"</span>)[<span class="number">0</span>]</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> close = <span class="built_in">document</span>.getElementsByClassName(<span class="string">"close"</span>)[<span class="number">0</span>]</span></span><br><span class="line"><span class="javascript">        close.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            alertContainer.style = <span class="string">"display:none;"</span></span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> app = <span class="built_in">document</span>.getElementById(<span class="string">"app"</span>)</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> bg = <span class="built_in">document</span>.createElement(<span class="string">"div"</span>)</span></span><br><span class="line"><span class="javascript">        bg.className = <span class="string">"loading-background"</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> div = <span class="built_in">document</span>.createElement(<span class="string">"div"</span>)</span></span><br><span class="line"><span class="javascript">        div.className = <span class="string">"loading-div"</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> text = <span class="built_in">document</span>.createElement(<span class="string">"span"</span>)</span></span><br><span class="line"><span class="javascript">        text.className = <span class="string">"loading-text"</span></span></span><br><span class="line"><span class="javascript">        text.textContent = <span class="string">"加载中……"</span></span></span><br><span class="line"><span class="undefined">        div.appendChild(text)</span></span><br><span class="line"><span class="undefined">        bg.appendChild(div)</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.getElementById(<span class="string">"showLoading"</span>).onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">if</span> (<span class="built_in">document</span>.getElementsByClassName(<span class="string">"loading-background"</span>).length &gt; <span class="number">0</span>) &#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">return</span>;</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">            app.appendChild(bg)</span></span><br><span class="line"><span class="javascript">            setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">if</span> (<span class="built_in">document</span>.getElementsByClassName(<span class="string">"loading-background"</span>).length &gt; <span class="number">0</span>) &#123;</span></span><br><span class="line"><span class="undefined">                    app.removeChild(bg)</span></span><br><span class="line"><span class="undefined">                &#125;</span></span><br><span class="line"><span class="undefined">            &#125;, 3000)</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.getElementById(<span class="string">"showMessage"</span>).onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="built_in">document</span>.getElementById(<span class="string">"message"</span>).style = <span class="string">"display:block;"</span></span></span><br><span class="line"><span class="javascript">            setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">                <span class="built_in">document</span>.getElementById(<span class="string">"message"</span>).style = <span class="string">"display:none;"</span></span></span><br><span class="line"><span class="undefined">            &#125;, 3000)</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>代码的运行结果请看 <strong><a href="https://jsfiddle.net/VioletJack/h28fnfds/2/" target="_blank" rel="noopener">-&gt;这里&lt;-</a></strong>！</p>
+<p>以上代码实现了</p>
+<ul>
+<li>Alert 的样式</li>
+<li>loading 的简单版本 </li>
+<li>message 的无动画版本。</li>
+</ul>
+<p>只实现这三个功能的原因是另外两个功能和扩展功能都是基于这个demo扩展的。<br>Alert 是一个静态的文本内容，只是外部包裹了带样式的容器。可能再多个隐藏按钮和消息图标。<br>Loading 和 MessageBox 其实的基本逻辑是插入或显示新的内容，并在显示完成后消失。需要注意的就是后面要添加一层遮罩阴影，遮罩如果非全屏使用 position:absolute 而全屏则使用 position:fixed 覆盖。另外就是注意 z-index 属性将组件放到视图最上层。<br>Message 和 Notification 其实就是文本内容、图标和按钮组合容器的现实和隐藏过程。它们的过渡动画使用的是 vue 的<a href="https://cn.vuejs.org/v2/guide/transitions.html" target="_blank" rel="noopener">进入/离开 &amp; 列表过渡</a>来实现。</p>
+<h1 id="通过几个问题来看源码"><a href="#通过几个问题来看源码" class="headerlink" title="通过几个问题来看源码"></a>通过几个问题来看源码</h1><p>其实从样式上，上面的 demo 已经实现了大致的样子了。下面来看看组件的一些逻辑。源码内容比较多，所以就以问答的方式有目的的来看源码。</p>
+<h2 id="Alert-的界面实现？"><a href="#Alert-的界面实现？" class="headerlink" title="Alert 的界面实现？"></a>Alert 的界面实现？</h2><p>Alert 由图标、文本内容、描述内容和关闭按钮组成：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">transition</span> <span class="attr">name</span>=<span class="string">"el-alert-fade"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">"el-alert"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">:class</span>=<span class="string">"[typeClass, center ? 'is-center' : '']"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">v-show</span>=<span class="string">"visible"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">role</span>=<span class="string">"alert"</span></span></span><br><span class="line"><span class="tag">  &gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 图标 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"el-alert__icon"</span> <span class="attr">:class</span>=<span class="string">"[ iconClass, isBigIcon ]"</span> <span class="attr">v-if</span>=<span class="string">"showIcon"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"el-alert__content"</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 标题 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"el-alert__title"</span> <span class="attr">:class</span>=<span class="string">"[ isBoldTitle ]"</span> <span class="attr">v-if</span>=<span class="string">"title"</span>&gt;</span>&#123;&#123; title &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">slot</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 插槽，默认插入描述文本 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">"el-alert__description"</span> <span class="attr">v-if</span>=<span class="string">"description"</span>&gt;</span>&#123;&#123; description &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 关闭图标按钮 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"el-alert__closebtn"</span> <span class="attr">:class</span>=<span class="string">"&#123; 'is-customed': closeText !== '', 'el-icon-close': closeText === '' &#125;"</span> <span class="attr">v-show</span>=<span class="string">"closable"</span> @<span class="attr">click</span>=<span class="string">"close()"</span>&gt;</span>&#123;&#123;closeText&#125;&#125;<span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">transition</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>组件很简单，注释上都写了~组件还做了 <code>slot</code> 插槽拓展，可以在 <code>&lt;el-alert&gt;</code> 标签内插入自定义内容。</p>
+<h2 id="如何显示纯文本、HTML-和-VNode"><a href="#如何显示纯文本、HTML-和-VNode" class="headerlink" title="如何显示纯文本、HTML 和 VNode"></a>如何显示纯文本、HTML 和 VNode</h2><p>显示文本使用 <code></code> 指令来显示内容。<br>显示HTML使用 <code>v-html</code> 指令来渲染显示。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 显示文本 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">v-if</span>=<span class="string">"!dangerouslyUseHTMLString"</span> <span class="attr">class</span>=<span class="string">"el-message__content"</span>&gt;</span>&#123;&#123; message &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 显示HTML --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">v-else</span> <span class="attr">v-html</span>=<span class="string">"message"</span> <span class="attr">class</span>=<span class="string">"el-message__content"</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>使用 vue 的 render 函数生成 VNode 对象传给组件作为组件 <code>slot</code> 插槽的默认显示结果。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isVNode(instance.message)) &#123;</span><br><span class="line">  instance.$slots.default = [instance.message];</span><br><span class="line">  instance.message = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="组件的过渡动画怎么来的"><a href="#组件的过渡动画怎么来的" class="headerlink" title="组件的过渡动画怎么来的"></a>组件的过渡动画怎么来的</h2><p>使用 Notice 系列组件时，发现组件的显示和消失都是有过渡动画的。界面看着更加友好和舒服。实现方式就是使用了 vue 的<a href="https://cn.vuejs.org/v2/guide/transitions.html" target="_blank" rel="noopener">进入/离开 &amp; 列表过渡</a>来实现效果。</p>
+<h2 id="界面的关闭使用的是什么方式？"><a href="#界面的关闭使用的是什么方式？" class="headerlink" title="界面的关闭使用的是什么方式？"></a>界面的关闭使用的是什么方式？</h2><p>对于 loading 和 message-box ，在没有界面时会在 body 最后添加组件内容，显示过后使用 <code>v-show=&quot;false&quot;</code>(<code>display:none;</code>) 隐藏，随后就调用显示和隐藏界面。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将 message-box 组件加入到 body 中</span></span><br><span class="line"><span class="built_in">document</span>.body.appendChild(instance.$el);</span><br></pre></td></tr></table></figure></p>
+<p>对于 Alert 由于一开始就显示，只是删除按钮，所以只需修改 <code>v-show</code> 属性隐藏即可。<br>对于 message 和 notification，这两个组件可以多次弹出，逐个关闭（自动或手动）。所以这两个组件是保存在一个数组中，然后进行渲染的，关闭某个组件就是一个将组件从组件数组中移除的过程。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// id 组件id</span></span><br><span class="line"><span class="comment">// useOnClose 自定义关闭函数</span></span><br><span class="line">Message.close = <span class="function"><span class="keyword">function</span>(<span class="params">id, userOnClose</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = instances.length; i &lt; len; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (id === instances[i].id) &#123;</span><br><span class="line">      <span class="comment">// 找到组件，执行自定义关闭函数并从数组中移除</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> userOnClose === <span class="string">'function'</span>) &#123;</span><br><span class="line">        userOnClose(instances[i]);</span><br><span class="line">      &#125;</span><br><span class="line">      instances.splice(i, <span class="number">1</span>);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="message-box-的回调函数实现"><a href="#message-box-的回调函数实现" class="headerlink" title="message-box 的回调函数实现"></a>message-box 的回调函数实现</h2><p>对于 message-box 有两种函数回调：callback 函数和 Promise 函数。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">Promise</span> !== <span class="string">'undefined'</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">    msgQueue.push(&#123;</span><br><span class="line">      options: merge(&#123;&#125;, defaults, MessageBox.defaults, options),</span><br><span class="line">      callback: callback,</span><br><span class="line">      resolve: resolve,</span><br><span class="line">      reject: reject</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    showNextMsg();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  msgQueue.push(&#123;</span><br><span class="line">    options: merge(&#123;&#125;, defaults, MessageBox.defaults, options),</span><br><span class="line">    callback: callback</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  showNextMsg();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当然，到这一步只是将组件配置和回调函数组成对象，并没有执行。执行实在 <code>showNextMsg</code> 方法中。<code>showNextMsg</code> 方法用于组合当前组件 <code>options</code> 并写入到 DOM 中，然后显示组件。其中有这么一段关于回调的：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果 currentMsg.options.callback 为 undefined</span></span><br><span class="line"><span class="keyword">if</span> (options.callback === <span class="literal">undefined</span>) &#123;</span><br><span class="line">  instance.callback = defaultCallback;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以再看看 <code>defaultCallback</code> 函数对象：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> defaultCallback = <span class="function"><span class="params">action</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (currentMsg) &#123;</span><br><span class="line">    <span class="keyword">let</span> callback = currentMsg.callback;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> callback === <span class="string">'function'</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (instance.showInput) &#123;</span><br><span class="line">        callback(instance.inputValue, action);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        callback(action);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (currentMsg.resolve) &#123;</span><br><span class="line">      <span class="keyword">if</span> (action === <span class="string">'confirm'</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (instance.showInput) &#123;</span><br><span class="line">          currentMsg.resolve(&#123; <span class="attr">value</span>: instance.inputValue, action &#125;);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          currentMsg.resolve(action);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (action === <span class="string">'cancel'</span> &amp;&amp; currentMsg.reject) &#123;</span><br><span class="line">        currentMsg.reject(action);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这里就可以看到回调函数和 Promise 的调用和传参过程。当组件“关闭”的时候执行 callback 方法回调：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">doClose() &#123;</span><br><span class="line">  ……</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.action) <span class="keyword">this</span>.callback(<span class="keyword">this</span>.action, <span class="keyword">this</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<p>至此实现了回调及其传参。</p>
+<h2 id="如何实现显示多个-Notification-向下偏移插入？"><a href="#如何实现显示多个-Notification-向下偏移插入？" class="headerlink" title="如何实现显示多个 Notification 向下偏移插入？"></a>如何实现显示多个 Notification 向下偏移插入？</h2><p>偏移量计算在 Notification 的构造方法中计算获得当前组件 <code>verticalOffset</code>。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Notification = <span class="function"><span class="keyword">function</span>(<span class="params">options</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 服务器渲染</span></span><br><span class="line">  <span class="keyword">if</span> (Vue.prototype.$isServer) <span class="keyword">return</span>;</span><br><span class="line">  options = options || &#123;&#125;;</span><br><span class="line">  <span class="keyword">const</span> userOnClose = options.onClose; <span class="comment">// 自定义关闭</span></span><br><span class="line">  <span class="keyword">const</span> id = <span class="string">'notification_'</span> + seed++; <span class="comment">// 组件 id</span></span><br><span class="line">  <span class="keyword">const</span> position = options.position || <span class="string">'top-right'</span>; <span class="comment">// 位置</span></span><br><span class="line">  <span class="comment">// 关闭事件</span></span><br><span class="line">  options.onClose = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    Notification.close(id, userOnClose);</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// 组件实例</span></span><br><span class="line">  instance = <span class="keyword">new</span> NotificationConstructor(&#123;</span><br><span class="line">    data: options</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">// vnode</span></span><br><span class="line">  <span class="keyword">if</span> (isVNode(options.message)) &#123;</span><br><span class="line">    instance.$slots.default = [options.message];</span><br><span class="line">    options.message = <span class="string">'REPLACED_BY_VNODE'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  instance.id = id;</span><br><span class="line">  instance.vm = instance.$mount();</span><br><span class="line">  <span class="comment">// 添加实例</span></span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(instance.vm.$el);</span><br><span class="line">  instance.vm.visible = <span class="literal">true</span>;</span><br><span class="line">  instance.dom = instance.vm.$el;</span><br><span class="line">  instance.dom.style.zIndex = PopupManager.nextZIndex();</span><br><span class="line">  <span class="comment">// 偏移量计算</span></span><br><span class="line">  <span class="keyword">let</span> verticalOffset = options.offset || <span class="number">0</span>;</span><br><span class="line">  instances.filter(<span class="function"><span class="params">item</span> =&gt;</span> item.position === position).forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">    verticalOffset += item.$el.offsetHeight + <span class="number">16</span>;</span><br><span class="line">  &#125;);</span><br><span class="line">  verticalOffset += <span class="number">16</span>;</span><br><span class="line">  instance.verticalOffset = verticalOffset;</span><br><span class="line">  <span class="comment">// 传入数组</span></span><br><span class="line">  instances.push(instance);</span><br><span class="line">  <span class="keyword">return</span> instance.vm;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>偏移量 <code>verticalOffset</code> 在组件 <code>package\notification/src/main.vue</code> 中使用。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">:style</span>=<span class="string">"positionStyle"</span> &gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">computed: &#123;</span><br><span class="line">  <span class="comment">// 正则匹配 position 是 top 还是 bottom</span></span><br><span class="line">  verticalProperty() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="regexp">/^top-/</span>.test(<span class="keyword">this</span>.position) ? <span class="string">'top'</span> : <span class="string">'bottom'</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 最后返回的内联样式</span></span><br><span class="line">  positionStyle() &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      [<span class="keyword">this</span>.verticalProperty]: <span class="string">`<span class="subst">$&#123; <span class="keyword">this</span>.verticalOffset &#125;</span>px`</span></span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果 <code>position</code> 是 <code>bottom-left</code> 偏移量 <code>verticalOffset</code> 为 20，那么返回的内联样式就是：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attribute">bottom</span>: <span class="number">20px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>至此实现了偏移的功能。</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>这里简单学习了一下 Notice 系列组件的样式和逻辑。从中学到了：</p>
+<ul>
+<li>用 CSS 设计样式和动态修改样式属性。</li>
+<li>用了许多 DOM 的操作</li>
+<li>使用已有轮子 —— 用到了 Vue 的 directive、 transition 和 render。</li>
+<li>组件设计方面，学到了使用数组管理多个同类组件；使用 <code>&lt;slot&gt;</code> 标签给开发者预留拓展空间，使用构造函数的方法来拓展组件逻辑并定义一些快捷方法。</li>
+</ul>
+<p>个人感觉学习一些成熟组件的源码能够学到不少东西，收获不少。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/01/JS 进阶必备 —— 闭包、this、箭头函数的实践笔记/" rel="next" title="JS 进阶必备 —— 闭包、this、箭头函数的实践笔记">
+                <i class="fa fa-chevron-left"></i> JS 进阶必备 —— 闭包、this、箭头函数的实践笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/12/Vue.js源码学习九 —— 过渡效果 transition 学习/" rel="prev" title="Vue.js 源码学习九 —— 过渡效果 transition 学习">
+                Vue.js 源码学习九 —— 过渡效果 transition 学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="VioletJack"/>
+            
+              <p class="site-author-name" itemprop="name">VioletJack</p>
+              <p class="site-description motion-element" itemprop="description">Violetjack 的个人博客，记录了一些技术笔记和思考。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">47</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">Tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/violetjack" title="GitHub &rarr; https://github.com/violetjack" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:violetjack@foxmail.com" title="E-Mail &rarr; mailto:violetjack@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/u/2640909603/home" title="Weibo &rarr; https://weibo.com/u/2640909603/home" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/54ae4af3a98d" title="JianShu &rarr; https://www.jianshu.com/u/54ae4af3a98d" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>JianShu</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#demo"><span class="nav-number">2.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#通过几个问题来看源码"><span class="nav-number">3.</span> <span class="nav-text">通过几个问题来看源码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Alert-的界面实现？"><span class="nav-number">3.1.</span> <span class="nav-text">Alert 的界面实现？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何显示纯文本、HTML-和-VNode"><span class="nav-number">3.2.</span> <span class="nav-text">如何显示纯文本、HTML 和 VNode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件的过渡动画怎么来的"><span class="nav-number">3.3.</span> <span class="nav-text">组件的过渡动画怎么来的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#界面的关闭使用的是什么方式？"><span class="nav-number">3.4.</span> <span class="nav-text">界面的关闭使用的是什么方式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#message-box-的回调函数实现"><span class="nav-number">3.5.</span> <span class="nav-text">message-box 的回调函数实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何实现显示多个-Notification-向下偏移插入？"><span class="nav-number">3.6.</span> <span class="nav-text">如何实现显示多个 Notification 向下偏移插入？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.5.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.0"></script>
+
+  <script src="/js/src/motion.js?v=7.0.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

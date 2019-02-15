@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在框架盛行的年代，还有多少人记得在没有框架时我们如何控制 dom 的行为呢？作者本人也一直忽视了这方面的学习，直到面试问到这个问题，下决心好好认识认识这个 dom api。  node、document 和 element在学习 dom api 时对这三者还是挺混乱的。理一下他们之间的关系。 nodenode 是一个接口，像 document 和 element 都是继承这个接口的。这个接口提供">
+<meta property="og:type" content="article">
+<meta property="og:title" content="被人忽视的 DOM API">
+<meta property="og:url" content="https://violetjack.github.io/2018/03/25/被人忽视的 DOM API/index.html">
+<meta property="og:site_name" content="VioletJack 技术日志">
+<meta property="og:description" content="在框架盛行的年代，还有多少人记得在没有框架时我们如何控制 dom 的行为呢？作者本人也一直忽视了这方面的学习，直到面试问到这个问题，下决心好好认识认识这个 dom api。  node、document 和 element在学习 dom api 时对这三者还是挺混乱的。理一下他们之间的关系。 nodenode 是一个接口，像 document 和 element 都是继承这个接口的。这个接口提供">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-2ff52ed17c0e5c1c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-9f315855a37c0b17.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1987062-8c87d7451a8f3abf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-02-15T17:20:56.257Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="被人忽视的 DOM API">
+<meta name="twitter:description" content="在框架盛行的年代，还有多少人记得在没有框架时我们如何控制 dom 的行为呢？作者本人也一直忽视了这方面的学习，直到面试问到这个问题，下决心好好认识认识这个 dom api。  node、document 和 element在学习 dom api 时对这三者还是挺混乱的。理一下他们之间的关系。 nodenode 是一个接口，像 document 和 element 都是继承这个接口的。这个接口提供">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1987062-2ff52ed17c0e5c1c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="VioletJack 技术日志" type="application/atom+xml"/>
+
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2018/03/25/被人忽视的 DOM API/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>被人忽视的 DOM API | VioletJack 技术日志</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">VioletJack 技术日志</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">专注！坚持！求真！</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archiv</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2018/03/25/被人忽视的 DOM API/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack"/>
+      <meta itemprop="description" content="Violetjack 的个人博客，记录了一些技术笔记和思考。"/>
+      <meta itemprop="image" content="/images/avatar.jpg"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletJack 技术日志"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">被人忽视的 DOM API
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Post created: 2018-03-25 00:00:00" itemprop="dateCreated datePublished" datetime="2018-03-25T00:00:00+08:00">2018-03-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Updated at: 2019-02-16 01:20:56" itemprop="dateModified" datetime="2019-02-16T01:20:56+08:00">2019-02-16</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>在框架盛行的年代，还有多少人记得在没有框架时我们如何控制 dom 的行为呢？作者本人也一直忽视了这方面的学习，直到面试问到这个问题，下决心好好认识认识这个 dom api。</p>
+</blockquote>
+<h1 id="node、document-和-element"><a href="#node、document-和-element" class="headerlink" title="node、document 和 element"></a>node、document 和 element</h1><p>在学习 dom api 时对这三者还是挺混乱的。理一下他们之间的关系。</p>
+<h2 id="node"><a href="#node" class="headerlink" title="node"></a>node</h2><p>node 是一个接口，像 document 和 element 都是继承这个接口的。这个接口提供了 dom 节点的获取和操作方法。<br>node 有许多类型，下图列出了一些 node 的类型码。由图可见 element 的类型码为 1，文本节点类型码为 3，注释节点类型码为 8，document 的类型码为 9。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1987062-2ff52ed17c0e5c1c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="node type"></p>
+<p>这让我想到了 vue.js 中出现多次的代码：<code>if (child.nodeType === 3) { ... }</code> 其实就是判断当前节点是否为文本节点。</p>
+<h2 id="element"><a href="#element" class="headerlink" title="element"></a>element</h2><p>从上面的内容可知，element 就是一个特殊的 node（nodeType == 1），其实 element 就是 HTML 各类标签，如 </p><p><div> 这类有特殊含义的，能够携带一些特殊属性的节点。所以说 element 可以用 node 的所有 api。</div></p>
+<h2 id="document"><a href="#document" class="headerlink" title="document"></a>document</h2><p>同理，document 也是一个特殊的 node，它与 element 的不同之处在于 document 通常是 DOM 节点，即包含有 head 和 body 元素的一个 node。</p>
+<p>参考：<a href="https://stackoverflow.com/questions/9979172/difference-between-node-object-and-element-object" target="_blank" rel="noopener">Difference between Node object and Element object? - Stack Overflow</a></p>
+<h1 id="api-学习"><a href="#api-学习" class="headerlink" title="api 学习"></a>api 学习</h1><p>首先我发现一点：<strong>所有 dom 操作的起点都是使用 document 去获取各种类型的 node （集合）然后再去执行各类 dom 操作的行为！</strong><br>由于 document 操作的 api 真的很多，所以我选取我想了解的部分学习了。在这里我学习 DOM API 的目的是：</p>
+<blockquote>
+<p>学习 <code>document</code> 对象操作 dom 的方式，拥有脱离框架（jquery、vue等）来操作 dom 的能力。</p>
+</blockquote>
+<h2 id="获取节点"><a href="#获取节点" class="headerlink" title="获取节点"></a>获取节点</h2><ul>
+<li><strong>Document.documentElement</strong> 返回 document 的直属后代元素。</li>
+<li><strong>Document.activeElement</strong> 返回当前正在操作的元素</li>
+<li><strong>Document.body</strong> 返回当前文档的 <code>&lt;body&gt;</code> 元素。与此类似的还有 Document.head 和 Document.scripts 两个属性返回当前文档的 <code>&lt;head&gt;</code> 和 <code>&lt;script&gt;</code> 元素。</li>
+<li><strong>Document.getElementByClassName()</strong> 返回有给定样式名的元素列表</li>
+<li><strong>Document.getElementByTagName()</strong> 返回有给定标签名的元素列表</li>
+<li><strong>document.getElementById()</strong> 返回一个对识别元素的对象引用</li>
+<li><strong>document.querySelector()</strong> 返回文档中第一个匹配指定选择器的元素</li>
+<li><strong>document.querySelectorAll()</strong> 返回一个匹配指定选择器的元素节点列表</li>
+<li><strong>Node.childNodes</strong> 返回一个包含了该节点所有子节点的实时的 <code>NodeList</code> 是“实时的”意思是，如果该节点的子节点发生了变化，<code>NodeList</code> 对象就会自动更新。</li>
+<li><strong>Node.firstChild &amp; Node.lastChild</strong> 返回该节点的第一个子节点或最后一个子节点，如果该节点没有子节点则返回 null。</li>
+<li><strong>Node.previousSibling &amp; Node.nextSibling</strong> 返回与该节点同级的上一个或下一个节点，如果没有返回null。</li>
+<li><strong>Node.ownerDocument</strong> 返回这个元素属于的 <code>Document</code> 对象 。</li>
+<li><strong>Node.parentNode</strong> 返回一个当前结点 <code>Node</code> 的父节点 。</li>
+<li><strong>Node.parentElement</strong> 返回一个当前节点的父节点 <code>Element</code>。</li>
+</ul>
+<h2 id="操作节点"><a href="#操作节点" class="headerlink" title="操作节点"></a>操作节点</h2><ul>
+<li><strong>Document.createComment()</strong> 创建一个新的注释节点并返回它</li>
+<li><strong>Document.createDocumentFragment()</strong> 创建一个新的文档片段</li>
+<li><strong>Document.createElement()</strong> 用给定的标签名创建一个新的元素。</li>
+<li><strong>Document.createTextNode()</strong> 创建一个文字节点</li>
+<li><strong>Document.write()</strong> 向文档中写入内容（与之有类似功能的是 Document.writeln() 不同之处在于后面多了个换行符。）</li>
+<li><strong>Element.innerHTML</strong> 设置或返回元素的内容</li>
+<li><strong>Node.textContent</strong> 获取或设置一个标签内所有子结点及其后代的文本内容。</li>
+<li><strong>Node.appendChild()</strong> 向元素添加新的子节点，作为最后一个子节点。</li>
+<li><strong>Node.cloneNode()</strong> 克隆元素（方法中传参为deep，如果deep为true则深拷贝。）</li>
+<li><strong>Node.insertBefore()</strong> 在指定已有节点前插入新节点（没有 <code>insertAfter</code> 方法。可以使用 <code>insertBefore</code> 方法和 <code>nextSibling</code> 来模拟它。）</li>
+<li><strong>Node.normalize()</strong> 合并元素中相邻文本节点</li>
+<li><strong>Node.removeChild()</strong> 从元素中移除子节点</li>
+<li><strong>Node.replaceChild()</strong> 替换元素中的子节点</li>
+</ul>
+<p>其中 Document 的 <code>createXXX</code> 方法还有一些其他不常用的，如需使用请查阅 MDN。</p>
+<h2 id="其他常用属性和方法"><a href="#其他常用属性和方法" class="headerlink" title="其他常用属性和方法"></a>其他常用属性和方法</h2><ul>
+<li><strong>Element.classList</strong> 返回元素的 class 集合。</li>
+<li><strong>EventTaget.addEventListener()</strong> 注册监听事件</li>
+<li><strong>Node.nodeType</strong> 返回该节点的类型码</li>
+<li><strong>Node.nodeValue</strong> 返回或设置当前节点的值。</li>
+<li><strong>Node.compareDocumentPosition()</strong> 比较当前节点与任意文档中的另一个节点的位置关系。</li>
+<li><strong>Node.contains()</strong> 传入的节点是否为该节点的后代节点。</li>
+<li><strong>Node.hasChildNodes()</strong> 是否拥有子节点</li>
+<li><strong>Node.isEqualNode()</strong> 检查两个元素是否相等</li>
+<li><strong>Node.isSameNode()</strong> 检查两个元素是否为相同的节点</li>
+</ul>
+<p>以上内容均参考了 MDN 上的内容：</p>
+<ul>
+<li>Node <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/API/Node</a></li>
+<li>Element <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/API/Element</a></li>
+<li>Document <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/API/Document</a></li>
+</ul>
+<h1 id="写个操作-DOM-的例子"><a href="#写个操作-DOM-的例子" class="headerlink" title="写个操作 DOM 的例子"></a>写个操作 DOM 的例子</h1><p>接下来就使用这些 API 来进行一些 DOM操作。</p>
+<h2 id="获取各个位置的节点。"><a href="#获取各个位置的节点。" class="headerlink" title="获取各个位置的节点。"></a>获取各个位置的节点。</h2><p>这里写了个小demo：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span>get dom<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"list"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>hello world 1<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>hello world 2<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>hello world 3<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>hello world 4<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>hello world 5<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span>&gt;</span>commit<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'列出所有node'</span>, container.childNodes)</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> h1 = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'h1'</span>)[<span class="number">0</span>]</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'获取h1后的元素'</span>, h1.nextSibling)</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> uldiv = container.firstChild</span></span><br><span class="line"><span class="javascript">    <span class="keyword">while</span> (uldiv &amp;&amp; uldiv.nodeType != <span class="number">1</span>) &#123;</span></span><br><span class="line"><span class="undefined">        uldiv = uldiv.nextSibling</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> ul = uldiv.lastChild</span></span><br><span class="line"><span class="javascript">    <span class="keyword">while</span> (ul &amp;&amp; ul.nodeType == <span class="number">3</span>) &#123;</span></span><br><span class="line"><span class="undefined">        ul = ul.previousSibling</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'获取ul中第一个元素内容'</span>, ul.firstChild)</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> doc = h1.ownerDocument</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'获取当前 Document 对象'</span>, doc)</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> li1 = ul.firstChild</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'获取li的父级节点'</span>, li1.parentElement)</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> button = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"button"</span>)[<span class="number">0</span>]</span></span><br><span class="line"><span class="undefined">    button.onclick = log</span></span><br><span class="line"><span class="undefined">    button.focus()</span></span><br><span class="line"><span class="undefined">    button.click()</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">'获取正在操作的元素'</span>, <span class="built_in">document</span>.activeElement)</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'button is clicked'</span>)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>最后返回结果如图：<br><img src="https://upload-images.jianshu.io/upload_images/1987062-9f315855a37c0b17.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="返回结果"><br>由于在 chrome 中空格、换行算是文本节点。所以获取最后元素的时候总是会获取到那些文本节点上去。这个要注意的。所以我在代码中使用 <code>nodeType == 1</code> 来区分是否为元素。<br>在上面例子中查找了各种关系的元素，解决日常元素获取问题应该不难了。</p>
+<h2 id="实践创建node、插入node和删除node。"><a href="#实践创建node、插入node和删除node。" class="headerlink" title="实践创建node、插入node和删除node。"></a>实践创建node、插入node和删除node。</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h2</span> <span class="attr">id</span>=<span class="string">"child"</span>&gt;</span>Hello Child<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"buttonGroup"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="comment">// 父节点向子节点插入元素</span></span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">appendChild</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">"container"</span>)</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> text = <span class="built_in">document</span>.createElement(<span class="string">"h2"</span>)</span></span><br><span class="line"><span class="javascript">        text.textContent = <span class="string">'Hello New Child'</span></span></span><br><span class="line"><span class="undefined">        container.appendChild(text)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 子节点获取父节点，在父节点后插入元素</span></span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">appendParent</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> child = <span class="built_in">document</span>.getElementById(<span class="string">'child'</span>)</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> parent = child.parentElement</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> text = <span class="built_in">document</span>.createElement(<span class="string">"h1"</span>)</span></span><br><span class="line"><span class="javascript">        text.textContent = <span class="string">'Hello Parent'</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> root = parent.parentElement</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">        root.insertBefore(text, parent.nextSibling)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 在当前元素前插入元素</span></span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">appendPre</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> child = <span class="built_in">document</span>.getElementById(<span class="string">'child'</span>)</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> text = <span class="built_in">document</span>.createElement(<span class="string">"h2"</span>)</span></span><br><span class="line"><span class="javascript">        text.textContent = <span class="string">'Hello Pre Child'</span></span></span><br><span class="line"><span class="undefined">        child.parentElement.insertBefore(text, child)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 在当前元素后插入元素</span></span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">appendNext</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> child = <span class="built_in">document</span>.getElementById(<span class="string">'child'</span>)</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> text = <span class="built_in">document</span>.createElement(<span class="string">"h2"</span>)</span></span><br><span class="line"><span class="javascript">        text.textContent = <span class="string">'Hello Next Child'</span></span></span><br><span class="line"><span class="undefined">        child.parentElement.insertBefore(text, child.nextSibling)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 移除父元素中最后一个子元素</span></span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">removeEle</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (container.lastChild) &#123;</span></span><br><span class="line"><span class="undefined">            container.removeChild(container.lastChild)</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 替换父元素中的子元素</span></span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">replaceEle</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> child = <span class="built_in">document</span>.getElementById(<span class="string">"child"</span>)</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> newNode = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span></span><br><span class="line"><span class="xml">        newNode.innerHTML = "<span class="tag">&lt;<span class="name">button</span>&gt;</span>button<span class="tag">&lt;/<span class="name">button</span>&gt;</span>hello new node replaced"</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> parent = child.parentElement</span></span><br><span class="line"><span class="undefined">        parent.replaceChild(newNode, child)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 创建按钮组</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> ButtonGroup = <span class="built_in">document</span>.getElementById(<span class="string">"buttonGroup"</span>)</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> EventList = [ </span></span><br><span class="line"><span class="javascript">        <span class="string">"appendChild"</span>, </span></span><br><span class="line"><span class="javascript">        <span class="string">"appendParent"</span>, </span></span><br><span class="line"><span class="javascript">        <span class="string">"appendPre"</span>, </span></span><br><span class="line"><span class="javascript">        <span class="string">"appendNext"</span>, </span></span><br><span class="line"><span class="javascript">        <span class="string">"removeEle"</span>, </span></span><br><span class="line"><span class="javascript">        <span class="string">"replaceEle"</span> </span></span><br><span class="line"><span class="undefined">    ]</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> ButtonArr = []</span></span><br><span class="line"><span class="javascript">    <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">of</span> EventList) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> btn = <span class="built_in">document</span>.createElement(<span class="string">'button'</span>)</span></span><br><span class="line"><span class="undefined">        btn.textContent = key</span></span><br><span class="line"><span class="javascript">        btn.onclick = <span class="built_in">eval</span>(key)</span></span><br><span class="line"><span class="undefined">        ButtonArr.push(btn)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">for</span> (<span class="keyword">var</span> b <span class="keyword">of</span> ButtonArr) &#123;</span></span><br><span class="line"><span class="undefined">        ButtonGroup.appendChild(b)</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>以上代码实现了<strong>在各个位置插入元素</strong>和<strong>元素的删除替换</strong>，点击<a href="https://jsfiddle.net/VioletJack/g4nt26yf/1/" target="_blank" rel="noopener">此处</a>查看运行结果。</p>
+<h2 id="简单实现-v-for、v-text、v-html、v-on-和-v-model-这些功能。"><a href="#简单实现-v-for、v-text、v-html、v-on-和-v-model-这些功能。" class="headerlink" title="简单实现 v-for、v-text、v-html、v-on 和 v-model 这些功能。"></a>简单实现 v-for、v-text、v-html、v-on 和 v-model 这些功能。</h2><p>好吧，作为一个 Vue.js 爱好者，绕不开的想到了 Vue.js 操作 DOM 的一些功能。这里就试着简单实现下（不涉及 Virtual DOM，只是单纯的 DOM 修改）。<br>如果对 Vue 命令不了解可以去官网看看这些<a href="https://cn.vuejs.org/v2/api/#%E6%8C%87%E4%BB%A4" target="_blank" rel="noopener">指令</a>的用法。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>Hello Ele<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">h1</span>&gt;</span>v-text<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123; message &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">h1</span>&gt;</span>v-html<span class="tag">&lt;/<span class="name">h1</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">v-html</span>=<span class="string">"messagespan"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span>          </span><br><span class="line">            <span class="tag">&lt;<span class="name">h1</span>&gt;</span>v-model<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">v-model</span>=<span class="string">"message"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">h1</span>&gt;</span>v-on<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"myInput"</span> <span class="attr">v-on:blur</span>=<span class="string">"blur"</span> <span class="attr">v-on:focus</span>=<span class="string">"focus"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">h1</span>&gt;</span>v-for<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">ul</span>&gt;</span><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">            <span class="comment">// v-text</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> message = <span class="string">"Hello World"</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> messagespan = <span class="string">"&lt;span&gt;Hello World&lt;/span&gt;"</span></span></span><br><span class="line"><span class="undefined">          </span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> spans = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"span"</span>)</span></span><br><span class="line"><span class="javascript">            <span class="keyword">for</span> (<span class="keyword">var</span> span <span class="keyword">of</span> spans) &#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">if</span> (span.textContent == <span class="string">"&#123;&#123; message &#125;&#125;"</span>) &#123;</span></span><br><span class="line"><span class="undefined">                    span.textContent = message</span></span><br><span class="line"><span class="undefined">                &#125;</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="javascript">            <span class="comment">// v-html</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">"container"</span>)</span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> divs = container.getElementsByTagName(<span class="string">"div"</span>)</span></span><br><span class="line"><span class="javascript">            <span class="keyword">for</span>(<span class="keyword">var</span> div <span class="keyword">of</span> divs)&#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">if</span> (div.getAttribute(<span class="string">"v-html"</span>) == <span class="string">"messagespan"</span>) &#123;</span></span><br><span class="line"><span class="undefined">                    div.innerHTML = messagespan</span></span><br><span class="line"><span class="undefined">                &#125;</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="javascript">            <span class="comment">// v-model</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> inputs = container.getElementsByTagName(<span class="string">"input"</span>)</span></span><br><span class="line"><span class="javascript">            <span class="keyword">for</span> (<span class="keyword">var</span> input <span class="keyword">of</span> inputs) &#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">if</span> (input.getAttribute(<span class="string">"v-model"</span>) == <span class="string">"message"</span>) &#123;</span></span><br><span class="line"><span class="javascript">                    input.setAttribute(<span class="string">"value"</span>, message)</span></span><br><span class="line"><span class="undefined">                &#125;</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="javascript">            <span class="comment">// v-on</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> myInput = <span class="built_in">document</span>.getElementById(<span class="string">"myInput"</span>)</span></span><br><span class="line"><span class="javascript">            myInput.onfocus = <span class="built_in">eval</span>(myInput.getAttribute(<span class="string">"v-on:focus"</span>))</span></span><br><span class="line"><span class="javascript">            myInput.onblur = <span class="built_in">eval</span>(myInput.getAttribute(<span class="string">"v-on:blur"</span>))</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">            <span class="function"><span class="keyword">function</span> <span class="title">focus</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">                myInput.setAttribute(<span class="string">"value"</span>, <span class="string">"focus"</span>)</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">            <span class="function"><span class="keyword">function</span> <span class="title">blur</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">                myInput.setAttribute(<span class="string">"value"</span>, <span class="string">"blur"</span>)</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="javascript">            <span class="comment">// v-for</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> liContents = [</span></span><br><span class="line"><span class="javascript">                <span class="string">"jack"</span>,</span></span><br><span class="line"><span class="javascript">                <span class="string">"rose"</span>,</span></span><br><span class="line"><span class="javascript">                <span class="string">"james"</span>,</span></span><br><span class="line"><span class="javascript">                <span class="string">"wade"</span>,</span></span><br><span class="line"><span class="javascript">                <span class="string">"jordan"</span></span></span><br><span class="line"><span class="undefined">            ]</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> liElementList = []</span></span><br><span class="line"><span class="javascript">            <span class="keyword">for</span>(<span class="keyword">var</span> content <span class="keyword">of</span> liContents) &#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">var</span> li = <span class="built_in">document</span>.createElement(<span class="string">"li"</span>)</span></span><br><span class="line"><span class="xml">                li.innerHTML = `<span class="tag">&lt;<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span>/&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>$&#123;content&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">label</span>&gt;</span>`</span></span><br><span class="line"><span class="undefined">                liElementList.push(li)</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> ul = container.getElementsByTagName(<span class="string">"ul"</span>)[<span class="number">0</span>]</span></span><br><span class="line"><span class="javascript">            <span class="keyword">for</span> (<span class="keyword">var</span> liEle <span class="keyword">of</span> liElementList) &#123;</span></span><br><span class="line"><span class="undefined">                ul.appendChild(liEle)</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>点击<a href="https://jsfiddle.net/VioletJack/cpsrzbx5/5/" target="_blank" rel="noopener">此处</a>看效果。最后结果如图：<br><img src="https://upload-images.jianshu.io/upload_images/1987062-8c87d7451a8f3abf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="显示结果"></p>
+<p>简单实现了 Vue.js 指令的这些功能，其实在 Vue.js 源码中也是用了这些 dom 操作的 api 来做的。<br>更多 Vue 源码中的 DOM 操作可以看下我的 <a href="https://www.jianshu.com/p/9db8eb16d76f" target="_blank" rel="noopener">《Vue.js 源码学习六 —— VNode虚拟DOM学习》</a>这篇文章中。</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>无论什么框架，其实都是万变不离其宗。最终都是用最基础的 API 来实现的各种功能。所以学好基础知识是非常重要的~<br>PS：还是 MDN 靠谱，w3school 的资料虽然也挺多，但是感觉不是很靠谱……以后查资料尽量去 MDN 英文网站去查（中文网站翻译有些问题）。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/23/前端优化学习/" rel="next" title="前端优化学习">
+                <i class="fa fa-chevron-left"></i> 前端优化学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/28/CSS 基础知识整理/" rel="prev" title="CSS 基础知识整理">
+                CSS 基础知识整理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="VioletJack"/>
+            
+              <p class="site-author-name" itemprop="name">VioletJack</p>
+              <p class="site-description motion-element" itemprop="description">Violetjack 的个人博客，记录了一些技术笔记和思考。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">47</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">Tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/violetjack" title="GitHub &rarr; https://github.com/violetjack" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:violetjack@foxmail.com" title="E-Mail &rarr; mailto:violetjack@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/u/2640909603/home" title="Weibo &rarr; https://weibo.com/u/2640909603/home" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/54ae4af3a98d" title="JianShu &rarr; https://www.jianshu.com/u/54ae4af3a98d" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>JianShu</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#node、document-和-element"><span class="nav-number">1.</span> <span class="nav-text">node、document 和 element</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#node"><span class="nav-number">1.1.</span> <span class="nav-text">node</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#element"><span class="nav-number">1.2.</span> <span class="nav-text">element</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#document"><span class="nav-number">1.3.</span> <span class="nav-text">document</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#api-学习"><span class="nav-number">2.</span> <span class="nav-text">api 学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取节点"><span class="nav-number">2.1.</span> <span class="nav-text">获取节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作节点"><span class="nav-number">2.2.</span> <span class="nav-text">操作节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他常用属性和方法"><span class="nav-number">2.3.</span> <span class="nav-text">其他常用属性和方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#写个操作-DOM-的例子"><span class="nav-number">3.</span> <span class="nav-text">写个操作 DOM 的例子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取各个位置的节点。"><span class="nav-number">3.1.</span> <span class="nav-text">获取各个位置的节点。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实践创建node、插入node和删除node。"><span class="nav-number">3.2.</span> <span class="nav-text">实践创建node、插入node和删除node。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单实现-v-for、v-text、v-html、v-on-和-v-model-这些功能。"><span class="nav-number">3.3.</span> <span class="nav-text">简单实现 v-for、v-text、v-html、v-on 和 v-model 这些功能。</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.5.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.0"></script>
+
+  <script src="/js/src/motion.js?v=7.0.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

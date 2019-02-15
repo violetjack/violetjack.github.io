@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在学习 element ui 时，发现组件的过渡用的是 Vue.js 提供的  标签。这里来好好认识下 vue 的过渡到底是如何工作的。  简介废话不多说，详细的内容请看官方文档，里面有详细的分析和例子够你看懂了（就是费时间~）。简单说说我对 vue 过渡的理解。经过一下午的折腾，总结出以下几点：  有四种情况会触发过渡效果：1 v-if2 v-show3 动态组件（如 component 的">
+<meta name="keywords" content="Vue.js源码学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue.js 源码学习九 —— 过渡效果 transition 学习">
+<meta property="og:url" content="https://violetjack.github.io/2018/04/12/Vue.js源码学习九 —— 过渡效果 transition 学习/index.html">
+<meta property="og:site_name" content="VioletJack 技术日志">
+<meta property="og:description" content="在学习 element ui 时，发现组件的过渡用的是 Vue.js 提供的  标签。这里来好好认识下 vue 的过渡到底是如何工作的。  简介废话不多说，详细的内容请看官方文档，里面有详细的分析和例子够你看懂了（就是费时间~）。简单说说我对 vue 过渡的理解。经过一下午的折腾，总结出以下几点：  有四种情况会触发过渡效果：1 v-if2 v-show3 动态组件（如 component 的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-15T17:20:56.253Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue.js 源码学习九 —— 过渡效果 transition 学习">
+<meta name="twitter:description" content="在学习 element ui 时，发现组件的过渡用的是 Vue.js 提供的  标签。这里来好好认识下 vue 的过渡到底是如何工作的。  简介废话不多说，详细的内容请看官方文档，里面有详细的分析和例子够你看懂了（就是费时间~）。简单说说我对 vue 过渡的理解。经过一下午的折腾，总结出以下几点：  有四种情况会触发过渡效果：1 v-if2 v-show3 动态组件（如 component 的">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="VioletJack 技术日志" type="application/atom+xml"/>
+
+
+
+
+  <link rel="canonical" href="https://violetjack.github.io/2018/04/12/Vue.js源码学习九 —— 过渡效果 transition 学习/"/>
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Vue.js 源码学习九 —— 过渡效果 transition 学习 | VioletJack 技术日志</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">VioletJack 技术日志</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">专注！坚持！求真！</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archiv</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://violetjack.github.io/2018/04/12/Vue.js源码学习九 —— 过渡效果 transition 学习/"/>
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="VioletJack"/>
+      <meta itemprop="description" content="Violetjack 的个人博客，记录了一些技术笔记和思考。"/>
+      <meta itemprop="image" content="/images/avatar.jpg"/>
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="VioletJack 技术日志"/>
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vue.js 源码学习九 —— 过渡效果 transition 学习
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Post created: 2018-04-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-04-12T00:00:00+08:00">2018-04-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Updated at: 2019-02-16 01:20:56" itemprop="dateModified" datetime="2019-02-16T01:20:56+08:00">2019-02-16</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>在学习 element ui 时，发现组件的过渡用的是 Vue.js 提供的 <transition> 标签。这里来好好认识下 vue 的过渡到底是如何工作的。</transition></p>
+</blockquote>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>废话不多说，详细的内容请看<a href="https://cn.vuejs.org/v2/guide/transitions.html" target="_blank" rel="noopener">官方文档</a>，里面有详细的分析和例子够你看懂了（就是费时间~）。简单说说我对 vue 过渡的理解。经过一下午的折腾，总结出以下几点：</p>
+<ul>
+<li><strong>有四种情况会触发过渡效果：</strong><br>1 v-if<br>2 v-show<br>3 动态组件（如 component 的 is 属性）<br>4 组件根节点发生变化（如 v-if v-else 切换根节点）</li>
+<li><strong>过渡效果 CSS 命名规律：</strong>（name 属性，默认为 v）-（行为：enter、leave、appear、move）-（阶段：无、active、to）</li>
+<li><strong>有三种方式来设置过渡样式：</strong><br>1 为 <transition> 标签设定 name 属性。<br>2 在 <transition> 标签中插入 <code>enter-active-class</code> 等设置自定义过渡类名。<br>3 使用 JavaScript 在过渡的<a href="https://cn.vuejs.org/v2/guide/transitions.html#JavaScript-%E9%92%A9%E5%AD%90" target="_blank" rel="noopener">钩子</a>处修改过渡样式。</transition></transition></li>
+<li><strong>个人理解：<code>&lt;transition&gt;</code> 标签用于单个元素的进入和离开效果。<code>&lt;transition-group&gt;</code> 标签用于处理如 <code>v-for</code> 遍历这样多个元素的过渡动画。</strong></li>
+</ul>
+<h1 id="自己实现个过渡方法"><a href="#自己实现个过渡方法" class="headerlink" title="自己实现个过渡方法"></a>自己实现个过渡方法</h1><p>先来两个简单例子理解下 transition（为了节省篇幅和便于查看写在 JSFiddle 中）有兴趣的朋友可以看下~<br><strong>例1：<a href="https://jsfiddle.net/VioletJack/0pnqc99z/1/" target="_blank" rel="noopener">v-enter 和 v-leave 简单实现</a></strong><br><strong>例2：<a href="https://jsfiddle.net/VioletJack/3takx674/" target="_blank" rel="noopener">v-move 简单实现</a></strong></p>
+<h1 id="transition-学习"><a href="#transition-学习" class="headerlink" title="transition 学习"></a>transition 学习</h1><h2 id="1-基本原理是什么？"><a href="#1-基本原理是什么？" class="headerlink" title="1. 基本原理是什么？"></a>1. 基本原理是什么？</h2><p>基本原理还是 CSS3 的 <code>transition</code>、<code>transform</code>、<code>animation</code> 这几个属性。用户定义过渡效果，Vue.js 进行处理。下面我们通过 <transition> 过渡的进入的过程看一下：</transition></p>
+<ul>
+<li>插入元素</li>
+<li>解析 <transition> 标签，获取对应的过渡类名。这里默认就 <code>v-</code> 开头了。</transition></li>
+<li>为元素定义 v-enter 和 v-enter-active 两个类。<code>class=&quot;v-enter v-enter-active&quot;</code>。</li>
+<li>下一帧移除 v-enter，添加 v-enter-to。<code>class=&quot;v-enter-active v-enter-to&quot;</code>。</li>
+<li>获取过渡时间，延时执行回调函数。</li>
+<li>回调函数中移除 v-enter、v-enter-active 和 v-enter-to 的这些过渡类名，完成过渡。</li>
+<li>在整个过程中调用了 <code>beforeEnterHook</code> 、<code>enterHook</code>、<code>afterEnterHook</code>、<code>enterCancelledHook</code> 四个函数，执行相应的<a href="https://cn.vuejs.org/v2/guide/transitions.html#JavaScript-钩子" target="_blank" rel="noopener"> JavaScript 钩子</a>。</li>
+</ul>
+<p>下面是 <code>enter</code> 函数的代码及注释：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 进入过渡效果</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">enter</span> (<span class="params">vnode: VNodeWithData, toggleDisplay: ?(</span>) =&gt; <span class="title">void</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> el: any = vnode.elm</span><br><span class="line"></span><br><span class="line">  <span class="comment">// call leave callback now 执行 leave 回调函数</span></span><br><span class="line">  <span class="keyword">if</span> (isDef(el._leaveCb)) &#123;</span><br><span class="line">    el._leaveCb.cancelled = <span class="literal">true</span></span><br><span class="line">    el._leaveCb()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 解析 transition 的数据（class、tag、name等）</span></span><br><span class="line">  <span class="keyword">const</span> data = resolveTransition(vnode.data.transition)</span><br><span class="line">  <span class="keyword">if</span> (isUndef(data)) &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">  <span class="keyword">if</span> (isDef(el._enterCb) || el.nodeType !== <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> &#123;</span><br><span class="line">    css,</span><br><span class="line">    type,</span><br><span class="line">    enterClass,</span><br><span class="line">    enterToClass,</span><br><span class="line">    enterActiveClass,</span><br><span class="line">    appearClass,</span><br><span class="line">    appearToClass,</span><br><span class="line">    appearActiveClass,</span><br><span class="line">    beforeEnter,</span><br><span class="line">    enter,</span><br><span class="line">    afterEnter,</span><br><span class="line">    enterCancelled,</span><br><span class="line">    beforeAppear,</span><br><span class="line">    appear,</span><br><span class="line">    afterAppear,</span><br><span class="line">    appearCancelled,</span><br><span class="line">    duration</span><br><span class="line">  &#125; = data</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 将作为子组件的根节点放置时，我们需要检查 &lt;transition&gt; 的父元素是否出现检查。</span></span><br><span class="line">  <span class="keyword">let</span> context = activeInstance</span><br><span class="line">  <span class="keyword">let</span> transitionNode = activeInstance.$vnode</span><br><span class="line">  <span class="keyword">while</span> (transitionNode &amp;&amp; transitionNode.parent) &#123;</span><br><span class="line">    transitionNode = transitionNode.parent</span><br><span class="line">    context = transitionNode.context</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> isAppear = !context._isMounted || !vnode.isRootInsert</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (isAppear &amp;&amp; !appear &amp;&amp; appear !== <span class="string">''</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取进入的 class</span></span><br><span class="line">  <span class="comment">// v-enter</span></span><br><span class="line">  <span class="keyword">const</span> startClass = isAppear &amp;&amp; appearClass</span><br><span class="line">    ? appearClass</span><br><span class="line">    : enterClass</span><br><span class="line">  <span class="comment">// v-enter-active</span></span><br><span class="line">  <span class="keyword">const</span> activeClass = isAppear &amp;&amp; appearActiveClass</span><br><span class="line">    ? appearActiveClass</span><br><span class="line">    : enterActiveClass</span><br><span class="line">  <span class="comment">// v-enter-to</span></span><br><span class="line">  <span class="keyword">const</span> toClass = isAppear &amp;&amp; appearToClass</span><br><span class="line">    ? appearToClass</span><br><span class="line">    : enterToClass</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 4个生命周期钩子函数</span></span><br><span class="line">  <span class="keyword">const</span> beforeEnterHook = isAppear</span><br><span class="line">    ? (beforeAppear || beforeEnter)</span><br><span class="line">    : beforeEnter</span><br><span class="line">  <span class="keyword">const</span> enterHook = isAppear</span><br><span class="line">    ? (<span class="keyword">typeof</span> appear === <span class="string">'function'</span> ? appear : enter)</span><br><span class="line">    : enter</span><br><span class="line">  <span class="keyword">const</span> afterEnterHook = isAppear</span><br><span class="line">    ? (afterAppear || afterEnter)</span><br><span class="line">    : afterEnter</span><br><span class="line">  <span class="keyword">const</span> enterCancelledHook = isAppear</span><br><span class="line">    ? (appearCancelled || enterCancelled)</span><br><span class="line">    : enterCancelled</span><br><span class="line"></span><br><span class="line">  <span class="comment">// https://cn.vuejs.org/v2/guide/transitions.html#显性的过渡持续时间</span></span><br><span class="line">  <span class="keyword">const</span> explicitEnterDuration: any = toNumber(</span><br><span class="line">    isObject(duration)</span><br><span class="line">      ? duration.enter</span><br><span class="line">      : duration</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; explicitEnterDuration != <span class="literal">null</span>) &#123;</span><br><span class="line">    checkDuration(explicitEnterDuration, <span class="string">'enter'</span>, vnode)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> expectsCSS = css !== <span class="literal">false</span> &amp;&amp; !isIE9</span><br><span class="line">  <span class="keyword">const</span> userWantsControl = getHookArgumentsLength(enterHook)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 完成进入过渡后的回调函数</span></span><br><span class="line">  <span class="keyword">const</span> cb = el._enterCb = once(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (expectsCSS) &#123;</span><br><span class="line">      <span class="comment">// 移除 v-enter-to 和 v-enter-active</span></span><br><span class="line">      removeTransitionClass(el, toClass)</span><br><span class="line">      removeTransitionClass(el, activeClass)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cb.cancelled) &#123;</span><br><span class="line">      <span class="keyword">if</span> (expectsCSS) &#123;</span><br><span class="line">        <span class="comment">// 移除 v-enter</span></span><br><span class="line">        removeTransitionClass(el, startClass)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 调用 enter-cancelled</span></span><br><span class="line">      enterCancelledHook &amp;&amp; enterCancelledHook(el)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      afterEnterHook &amp;&amp; afterEnterHook(el)</span><br><span class="line">    &#125;</span><br><span class="line">    el._enterCb = <span class="literal">null</span></span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!vnode.data.show) &#123;</span><br><span class="line">    <span class="comment">// 通过注入一个 insert 钩子，将待处理的 leave 元素移除。</span></span><br><span class="line">    mergeVNodeHook(vnode, <span class="string">'insert'</span>, () =&gt; &#123;</span><br><span class="line">      <span class="keyword">const</span> parent = el.parentNode</span><br><span class="line">      <span class="keyword">const</span> pendingNode = parent &amp;&amp; parent._pending &amp;&amp; parent._pending[vnode.key]</span><br><span class="line">      <span class="keyword">if</span> (pendingNode &amp;&amp;</span><br><span class="line">        pendingNode.tag === vnode.tag &amp;&amp;</span><br><span class="line">        pendingNode.elm._leaveCb</span><br><span class="line">      ) &#123;</span><br><span class="line">        pendingNode.elm._leaveCb()</span><br><span class="line">      &#125;</span><br><span class="line">      enterHook &amp;&amp; enterHook(el, cb)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// start enter transition</span></span><br><span class="line">  beforeEnterHook &amp;&amp; beforeEnterHook(el)</span><br><span class="line">  <span class="comment">// 预期 CSS</span></span><br><span class="line">  <span class="keyword">if</span> (expectsCSS) &#123;</span><br><span class="line">    <span class="comment">// 添加 v-enter v-enter-active</span></span><br><span class="line">    addTransitionClass(el, startClass)</span><br><span class="line">    addTransitionClass(el, activeClass)</span><br><span class="line">    <span class="comment">// 下一帧</span></span><br><span class="line">    nextFrame(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// 移除 v-enter</span></span><br><span class="line">      removeTransitionClass(el, startClass)</span><br><span class="line">      <span class="keyword">if</span> (!cb.cancelled) &#123;</span><br><span class="line">        <span class="comment">// 添加 v-enter-to</span></span><br><span class="line">        addTransitionClass(el, toClass)</span><br><span class="line">        <span class="keyword">if</span> (!userWantsControl) &#123;</span><br><span class="line">          <span class="comment">// 预期进入时间</span></span><br><span class="line">          <span class="keyword">if</span> (isValidDuration(explicitEnterDuration)) &#123;</span><br><span class="line">            setTimeout(cb, explicitEnterDuration)</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 当 transition 结束</span></span><br><span class="line">            whenTransitionEnds(el, type, cb)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (vnode.data.show) &#123;</span><br><span class="line">    toggleDisplay &amp;&amp; toggleDisplay()</span><br><span class="line">    enterHook &amp;&amp; enterHook(el, cb)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!expectsCSS &amp;&amp; !userWantsControl) &#123;</span><br><span class="line">    cb()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-过渡的类名和自定义过渡的类名如何用于-中？"><a href="#2-过渡的类名和自定义过渡的类名如何用于-中？" class="headerlink" title="2. 过渡的类名和自定义过渡的类名如何用于  中？"></a>2. <a href="https://cn.vuejs.org/v2/guide/transitions.html#过渡的类名" target="_blank" rel="noopener">过渡的类名</a>和<a href="https://cn.vuejs.org/v2/guide/transitions.html#自定义过渡的类名" target="_blank" rel="noopener">自定义过渡的类名</a>如何用于 <transition> 中？</transition></h2><p>在 <a href="https://cn.vuejs.org/v2/api/#transition" target="_blank" rel="noopener"><transition></transition></a> 中一共有如下属性（props）：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> transitionProps = &#123;</span><br><span class="line">  name: <span class="built_in">String</span>,</span><br><span class="line">  appear: <span class="built_in">Boolean</span>,</span><br><span class="line">  css: <span class="built_in">Boolean</span>,</span><br><span class="line">  mode: <span class="built_in">String</span>,</span><br><span class="line">  type: <span class="built_in">String</span>,</span><br><span class="line">  enterClass: <span class="built_in">String</span>,</span><br><span class="line">  leaveClass: <span class="built_in">String</span>,</span><br><span class="line">  enterToClass: <span class="built_in">String</span>,</span><br><span class="line">  leaveToClass: <span class="built_in">String</span>,</span><br><span class="line">  enterActiveClass: <span class="built_in">String</span>,</span><br><span class="line">  leaveActiveClass: <span class="built_in">String</span>,</span><br><span class="line">  appearClass: <span class="built_in">String</span>,</span><br><span class="line">  appearActiveClass: <span class="built_in">String</span>,</span><br><span class="line">  appearToClass: <span class="built_in">String</span>,</span><br><span class="line">  duration: [<span class="built_in">Number</span>, <span class="built_in">String</span>, <span class="built_in">Object</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到其中就有这些自定义过渡类名，如 enterClass。这些属性如被传入到 <transition> 子组件的 data.transition 对象中。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// extractTransitionData 函数返回组件的所有 propsData 和 listener</span></span><br><span class="line"><span class="keyword">const</span> data: <span class="built_in">Object</span> = (child.data || (child.data = &#123;&#125;)).transition = extractTransitionData(<span class="keyword">this</span>)</span><br></pre></td></tr></table></figure></transition></p>
+<p>而这个 data.transition 对象在 enter 函数中用到：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> data = resolveTransition(vnode.data.transition)</span><br></pre></td></tr></table></figure></p>
+<p><code>resolveTransition</code> 函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// 解析 transition 过渡 CSS</span><br><span class="line">export function resolveTransition (def?: string | Object): ?Object &#123;</span><br><span class="line">  if (!def) &#123;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line">  // 合并过渡类名和自定义过渡类名</span><br><span class="line">  if (typeof def === &apos;object&apos;) &#123;</span><br><span class="line">    const res = &#123;&#125;</span><br><span class="line">    if (def.css !== false) &#123;</span><br><span class="line">      // 使用 name，默认为 v</span><br><span class="line">      extend(res, autoCssTransition(def.name || &apos;v&apos;))</span><br><span class="line">    &#125;</span><br><span class="line">    extend(res, def)</span><br><span class="line">    return res</span><br><span class="line">  &#125; else if (typeof def === &apos;string&apos;) &#123;</span><br><span class="line">    return autoCssTransition(def)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 通过 name 属性获取过渡 CSS 类名</span><br><span class="line">const autoCssTransition: (name: string) =&gt; Object = cached(name =&gt; &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    enterClass: `$&#123;name&#125;-enter`,</span><br><span class="line">    enterToClass: `$&#123;name&#125;-enter-to`,</span><br><span class="line">    enterActiveClass: `$&#123;name&#125;-enter-active`,</span><br><span class="line">    leaveClass: `$&#123;name&#125;-leave`,</span><br><span class="line">    leaveToClass: `$&#123;name&#125;-leave-to`,</span><br><span class="line">    leaveActiveClass: `$&#123;name&#125;-leave-active`</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>resolveTransition 函数合并了过渡类名和自定义过渡类名，返回最终的过渡类名。之后就是使用这些类名来实现过渡动画。<br><em>PS：从源码中可以知道自定义过渡类名要优先于 name 定义的过渡类名。</em><br>小结一下就是：<strong>Vue.js 通过 <transition> 的 props 获取自定义过渡类名，通过 <transition> 的 name 属性解析获取过渡类名，两者合并成为最终过渡类名，用以实现过渡效果。</transition></transition></strong></p>
+<h2 id="3-JavaScript-钩子如何实现？"><a href="#3-JavaScript-钩子如何实现？" class="headerlink" title="3. JavaScript 钩子如何实现？"></a>3. JavaScript 钩子如何实现？</h2><p>从 <code>enter</code> 函数中可以知道，在特定时间点会调用指定 JavaScript 钩子函数，所以我们只需绑定好函数即可按时间点触发。像这样：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enterHook &amp;&amp; enterHook(el, cb)</span><br></pre></td></tr></table></figure></p>
+<h2 id="4-transition-组件和-transition-group-标签的基本原理是什么？"><a href="#4-transition-组件和-transition-group-标签的基本原理是什么？" class="headerlink" title="4. transition 组件和 transition-group 标签的基本原理是什么？"></a>4. transition 组件和 transition-group 标签的基本原理是什么？</h2><p>其实就是 Vue.js 的组件，在其中实现了过渡效果而已。<br>transition 中只能包含一个子元素，标签通过 render 函数来渲染子元素（不渲染自身，所以我们在 DOM 中看不到 transition 节点）。主要用于控制元素的进入和离开，当元素离开后元素就从 DOM 中移除了。<br>transition-group 可以包含多个子元素，也是用 render 函数，渲染为指定标签名的元素。相比 transition 多了一个 v-move 属性用于控制多个组件间的移动速度。</p>
+<h2 id="5-v-if、v-show、component-等组件变化如何监听？"><a href="#5-v-if、v-show、component-等组件变化如何监听？" class="headerlink" title="5. v-if、v-show、component 等组件变化如何监听？"></a>5. v-if、v-show、component 等组件变化如何监听？</h2><p>在使用 v-if、v-else 和 component 切换组件的时候，v-if、v-else 需要传入 key 以区分相同标签的不同元素。而 component 标签不需要。在代码中会解析 key 和 component 名组成新的 key，所以两个不同的 component 也会拥有不同的 key 实现切换效果。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> id = <span class="string">"__transition-"</span> + (<span class="keyword">this</span>._uid) + <span class="string">"-"</span>;</span><br><span class="line">child.key = child.key == <span class="literal">null</span></span><br><span class="line">  ? child.isComment</span><br><span class="line">    ? id + <span class="string">'comment'</span></span><br><span class="line">    : id + child.tag</span><br><span class="line">  : isPrimitive(child.key)</span><br><span class="line">    ? (<span class="built_in">String</span>(child.key).indexOf(id) === <span class="number">0</span> ? child.key : id + child.key)</span><br><span class="line">    : child.key;</span><br></pre></td></tr></table></figure></p>
+<p>而对于 v-show，做了特殊标记 —— 当有 v-show 指令时标记 child.data.show 为 true：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (child.data.directives &amp;&amp; child.data.directives.some(<span class="function"><span class="params">d</span> =&gt;</span> d.name === <span class="string">'show'</span>)) &#123;</span><br><span class="line">  child.data.show = <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>之后再过渡的逻辑中对 v-show 做了些处理，实现过渡效果。<br>同时，在 <code>v-show</code> 的源码 <code>src/platforms/web/runtime/directives/show.js</code> 中对于 transition 也做了一些处理。比如在 update 方法中获取 transition，如果有过渡则 v-show 使用过渡效果，否则使用 <code>style.display</code> 来隐藏元素。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">update (el: any, &#123; value, oldValue &#125;: VNodeDirective, <span class="attr">vnode</span>: VNodeWithData) &#123;</span><br><span class="line">  <span class="keyword">if</span> (value === oldValue) <span class="keyword">return</span></span><br><span class="line">  vnode = locateNode(vnode)</span><br><span class="line">  <span class="comment">// 过渡效果</span></span><br><span class="line">  <span class="keyword">const</span> transition = vnode.data &amp;&amp; vnode.data.transition</span><br><span class="line">  <span class="keyword">if</span> (transition) &#123;</span><br><span class="line">    vnode.data.show = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">if</span> (value) &#123;</span><br><span class="line">      enter(vnode, () =&gt; &#123;</span><br><span class="line">        el.style.display = el.__vOriginalDisplay</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      leave(vnode, () =&gt; &#123;</span><br><span class="line">        el.style.display = <span class="string">'none'</span></span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 隐藏</span></span><br><span class="line">    el.style.display = value ? el.__vOriginalDisplay : <span class="string">'none'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></p>
+<h2 id="6-transition-中两个相同标签的组件为何要用-key-分开？"><a href="#6-transition-中两个相同标签的组件为何要用-key-分开？" class="headerlink" title="6. transition 中两个相同标签的组件为何要用 key 分开？"></a>6. transition 中两个相同标签的组件为何要用 key 分开？</h2><p>使用 key 和 tagName 来判断是否为同一个节点。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isSameChild</span> (<span class="params">child: VNode, oldChild: VNode</span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> oldChild.key === child.key &amp;&amp; oldChild.tag === child.tag</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="8-过渡逻辑和过渡组件如何作用于一起"><a href="#8-过渡逻辑和过渡组件如何作用于一起" class="headerlink" title="8. 过渡逻辑和过渡组件如何作用于一起"></a>8. 过渡逻辑和过渡组件如何作用于一起</h2><p>在源码中有四个过渡相关的源码：</p>
+<ul>
+<li><code>src/platforms/web/runtime/components/transition.js</code> <transition> 组件源码。</transition></li>
+<li><code>src/platforms/web/runtime/components/transition-group.js</code> <transition-group> 组件源码</transition-group></li>
+<li><code>src/platforms/web/runtime/transition-util.js</code> 过渡工具代码。</li>
+<li><code>src/platforms/web/runtime/modules/transition.js</code> 过渡逻辑代码。</li>
+</ul>
+<p>前三个很好理解，最后一个 transition.js 其实是在 patch 方法中和 v-show 中使用的~<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/platforms/web/runtime/directives/show.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; enter, leave &#125; <span class="keyword">from</span> <span class="string">'../modules/transition'</span></span><br></pre></td></tr></table></figure></p>
+<p>v-show 中调用了 transition 的 enter 和 leave 函数，在 v-show 作用于过渡效果时调用。<br>另外一个使用的地方比较隐蔽，先来看看 transition.js 导出的内容：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/platforms/web/runtime/modules/transition.js</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_enter</span> (<span class="params">_: any, vnode: VNodeWithData</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (vnode.data.show !== <span class="literal">true</span>) &#123;</span><br><span class="line">    enter(vnode)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> inBrowser ? &#123;</span><br><span class="line">  create: _enter,</span><br><span class="line">  activate: _enter,</span><br><span class="line">  remove (vnode: VNode, <span class="attr">rm</span>: <span class="built_in">Function</span>) &#123;</span><br><span class="line">    <span class="comment">/* istanbul ignore else */</span></span><br><span class="line">    <span class="keyword">if</span> (vnode.data.show !== <span class="literal">true</span>) &#123;</span><br><span class="line">      leave(vnode, rm)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      rm()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125; : &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里讲 enter 和 leave 函数在方法中使用并导出（如果是浏览器的话）。继续往下找：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/platforms/web/runtime/modules/index.js</span></span><br><span class="line"><span class="keyword">import</span> transition <span class="keyword">from</span> <span class="string">'./transition'</span></span><br></pre></td></tr></table></figure></p>
+<p>导入到 modules 文件夹 index.js，index.js 在 patch.js 中使用了。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/platforms/web/runtime/patch.js</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> nodeOps <span class="keyword">from</span> <span class="string">'web/runtime/node-ops'</span></span><br><span class="line"><span class="keyword">import</span> &#123; createPatchFunction &#125; <span class="keyword">from</span> <span class="string">'core/vdom/patch'</span></span><br><span class="line"><span class="keyword">import</span> baseModules <span class="keyword">from</span> <span class="string">'core/vdom/modules/index'</span></span><br><span class="line"><span class="keyword">import</span> platformModules <span class="keyword">from</span> <span class="string">'web/runtime/modules/index'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> modules = platformModules.concat(baseModules)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> patch: <span class="built_in">Function</span> = createPatchFunction(&#123; nodeOps, modules &#125;)</span><br></pre></td></tr></table></figure></p>
+<p>在此处合并 modules，并且创建了 patch 方法。这个 patch 方法在之前写的<a href="https://www.jianshu.com/p/9db8eb16d76f" target="_blank" rel="noopener">Vue.js 源码学习六 —— VNode虚拟DOM学习</a>中提到过，用于对比虚拟 DOM，实现差异化更新。<br>可以看下 modules 在 createPatchFunction 方法中做了些什么？<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> hooks = [<span class="string">'create'</span>, <span class="string">'activate'</span>, <span class="string">'update'</span>, <span class="string">'remove'</span>, <span class="string">'destroy'</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createPatchFunction</span> (<span class="params">backend</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> i, j</span><br><span class="line">  <span class="keyword">const</span> cbs = &#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> &#123; modules, nodeOps &#125; = backend</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; hooks.length; ++i) &#123;</span><br><span class="line">    cbs[hooks[i]] = []</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; modules.length; ++j) &#123;</span><br><span class="line">      <span class="keyword">if</span> (isDef(modules[j][hooks[i]])) &#123;</span><br><span class="line">        cbs[hooks[i]].push(modules[j][hooks[i]])</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里可以发现 transition.js 中导出的 create、activate 和 remove 方法都是 patch 的生命周期函数。也就是说当元素创建、激活、移除行为时就会执行 transition.js 中的逻辑，而 <transition> 和 <transition-group> 组件都会有组件的这些行为。Vue.js 很巧妙的将组件相关行为都交给了 patch 的生命周期去处理，学习了！</transition-group></transition></p>
+<h2 id="8-过渡模式-mode-的实现原理是啥"><a href="#8-过渡模式-mode-的实现原理是啥" class="headerlink" title="8. 过渡模式 mode 的实现原理是啥"></a>8. 过渡模式 mode 的实现原理是啥</h2><p>在 <transition> 组件的 render 函数中有这么一段：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 控制离开/进入的过渡时间序列。有效的模式有 "out-in" 和 "in-out"；默认同时生效。</span></span><br><span class="line"><span class="keyword">if</span> (mode === <span class="string">'out-in'</span>) &#123;</span><br><span class="line">  <span class="comment">// return placeholder node and queue update when leave finishes</span></span><br><span class="line">  <span class="keyword">this</span>._leaving = <span class="literal">true</span></span><br><span class="line">  mergeVNodeHook(oldData, <span class="string">'afterLeave'</span>, () =&gt; &#123;</span><br><span class="line">    <span class="keyword">this</span>._leaving = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">this</span>.$forceUpdate()</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> placeholder(h, rawChild)</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (mode === <span class="string">'in-out'</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (isAsyncPlaceholder(child)) &#123;</span><br><span class="line">    <span class="keyword">return</span> oldRawChild</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> delayedLeave</span><br><span class="line">  <span class="keyword">const</span> performLeave = <span class="function"><span class="params">()</span> =&gt;</span> &#123; delayedLeave() &#125;</span><br><span class="line">  mergeVNodeHook(data, <span class="string">'afterEnter'</span>, performLeave)</span><br><span class="line">  mergeVNodeHook(data, <span class="string">'enterCancelled'</span>, performLeave)</span><br><span class="line">  mergeVNodeHook(oldData, <span class="string">'delayLeave'</span>, leave =&gt; &#123; delayedLeave = leave &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></transition></p>
+<p>这里就是 mode 的实现代码了，先看看两种 mode 的用法</p>
+<blockquote>
+<ul>
+<li>in-out：新元素先进行过渡，完成之后当前元素过渡离开。</li>
+<li>out-in：当前元素先进行过渡，完成之后新元素过渡进入。</li>
+</ul>
+</blockquote>
+<p>可以看到，在 out-in 逻辑中，当切换元素时，先不渲染第二个组件而是返回，之后才会返回 placeholder 函数结果，当第一个元素完全 leave 后加载第二个元素。而在 in-out 元素中做的是将第一个元素延时到第二个元素 enter 后再 leave。</p>
+<h2 id="9-的-v-move-重新排序一组内容，如何实现的移动变化？"><a href="#9-的-v-move-重新排序一组内容，如何实现的移动变化？" class="headerlink" title="9.  的 v-move 重新排序一组内容，如何实现的移动变化？"></a>9. <transition-group> 的 v-move 重新排序一组内容，如何实现的移动变化？</transition-group></h2><p>比如我们有一个 1-5 的数组使用 v-for 遍历显示到 transition-group 中，当数组发生变化时，会做如下操作：</p>
+<ul>
+<li>初始数组 <code>[ 1, 2, 3, 4, 5 ]</code></li>
+<li>数组发生变化 <code>[ 1, 4, 3, 2, 5 ]</code></li>
+<li>在 render 函数中记录变化前后额数组 preChildren 和 children 两个 VNode 数组。</li>
+<li>在 render 函数中使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getBoundingClientRect" target="_blank" rel="noopener">getBoundingClientRect()</a> 方法记录变化前每个元素的位置 oldPos。</li>
+<li>获取要保留和移除的元素数组。</li>
+<li>渲染变化后的数组元素。</li>
+<li>在 beforeUpdate 方法中使用 patch 方法移除要移除的元素。</li>
+<li>进入 Updated 方法中，注意此时渲染结果已经是新数组 <code>[ 1, 4, 3, 2, 5 ]</code> 了。</li>
+<li>获取过渡类名和子元素数组 children。</li>
+<li>遍历调用<ul>
+<li>执行回调函数</li>
+<li>计算当前各元素位置 newPos</li>
+<li>根据 oldPos 和 newPos，使用内联样式 <code>translate(${dx}px,${dy}px)</code> 将元素移动到之前的位置，看着就像是  <code>[ 1, 2, 3, 4, 5 ]</code></li>
+</ul>
+</li>
+<li>最后遍历元素，添加 moveClass 类名，移除 <code>translate(${dx}px,${dy}px)</code> 内联样式。绑定 <a href="https://developer.mozilla.org/en-US/docs/Web/Events/transitionend" target="_blank" rel="noopener">transitionend</a> 事件。</li>
+</ul>
+<p>代码太长，就不多贴了~可以<strong><a href="https://github.com/violetjack/VueStudyDemos/blob/master/VueCodes/vue/src/platforms/web/runtime/components/transition-group.js" target="_blank" rel="noopener">点击这里</a></strong>跳转查看。<strong>总结下来就是先改变元素，然后把元素移动成之前的样子，然后使用过渡类名定义过渡时间实现过渡效果。</strong><br>v-move 的关键就是“假装元素位置没变”的行为。让我们看上去像是慢慢移动的。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">applyTranslation</span> (<span class="params">c: VNode</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> oldPos = c.data.pos</span><br><span class="line">  <span class="keyword">const</span> newPos = c.data.newPos</span><br><span class="line">  <span class="keyword">const</span> dx = oldPos.left - newPos.left</span><br><span class="line">  <span class="keyword">const</span> dy = oldPos.top - newPos.top</span><br><span class="line">  <span class="keyword">if</span> (dx || dy) &#123;</span><br><span class="line">    <span class="comment">// 定义 0 秒的 translate 内联样式把元素移动到原来的样子</span></span><br><span class="line">    c.data.moved = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">const</span> s = c.elm.style</span><br><span class="line">    s.transform = s.WebkitTransform = <span class="string">`translate(<span class="subst">$&#123;dx&#125;</span>px,<span class="subst">$&#123;dy&#125;</span>px)`</span></span><br><span class="line">    s.transitionDuration = <span class="string">'0s'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="10-vue-的-transition-和-CSS3-的-transition-有何不同？"><a href="#10-vue-的-transition-和-CSS3-的-transition-有何不同？" class="headerlink" title="10. vue 的 transition 和 CSS3 的 transition 有何不同？"></a>10. vue 的 transition 和 CSS3 的 transition 有何不同？</h2><p>基本原理都是使用了 CSS3 的 transition，但是 Vue 的 transition 组件是配合着 VDOM 来写的、同时提供了过渡各阶段效果的 CSS 和 JS 控制，便于我们快捷、精确、安全地实现一些简单或复杂的过渡效果。</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>原本只是想看看 transition 如何实现，却扯出这么一堆问题。其中关于 transition 和 transition-group 组件讲的有点草率，有兴趣可以再深入学习下~<br>从本次学习中我学到了：</p>
+<ul>
+<li>更加优雅高效的 JS 逻辑写法（patch 中的生命周期统一处理 DOM 操作中的逻辑）</li>
+<li>更加熟悉 CSS3 的 transition 过渡属性。</li>
+<li>解决了我对 transition 的各种疑问。</li>
+</ul>
+<p>OK，关于 Vue 的过渡效果就聊到这儿了，写了三天……我得去休息休息了 0.0</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vue-js源码学习/" rel="tag"># Vue.js源码学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/03/element 源码学习五 —— Notice 系列组件学习/" rel="next" title="element 源码学习五 —— Notice 系列组件学习">
+                <i class="fa fa-chevron-left"></i> element 源码学习五 —— Notice 系列组件学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/13/element 源码学习六 —— Carousel 走马灯学习/" rel="prev" title="element 源码学习六 —— Carousel 走马灯学习">
+                element 源码学习六 —— Carousel 走马灯学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="VioletJack"/>
+            
+              <p class="site-author-name" itemprop="name">VioletJack</p>
+              <p class="site-description motion-element" itemprop="description">Violetjack 的个人博客，记录了一些技术笔记和思考。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">47</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">Tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/violetjack" title="GitHub &rarr; https://github.com/violetjack" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:violetjack@foxmail.com" title="E-Mail &rarr; mailto:violetjack@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/u/2640909603/home" title="Weibo &rarr; https://weibo.com/u/2640909603/home" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/54ae4af3a98d" title="JianShu &rarr; https://www.jianshu.com/u/54ae4af3a98d" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>JianShu</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自己实现个过渡方法"><span class="nav-number">2.</span> <span class="nav-text">自己实现个过渡方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#transition-学习"><span class="nav-number">3.</span> <span class="nav-text">transition 学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-基本原理是什么？"><span class="nav-number">3.1.</span> <span class="nav-text">1. 基本原理是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-过渡的类名和自定义过渡的类名如何用于-中？"><span class="nav-number">3.2.</span> <span class="nav-text">2. 过渡的类名和自定义过渡的类名如何用于  中？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-JavaScript-钩子如何实现？"><span class="nav-number">3.3.</span> <span class="nav-text">3. JavaScript 钩子如何实现？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-transition-组件和-transition-group-标签的基本原理是什么？"><span class="nav-number">3.4.</span> <span class="nav-text">4. transition 组件和 transition-group 标签的基本原理是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-v-if、v-show、component-等组件变化如何监听？"><span class="nav-number">3.5.</span> <span class="nav-text">5. v-if、v-show、component 等组件变化如何监听？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-transition-中两个相同标签的组件为何要用-key-分开？"><span class="nav-number">3.6.</span> <span class="nav-text">6. transition 中两个相同标签的组件为何要用 key 分开？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-过渡逻辑和过渡组件如何作用于一起"><span class="nav-number">3.7.</span> <span class="nav-text">8. 过渡逻辑和过渡组件如何作用于一起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-过渡模式-mode-的实现原理是啥"><span class="nav-number">3.8.</span> <span class="nav-text">8. 过渡模式 mode 的实现原理是啥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-的-v-move-重新排序一组内容，如何实现的移动变化？"><span class="nav-number">3.9.</span> <span class="nav-text">9.  的 v-move 重新排序一组内容，如何实现的移动变化？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-vue-的-transition-和-CSS3-的-transition-有何不同？"><span class="nav-number">3.10.</span> <span class="nav-text">10. vue 的 transition 和 CSS3 的 transition 有何不同？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最后"><span class="nav-number">4.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">VioletJack</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.5.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.0"></script>
+
+  <script src="/js/src/motion.js?v=7.0.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

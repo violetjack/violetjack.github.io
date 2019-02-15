@@ -2,26 +2,24 @@
 
 
 
+
+
+
+
+
+
+
+
+
   
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
 
 
 
@@ -35,68 +33,70 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0"/>
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
 
 
   
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
 
-  
-  
-  
-  
-
-  
-    
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    
-    
-    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-  
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Hexo, NexT" />
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="VioletJack 技术日志" type="application/atom+xml" />
-
-
-
-
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.2" />
-
-
-
-
-
-
-<meta name="description" content="Violetjack 的个人博客，记录了一些技术笔记和思考。">
+  <meta name="description" content="Violetjack 的个人博客，记录了一些技术笔记和思考。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="VioletJack 技术日志">
 <meta property="og:url" content="https://violetjack.github.io/archives/page/2/index.html">
@@ -109,28 +109,8 @@
 
 
 
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    sidebar: {"position":"left","display":"always","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: true,
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
+  <link rel="alternate" href="/atom.xml" title="VioletJack 技术日志" type="application/atom+xml"/>
+
 
 
 
@@ -138,9 +118,13 @@
 
 
 
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
 
-
-  <title>归档 | VioletJack 技术日志</title>
+  <title>Archiv | VioletJack 技术日志</title>
   
 
 
@@ -154,7 +138,30 @@
 
 
 
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
 
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
 </head>
 
@@ -165,28 +172,31 @@
     
   
 
-  <div class="container sidebar-position-left  page-archive  ">
+  <div class="container sidebar-position-left page-archive">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
+  <div class="site-meta">
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">VioletJack 技术日志</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
+    
       
-        <h1 class="site-subtitle" itemprop="description">专注！坚持！求真！</h1>
+        <p class="site-subtitle">专注！坚持！求真！</p>
       
+    
+    
   </div>
 
   <div class="site-nav-toggle">
-    <button>
+    <button aria-label="Toggle navigation bar">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -194,55 +204,86 @@
   </div>
 </div>
 
-<nav class="site-nav">
-  
 
+
+<nav class="site-nav">
   
     <ul id="menu" class="menu">
       
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
         
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
         
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
       
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>Startseite</a>
+
+  </li>
         
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            关于
-          </a>
-        </li>
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
       
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br/>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives menu-item-active">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>Archiv</a>
+
+  </li>
 
       
+      
     </ul>
+  
+
   
 
   
@@ -250,12 +291,42 @@
 
 
 
- </div>
+  
+
+
+
+</div>
     </header>
+
+    
+
 
     <main id="main" class="main">
       <div class="main-inner">
         <div class="content-wrap">
+          
+            
+
+    
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
+          
           <div id="content" class="content">
             
 
@@ -266,13 +337,15 @@
     <div id="posts" class="posts-collapse">
       <span class="archive-move-on"></span>
 
+      
       <span class="archive-page-counter">
         
         
          
         
-        OK! 目前共计 37 篇日志。 继续努力。
+        OK! Insgesamt 47 Artikel. Bleib dran.
       </span>
+      
 
       
 
@@ -283,7 +356,7 @@
         
           
           <div class="collection-title">
-            <h2 class="archive-year motion-element" id="archive-year-2018">2018</h2>
+            <h1 class="archive-year" id="archive-year-2018">2018</h1>
           </div>
         
         
@@ -293,21 +366,21 @@
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h3 class="post-title">
+      <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/03/11/element-code-02/" itemprop="url">
-              
-                <span itemprop="name">element 源码学习二 —— 简单组件学习</span>
-              
-            </a>
+          <a class="post-title-link" href="/2018/04/12/Vue.js源码学习九 —— 过渡效果 transition 学习/" itemprop="url">
+            
+              <span itemprop="name">Vue.js 源码学习九 —— 过渡效果 transition 学习</span>
+            
+          </a>
         
-      </h3>
+      </h2>
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-11T00:00:00+08:00"
-              content="2018-03-11" >
-          03-11
+              datetime="2018-04-12T00:00:00+08:00"
+              content="2018-04-12">
+          04-12
         </time>
       </div>
 
@@ -330,21 +403,21 @@
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h3 class="post-title">
+      <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/03/10/element-code-01/" itemprop="url">
-              
-                <span itemprop="name">element 源码学习一 —— 认识框架</span>
-              
-            </a>
+          <a class="post-title-link" href="/2018/04/03/element 源码学习五 —— Notice 系列组件学习/" itemprop="url">
+            
+              <span itemprop="name">element 源码学习五 —— Notice 系列组件学习</span>
+            
+          </a>
         
-      </h3>
+      </h2>
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-10T00:00:00+08:00"
-              content="2018-03-10" >
-          03-10
+              datetime="2018-04-03T00:00:00+08:00"
+              content="2018-04-03">
+          04-03
         </time>
       </div>
 
@@ -367,21 +440,21 @@
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h3 class="post-title">
+      <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/03/04/Vue.js源码学习八 —— HTML解析细节学习/" itemprop="url">
-              
-                <span itemprop="name">Vue.js 源码学习八 —— HTML解析细节学习</span>
-              
-            </a>
+          <a class="post-title-link" href="/2018/04/01/JS 进阶必备 —— 闭包、this、箭头函数的实践笔记/" itemprop="url">
+            
+              <span itemprop="name">JS 进阶必备 —— 闭包、this、箭头函数的实践笔记</span>
+            
+          </a>
         
-      </h3>
+      </h2>
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-04T00:00:00+08:00"
-              content="2018-03-04" >
-          03-04
+              datetime="2018-04-01T00:00:00+08:00"
+              content="2018-04-01">
+          04-01
         </time>
       </div>
 
@@ -404,21 +477,21 @@
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h3 class="post-title">
+      <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/03/04/Vue.js源码学习七 —— template 解析过程学习/" itemprop="url">
-              
-                <span itemprop="name">Vue.js 源码学习七 —— template 解析过程学习</span>
-              
-            </a>
+          <a class="post-title-link" href="/2018/03/31/element-code-04/" itemprop="url">
+            
+              <span itemprop="name">element 源码学习四 —— color-picker 源码学习</span>
+            
+          </a>
         
-      </h3>
+      </h2>
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-04T00:00:00+08:00"
-              content="2018-03-04" >
-          03-04
+              datetime="2018-03-31T00:00:00+08:00"
+              content="2018-03-31">
+          03-31
         </time>
       </div>
 
@@ -441,21 +514,21 @@
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h3 class="post-title">
+      <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/02/22/Vue.js源码学习六 —— VNode虚拟DOM学习/" itemprop="url">
-              
-                <span itemprop="name">Vue.js 源码学习六 —— VNode虚拟DOM学习</span>
-              
-            </a>
+          <a class="post-title-link" href="/2018/03/28/CSS 基础知识整理/" itemprop="url">
+            
+              <span itemprop="name">CSS 基础知识整理</span>
+            
+          </a>
         
-      </h3>
+      </h2>
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2018-02-22T00:00:00+08:00"
-              content="2018-02-22" >
-          02-22
+              datetime="2018-03-28T00:00:00+08:00"
+              content="2018-03-28">
+          03-28
         </time>
       </div>
 
@@ -478,21 +551,21 @@
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h3 class="post-title">
+      <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/02/20/Vue.js源码学习五 —— provide 和 inject 学习/" itemprop="url">
-              
-                <span itemprop="name">Vue.js 源码学习五 —— provide 和 inject 学习</span>
-              
-            </a>
+          <a class="post-title-link" href="/2018/03/25/被人忽视的 DOM API/" itemprop="url">
+            
+              <span itemprop="name">被人忽视的 DOM API</span>
+            
+          </a>
         
-      </h3>
+      </h2>
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2018-02-20T00:00:00+08:00"
-              content="2018-02-20" >
-          02-20
+              datetime="2018-03-25T00:00:00+08:00"
+              content="2018-03-25">
+          03-25
         </time>
       </div>
 
@@ -515,21 +588,21 @@
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h3 class="post-title">
+      <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/02/19/Vue.js源码学习四 —— 渲染 Render 初始化过程学习/" itemprop="url">
-              
-                <span itemprop="name">Vue.js源码学习四 —— 渲染 Render 初始化过程学习</span>
-              
-            </a>
+          <a class="post-title-link" href="/2018/03/23/前端优化学习/" itemprop="url">
+            
+              <span itemprop="name">前端优化学习</span>
+            
+          </a>
         
-      </h3>
+      </h2>
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2018-02-19T00:00:00+08:00"
-              content="2018-02-19" >
-          02-19
+              datetime="2018-03-23T00:00:00+08:00"
+              content="2018-03-23">
+          03-23
         </time>
       </div>
 
@@ -552,21 +625,21 @@
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h3 class="post-title">
+      <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/02/17/Vue.js源码学习三 —— 事件 Event 学习/" itemprop="url">
-              
-                <span itemprop="name">Vue.js源码学习三 —— 事件 Event 学习</span>
-              
-            </a>
+          <a class="post-title-link" href="/2018/03/20/element-code-03/" itemprop="url">
+            
+              <span itemprop="name">element 源码学习三 —— select 组件源码学习</span>
+            
+          </a>
         
-      </h3>
+      </h2>
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2018-02-17T00:00:00+08:00"
-              content="2018-02-17" >
-          02-17
+              datetime="2018-03-20T00:00:00+08:00"
+              content="2018-03-20">
+          03-20
         </time>
       </div>
 
@@ -589,21 +662,21 @@
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h3 class="post-title">
+      <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/02/16/Vue.js源码学习二 —— 生命周期 LifeCycle 学习/" itemprop="url">
-              
-                <span itemprop="name">Vue.js源码学习二 —— 生命周期 LifeCycle 学习</span>
-              
-            </a>
+          <a class="post-title-link" href="/2018/03/17/HTTP 协议学习笔记（扫盲文）/" itemprop="url">
+            
+              <span itemprop="name">HTTP 协议学习笔记（扫盲文）</span>
+            
+          </a>
         
-      </h3>
+      </h2>
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2018-02-16T00:00:00+08:00"
-              content="2018-02-16" >
-          02-16
+              datetime="2018-03-17T00:00:00+08:00"
+              content="2018-03-17">
+          03-17
         </time>
       </div>
 
@@ -626,21 +699,21 @@
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
 
-      <h3 class="post-title">
+      <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/02/07/用hexo搭建博客笔记/" itemprop="url">
-              
-                <span itemprop="name">用hexo搭建博客笔记</span>
-              
-            </a>
+          <a class="post-title-link" href="/2018/03/14/element-code-extra/" itemprop="url">
+            
+              <span itemprop="name">element 源码学习（番外篇） —— SASS 五分钟快速入门</span>
+            
+          </a>
         
-      </h3>
+      </h2>
 
       <div class="post-meta">
         <time class="post-time" itemprop="dateCreated"
-              datetime="2018-02-07T00:00:00+08:00"
-              content="2018-02-07" >
-          02-07
+              datetime="2018-03-14T00:00:00+08:00"
+              content="2018-03-14">
+          03-14
         </time>
       </div>
 
@@ -659,16 +732,13 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/page/3/">3</a><a class="page-number" href="/archives/page/4/">4</a><a class="extend next" rel="next" href="/archives/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/archives/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/5/">5</a><a class="extend next" rel="next" href="/archives/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
 
 
           </div>
-          
-
-
           
 
         </div>
@@ -691,111 +761,141 @@
 
       
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/avatar.jpg"
-               alt="VioletJack" />
-          <p class="site-author-name" itemprop="name">VioletJack</p>
-           
-              <p class="site-description motion-element" itemprop="description"></p>
-           
-        </div>
-        <nav class="site-state motion-element">
-
-          
-            <div class="site-state-item site-state-posts">
-              <a href="/archives/">
-                <span class="site-state-item-count">37</span>
-                <span class="site-state-item-name">日志</span>
-              </a>
-            </div>
-          
-
-          
-
-          
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="VioletJack"/>
             
-            <div class="site-state-item site-state-tags">
-              <a href="/tags/index.html">
-                <span class="site-state-item-count">11</span>
-                <span class="site-state-item-name">标签</span>
-              </a>
-            </div>
-          
-
-        </nav>
-
-        
-          <div class="feed-link motion-element">
-            <a href="/atom.xml" rel="alternate">
-              <i class="fa fa-rss"></i>
-              RSS
-            </a>
+              <p class="site-author-name" itemprop="name">VioletJack</p>
+              <p class="site-description motion-element" itemprop="description">Violetjack 的个人博客，记录了一些技术笔记和思考。</p>
           </div>
-        
 
-        <div class="links-of-author motion-element">
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">47</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">Tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/violetjack" title="GitHub &rarr; https://github.com/violetjack" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:violetjack@foxmail.com" title="E-Mail &rarr; mailto:violetjack@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/u/2640909603/home" title="Weibo &rarr; https://weibo.com/u/2640909603/home" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/54ae4af3a98d" title="JianShu &rarr; https://www.jianshu.com/u/54ae4af3a98d" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>JianShu</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
           
             
-              <span class="links-of-author-item">
-                <a href="mailto:violetjack@foxmail.com" target="_blank" title="E-Mail">
-                  
-                    <i class="fa fa-fw fa-envelope"></i>
-                  
-                    
-                      E-Mail
-                    
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="https://github.com/violetjack" target="_blank" title="GitHub">
-                  
-                    <i class="fa fa-fw fa-github"></i>
-                  
-                    
-                      GitHub
-                    
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="https://weibo.com/u/2640909603/home" target="_blank" title="Weibo">
-                  
-                    <i class="fa fa-fw fa-weibo"></i>
-                  
-                    
-                      Weibo
-                    
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="https://www.jianshu.com/u/54ae4af3a98d" target="_blank" title="JianShu">
-                  
-                    <i class="fa fa-fw fa-globe"></i>
-                  
-                    
-                      JianShu
-                    
-                </a>
-              </span>
-            
           
+          
+
         </div>
-
-        
-        
-
-        
-        
-
-        
-
-
-      </section>
+      </div>
 
       
 
@@ -816,49 +916,38 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
-  
-  &copy;  2017 - 
-  <span itemprop="copyrightYear">2019</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">VioletJack</span>
+
+  
+
+  
 </div>
 
 
-<div class="powered-by">
-  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
-</div>
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.5.0</div>
 
-<div class="theme-info">
-  主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
-    NexT.Pisces
-  </a>
-</div>
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.0</div>
+
+
 
 
         
-<div class="busuanzi-count">
-  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
-    <span class="site-uv">
-      <i class="fa fa-user"></i>
-      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-      
-    </span>
-  
 
-  
-    <span class="site-pv">
-      <i class="fa fa-eye"></i>
-      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
-      
-    </span>
-  
-</div>
+
+
+
+
 
 
         
@@ -867,11 +956,16 @@
 
     
 
+    
+
+    
+
+    
   </div>
 
   
 
-<script type="text/javascript">
+<script>
   if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
     window.Promise = null;
   }
@@ -885,7 +979,6 @@
 
 
 
-  
 
 
 
@@ -898,31 +991,27 @@
 
 
 
-  
-  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
 
-  
-  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+
+
 
   
-  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
 
   
-  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
 
   
-  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-  
-  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
 
   
 
 
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+  <script src="/js/src/utils.js?v=7.0.0"></script>
 
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+  <script src="/js/src/motion.js?v=7.0.0"></script>
 
 
 
@@ -930,38 +1019,22 @@
   
 
 
-  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+  <script src="/js/src/affix.js?v=7.0.0"></script>
 
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
-
-
-
-  
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+  <script src="/js/src/schemes/pisces.js?v=7.0.0"></script>
 
 
 
   
 
-
   
 
 
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
 
 
-	
 
-
+  
 
 
 
@@ -970,19 +1043,19 @@
 
 
 
+  
 
   
 
-
-
-
-
+  
 
   
 
+  
 
+  
 
-
+  
 
   
 
